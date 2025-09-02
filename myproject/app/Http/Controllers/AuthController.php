@@ -12,7 +12,7 @@ class AuthController extends Controller
     // Show register form
     public function showRegister()
     {
-        return view('auth.register');
+        return view ('auth.register');
     }
 
     // Handle registration → save user then redirect to login
@@ -25,7 +25,7 @@ public function register(Request $request)
         'password' => 'required|string|min:8|confirmed',
     ]);
 
-    User::create([
+    $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
