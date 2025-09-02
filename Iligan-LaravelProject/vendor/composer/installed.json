@@ -1346,17 +1346,17 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.26.3",
-            "version_normalized": "12.26.3.0",
+            "version": "v12.26.4",
+            "version_normalized": "12.26.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb"
+                "reference": "085a367a32ba86fcfa647bfc796098ae6f795b09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/1a8e961a1801794c36c243bb610210d0a2bd61cb",
-                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/085a367a32ba86fcfa647bfc796098ae6f795b09",
+                "reference": "085a367a32ba86fcfa647bfc796098ae6f795b09",
                 "shasum": ""
             },
             "require": {
@@ -1466,7 +1466,7 @@
                 "league/flysystem-read-only": "^3.25.1",
                 "league/flysystem-sftp-v3": "^3.25.1",
                 "mockery/mockery": "^1.6.10",
-                "orchestra/testbench-core": "^10.6.0",
+                "orchestra/testbench-core": "^10.6.3",
                 "pda/pheanstalk": "^5.0.6|^7.0.0",
                 "php-http/discovery": "^1.15",
                 "phpstan/phpstan": "^2.0",
@@ -1514,7 +1514,7 @@
                 "symfony/postmark-mailer": "Required to enable support for the Postmark mail transport (^7.2).",
                 "symfony/psr-http-message-bridge": "Required to use PSR-7 bridging features (^7.2)."
             },
-            "time": "2025-08-27T13:51:06+00:00",
+            "time": "2025-08-29T14:15:53+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -6425,17 +6425,17 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v7.3.2",
-            "version_normalized": "7.3.2.0",
+            "version": "v7.3.3",
+            "version_normalized": "7.3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "6877c122b3a6cc3695849622720054f6e6fa5fa6"
+                "reference": "7475561ec27020196c49bb7c4f178d33d7d3dc00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/6877c122b3a6cc3695849622720054f6e6fa5fa6",
-                "reference": "6877c122b3a6cc3695849622720054f6e6fa5fa6",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/7475561ec27020196c49bb7c4f178d33d7d3dc00",
+                "reference": "7475561ec27020196c49bb7c4f178d33d7d3dc00",
                 "shasum": ""
             },
             "require": {
@@ -6459,7 +6459,7 @@
                 "symfony/mime": "^6.4|^7.0",
                 "symfony/rate-limiter": "^6.4|^7.0"
             },
-            "time": "2025-07-10T08:47:49+00:00",
+            "time": "2025-08-20T08:04:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -6487,7 +6487,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v7.3.2"
+                "source": "https://github.com/symfony/http-foundation/tree/v7.3.3"
             },
             "funding": [
                 {

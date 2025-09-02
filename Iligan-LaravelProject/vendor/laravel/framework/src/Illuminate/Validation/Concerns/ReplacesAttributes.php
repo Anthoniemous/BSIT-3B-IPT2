@@ -328,11 +328,7 @@ trait ReplacesAttributes
      */
     protected function replaceInArrayKeys($message, $attribute, $rule, $parameters)
     {
-        foreach ($parameters as &$parameter) {
-            $parameter = $this->getDisplayableValue($attribute, $parameter);
-        }
-
-        return str_replace(':values', implode(', ', $parameters), $message);
+        return $this->replaceIn($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -346,11 +342,7 @@ trait ReplacesAttributes
      */
     protected function replaceRequiredArrayKeys($message, $attribute, $rule, $parameters)
     {
-        foreach ($parameters as &$parameter) {
-            $parameter = $this->getDisplayableValue($attribute, $parameter);
-        }
-
-        return str_replace(':values', implode(', ', $parameters), $message);
+        return $this->replaceIn($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -406,10 +398,7 @@ trait ReplacesAttributes
      */
     protected function replacePresentUnless($message, $attribute, $rule, $parameters)
     {
-        return str_replace([':other', ':value'], [
-            $this->getDisplayableAttribute($parameters[0]),
-            $this->getDisplayableValue($parameters[0], $parameters[1]),
-        ], $message);
+        return $this->replaceMissingUnless($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -539,11 +528,7 @@ trait ReplacesAttributes
      */
     protected function replaceLt($message, $attribute, $rule, $parameters)
     {
-        if (is_null($value = $this->getValue($parameters[0]))) {
-            return str_replace(':value', $this->getDisplayableAttribute($parameters[0]), $message);
-        }
-
-        return str_replace(':value', $this->getSize($attribute, $value), $message);
+        return $this->replaceGt($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -557,11 +542,7 @@ trait ReplacesAttributes
      */
     protected function replaceGte($message, $attribute, $rule, $parameters)
     {
-        if (is_null($value = $this->getValue($parameters[0]))) {
-            return str_replace(':value', $this->getDisplayableAttribute($parameters[0]), $message);
-        }
-
-        return str_replace(':value', $this->getSize($attribute, $value), $message);
+        return $this->replaceGt($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -575,11 +556,7 @@ trait ReplacesAttributes
      */
     protected function replaceLte($message, $attribute, $rule, $parameters)
     {
-        if (is_null($value = $this->getValue($parameters[0]))) {
-            return str_replace(':value', $this->getDisplayableAttribute($parameters[0]), $message);
-        }
-
-        return str_replace(':value', $this->getSize($attribute, $value), $message);
+        return $this->replaceGt($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -701,15 +678,7 @@ trait ReplacesAttributes
      */
     protected function replaceProhibitedUnless($message, $attribute, $rule, $parameters)
     {
-        $other = $this->getDisplayableAttribute($parameters[0]);
-
-        $values = [];
-
-        foreach (array_slice($parameters, 1) as $value) {
-            $values[] = $this->getDisplayableValue($parameters[0], $value);
-        }
-
-        return str_replace([':other', ':values'], [$other, implode(', ', $values)], $message);
+        return $this->replaceRequiredUnless($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -847,11 +816,7 @@ trait ReplacesAttributes
      */
     protected function replaceEndsWith($message, $attribute, $rule, $parameters)
     {
-        foreach ($parameters as &$parameter) {
-            $parameter = $this->getDisplayableValue($attribute, $parameter);
-        }
-
-        return str_replace(':values', implode(', ', $parameters), $message);
+        return $this->replaceIn($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -865,11 +830,7 @@ trait ReplacesAttributes
      */
     protected function replaceDoesntEndWith($message, $attribute, $rule, $parameters)
     {
-        foreach ($parameters as &$parameter) {
-            $parameter = $this->getDisplayableValue($attribute, $parameter);
-        }
-
-        return str_replace(':values', implode(', ', $parameters), $message);
+        return $this->replaceIn($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -883,11 +844,7 @@ trait ReplacesAttributes
      */
     protected function replaceStartsWith($message, $attribute, $rule, $parameters)
     {
-        foreach ($parameters as &$parameter) {
-            $parameter = $this->getDisplayableValue($attribute, $parameter);
-        }
-
-        return str_replace(':values', implode(', ', $parameters), $message);
+        return $this->replaceIn($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -901,11 +858,7 @@ trait ReplacesAttributes
      */
     protected function replaceDoesntStartWith($message, $attribute, $rule, $parameters)
     {
-        foreach ($parameters as &$parameter) {
-            $parameter = $this->getDisplayableValue($attribute, $parameter);
-        }
-
-        return str_replace(':values', implode(', ', $parameters), $message);
+        return $this->replaceIn($message, $attribute, $rule, $parameters);
     }
 
     /**
@@ -919,10 +872,6 @@ trait ReplacesAttributes
      */
     protected function replaceDoesntContain($message, $attribute, $rule, $parameters)
     {
-        foreach ($parameters as &$parameter) {
-            $parameter = $this->getDisplayableValue($attribute, $parameter);
-        }
-
-        return str_replace(':values', implode(', ', $parameters), $message);
+        return $this->replaceIn($message, $attribute, $rule, $parameters);
     }
 }
