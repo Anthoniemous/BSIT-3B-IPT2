@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class AuthController extends Controller
 {
@@ -16,7 +18,7 @@ class AuthController extends Controller
     }
 
     // Handle registration → save user then redirect to login
-   
+
 public function register(Request $request)
 {
     $request->validate([
@@ -31,9 +33,16 @@ public function register(Request $request)
         'password' => Hash::make($request->password),
     ]);
 
+    
+    // auto-login user after registration
+    Auth::login($user);
 
-   
-    return redirect()->route('login')->with('success', 'Registration successful! Please log in.');
+    // send only one verification email
+    $user->sendEmailVerificationNotification();
+
+    // redirect to verify notice page
+    return redirect()->route('verification.notice')
+                     ->with('message', 'We sent you a verification link! Please check your email.');
 }
     // Show login form
     public function showLogin()
