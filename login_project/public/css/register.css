@@ -1,0 +1,123 @@
+/* Body setup */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background-color: #021b01;  /* soft, light gray-blue background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Register container */
+.register-container {
+    background-color: #ffffff;
+    padding: 50px 35px;
+    border-radius: 25px; /* aesthetic rounded corners */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+}
+
+/* Heading */
+.register-container h2 {
+    margin-bottom: 25px;
+    color: #333333;
+    font-weight: 600;
+    font-size: 28px;
+}
+
+/* Input fields */
+.register-container input {
+    width: 100%;
+    padding: 14px 2px;
+    margin: 12px 0;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    font-size: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-container input:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 8px rgba(0,123,255,0.2);
+}
+
+/* Button */
+.register-container button {
+    width: 100%;
+    padding: 14px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 15px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-container button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Messages */
+.error-msg, .success-msg {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.error-msg {
+    background-color: #fde2e1;
+    color: #b71c1c;
+}
+
+.success-msg {
+    background-color: #e1f5e4;
+    color: #1b5e20;
+}
+
+/* Links */
+.register-container a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.register-container a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .register-container {
+        padding: 40px 25px;
+        border-radius: 20px;
+    }
+
+    .register-container h2 {
+        font-size: 24px;
+    }
+
+    .register-container button {
+        font-size: 16px;
+        padding: 12px;
+    }
+}
