@@ -16,7 +16,7 @@
     </head>
     <body class="min-h-screen flex items-center justify-center bg-cover bg-center" 
       style="background-image: url('{{ asset('img/background.jpg') }}');">
-        <div class="formContainer min-h-screen flex flex-col sm:justify-center gap-10 items-center pt-6 sm:pt-0">
+        <div class="formContainer min-h-screen flex flex-col sm:justify-center gap-5 items-center pt-6 sm:pt-0">
             <div>
                 <a href="/" class="shop-logo">
                     <img src="{{ asset('img/boombot.png') }}" alt="Logo">
