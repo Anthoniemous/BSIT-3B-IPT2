@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered; // ✅ import for event
 use App\Models\User;
 
 class Controller extends BaseController
@@ -30,6 +31,12 @@ class Controller extends BaseController
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            // ✅ If user not verified → redirect to verification notice
+            if (! Auth::user()->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
+
             return redirect()->intended('/dashboard');
         }
 
@@ -53,13 +60,16 @@ class Controller extends BaseController
             'password' => ['required','confirmed','min:8'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/login')->with('success', 'Registration successful. Please login.');
+        // ✅ Fire registered event para mo-send og email verification link
+        event(new Registered($user));
+
+        return redirect('/login')->with('success', 'Registration successful. Please check your email to verify your account.');
     }
 
     // Handle logout
