@@ -8,13 +8,13 @@
             <!-- Email -->
             <label for="email" class="text-xs font-bold text-orange-600 after:content-['*']">Email</label>     
             <input id="email" type="email" name="email" :value="old('email')" required autofocus 
-                class="w-full p-2 mb-2 mt-1 border border-orange-300 outline-none focus:ring-2 focus:ring-orange-500" />
+                class="w-full p-2 mb-2 mt-1 border text-orange-500 border-orange-300 outline-none focus:ring-2 focus:ring-orange-500" />
             <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-red-500" />
 
             <!-- Password -->
             <label for="password" class="text-xs font-bold text-orange-600 after:content-['*']">Password</label>
             <input id="password" type="password" name="password" required autocomplete="current-password"
-                class="w-full p-2 mb-2 mt-1 border border-orange-300 outline-none focus:ring-2 focus:ring-orange-500" />
+                class="w-full p-2 mb-2 mt-1 border text-orange-500 border-orange-300 outline-none focus:ring-2 focus:ring-orange-500" />
             <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-red-500" />
 
             <!-- Remember Me -->
