@@ -1,0 +1,122 @@
+/* Body setup */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg, #ffecd2, #fcb69f); /* pastel gradient */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Register container with glassmorphism */
+.register-container {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 50px 35px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.register-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading */
+.register-container h2 {
+    margin-bottom: 25px;
+    color: #444;
+    font-weight: 700;
+    font-size: 28px;
+}
+
+/* Input fields */
+.register-container input {
+    width: 100%;
+    padding: 14px 12px;
+    margin: 12px 0;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+.register-container input:focus {
+    outline: none;
+    border-color: #fcb69f;
+    box-shadow: 0 0 8px rgba(252, 182, 159, 0.4);
+}
+
+/* Button */
+.register-container button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.register-container button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(255, 118, 136, 0.3);
+}
+
+/* Messages */
+.error-msg, .success-msg {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.error-msg {
+    background-color: #ffe1e1;
+    color: #c62828;
+}
+
+.success-msg {
+    background-color: #e6ffe9;
+    color: #2e7d32;
+}
+
+/* Links */
+.register-container a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #ff758c;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.register-container a:hover {
+    color: #ff4d6d;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .register-container {
+        padding: 40px 25px;
+    }
+    .register-container h2 {
+        font-size: 24px;
+    }
+    .register-container button {
+        font-size: 16px;
+    }
+}

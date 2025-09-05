@@ -1,0 +1,119 @@
+/* Body setup */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc); /* vibrant gradient */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Login container */
+.login-container {
+    background-color: #ffffff;
+    padding: 45px 35px;
+    border-radius: 18px;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.login-container:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading */
+.login-container h2 {
+    margin-bottom: 25px;
+    color: #222;
+    font-weight: 700;
+    font-size: 30px;
+}
+
+/* Input fields */
+.login-container input {
+    width: 100%;
+    padding: 14px 12px;
+    margin: 12px 0;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.login-container input:focus {
+    outline: none;
+    border-color: #6a11cb;
+    box-shadow: 0 0 8px rgba(106, 17, 203, 0.3);
+}
+
+/* Button */
+.login-container button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.login-container button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Messages */
+.error-msg, .success-msg {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.error-msg {
+    background-color: #fde2e1;
+    color: #b71c1c;
+}
+
+.success-msg {
+    background-color: #e1f5e4;
+    color: #1b5e20;
+}
+
+/* Links */
+.login-container a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #2575fc;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.login-container a:hover {
+    color: #6a11cb;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 35px 25px;
+    }
+    .login-container h2 {
+        font-size: 24px;
+    }
+    .login-container button {
+        font-size: 16px;
+    }
+}
