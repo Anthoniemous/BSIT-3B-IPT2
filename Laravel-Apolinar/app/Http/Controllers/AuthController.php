@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class Controller extends BaseController
+class AuthController extends BaseController
 {
     use \Illuminate\Foundation\Auth\Access\AuthorizesRequests;
     use \Illuminate\Foundation\Bus\DispatchesJobs;
@@ -17,7 +17,7 @@ class Controller extends BaseController
     // Show login form
     public function showLogin()
     {
-        return view('login'); // <--- Diretso sa /views/login.blade.php
+        return view('login'); // resources/views/login.blade.php
     }
 
     // Handle login
@@ -41,7 +41,7 @@ class Controller extends BaseController
     // Show registration form
     public function showRegister()
     {
-        return view('register'); // <--- Diretso sa /views/register.blade.php
+        return view('register'); // resources/views/register.blade.php
     }
 
     // Handle registration
