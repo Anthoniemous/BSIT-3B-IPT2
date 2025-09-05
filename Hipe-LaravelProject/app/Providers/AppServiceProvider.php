@@ -21,4 +21,9 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+
+
+
+    public const HOME = '/dashboard'; // redirect after verification
+
 }
