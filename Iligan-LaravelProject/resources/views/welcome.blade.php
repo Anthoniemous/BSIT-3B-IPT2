@@ -27,8 +27,18 @@
            
         </header>
 
+        {{-- 
+        <img 
+            src="{{ asset('build/assets/images/Shop Logo.png') }}" 
+            alt="Shop Logo" 
+            class="w-32 h-auto mx-auto lg:mx-0 drop-shadow-lg hover:scale-105 transition-transform duration-300"
+        />
+         --}}
         <div class="flex items-center w-full justify-center transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 pt-0">
+            
             <main class="flex max-w-[280px] w-full flex-col-reverse lg:max-w-[400px] lg:flex-row">
+                
+
                 <div class="text-[13px] leading-[20px] flex-1 p-4 lg:p-6 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-[20px] bg-blue-500 p-4">
                     @if (Route::has('login'))
                         <nav class="flex items-center justify-center gap-4">
