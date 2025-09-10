@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\studentController;
 use App\Http\Controllers\doctorsController;
 use App\Http\Controllers\aboutController;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\Socialite\ProviderRedirectController;
+use App\Http\Controllers\Socialite\ProviderCallbackController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,7 +24,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/auth/{provider}/redirect', ProviderRedirectController::class)->name('auth.redirect');
+Route::get('/auth/{provider}/callback', ProviderCallbackController::class)->name('auth.callback');
+Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
+
+
 Route::get('/patients',[studentController::class, 'displayStudent'])->name('patients');
+Route::get('/sales',[studentController::class, 'displayStudent'])->name('sales');
 Route::get('/patients/list',[studentController::class, 'patientsList'])->name('patients.list');
 Route::get('/doctors',[doctorsController::class, 'displayDoctor'])->name('doctors');
 Route::get('/about',[aboutController::class, 'about'])->name('about');
