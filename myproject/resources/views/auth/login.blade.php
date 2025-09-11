@@ -10,6 +10,25 @@
     <div class="card p-4 shadow" style="width: 400px;">
         <h2 class="text-center mb-4">Login</h2>
 
+
+    @if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
+
    @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
@@ -30,7 +49,20 @@
         <p class="mt-3 text-center">
             Don’t have an account? <a href="{{ route('register') }}">Register</a>
         </p>
+
+           <div class="mt-3 text-center">
+           <p>or</p>
+            </div>
+
+            <div class="mt-3 text-center">
+            <a href="{{ route('google-auth') }}"
+             class="btn btn-danger w-50">
+                <i class="fab fa-google"></i> Google
+            </a>
+            </div>
+
     </div>
 
+     
 </body>
 </html>

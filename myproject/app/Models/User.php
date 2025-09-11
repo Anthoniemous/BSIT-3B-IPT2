@@ -21,6 +21,8 @@ protected $fillable = [
     'name',
     'email',
     'password',
+    'google_id',
+    'avatar',
 ];
 
     /**

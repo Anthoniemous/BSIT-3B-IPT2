@@ -61,7 +61,7 @@ public function register(Request $request)
         }
 
         return back()->withErrors([
-            'email' => 'Invalid credentials.',
+            'email' => 'BUGO MALI MANA! USABA.',
         ]);
     }
 
