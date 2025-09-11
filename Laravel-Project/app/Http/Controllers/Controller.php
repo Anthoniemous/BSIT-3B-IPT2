@@ -6,8 +6,10 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered; // ✅ import for event
+use Illuminate\Auth\Events\Registered;
 use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 class Controller extends BaseController
 {
@@ -15,13 +17,11 @@ class Controller extends BaseController
     use \Illuminate\Foundation\Bus\DispatchesJobs;
     use \Illuminate\Foundation\Validation\ValidatesRequests;
 
-    // Show login form
     public function showLogin()
     {
-        return view('login'); // /views/login.blade.php
+        return view('login');
     }
 
-    // Handle login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -32,7 +32,6 @@ class Controller extends BaseController
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // ✅ If user not verified → redirect to verification notice
             if (! Auth::user()->hasVerifiedEmail()) {
                 return redirect()->route('verification.notice');
             }
@@ -45,13 +44,11 @@ class Controller extends BaseController
         ]);
     }
 
-    // Show registration form
     public function showRegister()
     {
-        return view('register'); // /views/register.blade.php
+        return view('register');
     }
 
-    // Handle registration
     public function register(Request $request)
     {
         $request->validate([
@@ -66,13 +63,11 @@ class Controller extends BaseController
             'password' => Hash::make($request->password),
         ]);
 
-        // ✅ Fire registered event para mo-send og email verification link
         event(new Registered($user));
 
         return redirect('/login')->with('success', 'Registration successful. Please check your email to verify your account.');
     }
 
-    // Handle logout
     public function logout(Request $request)
     {
         Auth::logout();
@@ -81,20 +76,47 @@ class Controller extends BaseController
         return redirect('/login');
     }
 
-    // ✅ Show forgot password form
     public function showForgotPassword()
     {
-        return view('forgotpassword'); // /views/forgotpassword.blade.php
+        return view('forgotpassword');
     }
 
-    // ✅ Handle forgot password submission
     public function sendResetLink(Request $request)
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
 
-        // For demo purposes: simulate sending reset link
         return back()->with('success', 'If your email exists, a password reset link has been sent.');
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')
+            ->with(['prompt' => 'select_account'])
+            ->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+
+            $user = User::firstOrCreate(
+                ['email' => $googleUser->getEmail()],
+                [
+                    'name' => $googleUser->getName(),
+                    'password' => bcrypt(Str::random(16)),
+                    'email_verified_at' => now(),
+                ]
+            );
+
+            Auth::login($user);
+
+            return redirect('/dashboard');
+
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e->getCode(), $e->getTraceAsString());
+        }
     }
 }

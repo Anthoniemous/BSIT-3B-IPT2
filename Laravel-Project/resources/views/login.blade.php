@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- Link sa separate CSS -->
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body>
@@ -23,6 +22,7 @@
             </div>
         @endif
 
+        <!-- Normal login form -->
         <form method="POST" action="{{ url('/login') }}">
             @csrf
             <label>Email:</label>
@@ -34,8 +34,14 @@
             <button type="submit">Login</button>
         </form>
 
-        <p>Don't have an account? <a href="{{ url('/register')  }}">Register here</a></p>
+        <!-- Google login button -->
+        <a href="{{ route('google.login') }}" class="google-btn">
+            Login with Google
+        </a>
+
+        <p>Don't have an account? <a href="{{ url('/register') }}">Register here</a></p>
         <p>Forgot your password? <a href="{{ url('/forgotpassword') }}">Click here</a></p>
     </div>
+
 </body>
 </html>
