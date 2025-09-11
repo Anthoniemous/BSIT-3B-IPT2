@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 use App\Models\User;
 
 class Controller extends BaseController
@@ -17,7 +18,7 @@ class Controller extends BaseController
     // Show login form
     public function showLogin()
     {
-        return view('login'); // /resources/views/login.blade.php
+        return view('login');
     }
 
     // Handle login
@@ -30,6 +31,11 @@ class Controller extends BaseController
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            if (!Auth::user()->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
+
             return redirect()->intended('/dashboard');
         }
 
@@ -41,7 +47,7 @@ class Controller extends BaseController
     // Show registration form
     public function showRegister()
     {
-        return view('register'); // /resources/views/register.blade.php
+        return view('register');
     }
 
     // Handle registration
@@ -53,13 +59,15 @@ class Controller extends BaseController
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('login')->with('success', 'Registration successful. Please login.');
+        event(new Registered($user));
+
+        return redirect('/login')->with('success', 'Registration successful. Please check your email to verify your account.');
     }
 
     // Handle logout
@@ -68,8 +76,29 @@ class Controller extends BaseController
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        return redirect('/login');
+    }
 
-        // Redirect to login route
-        return redirect()->route('login');
+    // Show forgot password form
+    public function showForgotPassword()
+    {
+        return view('forgotpassword');
+    }
+
+    // Handle forgot password submission
+    public function sendResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        // Simulate sending reset link
+        return back()->with('success', 'If your email exists, a password reset link has been sent.');
+    }
+
+    // Optional: index/home
+    public function index()
+    {
+        return view('home');
     }
 }
