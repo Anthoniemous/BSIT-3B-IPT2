@@ -32,6 +32,13 @@
             <input type="password" name="password" required>
             
             <button type="submit">Login</button>
+            <div class="google-login">
+                <p>Or login with:</p>
+                <a href="{{ route('google-auth')}}">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
+                    Sign in with Google
+                </a>
+            </div>
         </form>
 
         <p>Don't have an account? <a href="{{ url('/register')  }}">Register here</a></p>
