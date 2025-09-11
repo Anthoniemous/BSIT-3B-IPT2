@@ -14,6 +14,12 @@ class ProviderRedirectController extends Controller
         }
 
         try {
+            if ($provider === 'google') {
+                return Socialite::driver($provider)
+                    ->with(['prompt' => 'select_account'])
+                    ->redirect();
+            }
+
             return Socialite::driver($provider)->redirect();
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors(['provider' => 'Something went wrong']);
