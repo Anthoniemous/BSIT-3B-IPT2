@@ -1,6 +1,7 @@
 *.log
 .DS_Store
 .env
+Iligan-LaravelProject/.env
 .env.backup
 .env.production
 .phpactor.json
