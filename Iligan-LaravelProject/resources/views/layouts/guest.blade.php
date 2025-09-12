@@ -18,20 +18,16 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body class="font-sans antialiased bg-[#cc5500]">
-        <div class="min-h-screen flex flex-col items-center justify-center space-y-6">
-            
-            <!-- Heading -->
-            <h1 class="text-5xl font-extrabold text-white tracking-wide drop-shadow-lg" style="font-family:Permanent Marker, cursive;">
-                SHOP ME, BABY
-            </h1>
-
-            <!-- Form Box -->
-            <div class="w-full max-w-md px-6 py-8 shadow-md rounded-2xl bg-white dark:bg-[#fff] dark:text-[#000] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
+    <body class="font-sans antialiased min-h-screen flex items-stretch text-black" style="background-image: url('/images/shopping-bag-cart.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <!-- Left Panel (Form Section) -->
+        <div class="w-1/2 bg-[#242424] flex items-center justify-center shadow-2xl">
+            <div class="w-full max-w-lg px-12 py-16">
                 {{ $slot }}
             </div>
-
         </div>
+
+        <!-- Right Side (empty, just shows background image) -->
+        <div class="w-1/2"></div>
     </body>
 
 </html>

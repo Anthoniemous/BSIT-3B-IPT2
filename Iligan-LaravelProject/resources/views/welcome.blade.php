@@ -22,24 +22,27 @@
             </style>
         @endif
     </head>
-    <body class="bg-[#FDFDFC] dark:bg-[#cc5500] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
-        <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
-           
-        </header>
 
-        {{-- 
-        <img 
-            src="{{ asset('build/assets/images/Shop Logo.png') }}" 
-            alt="Shop Logo" 
-            class="w-32 h-auto mx-auto lg:mx-0 drop-shadow-lg hover:scale-105 transition-transform duration-300"
-        />
-         --}}
-        <div class="flex items-center w-full justify-center transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 pt-0">
-            
-            <main class="flex max-w-[280px] w-full flex-col-reverse lg:max-w-[400px] lg:flex-row">
+    <body class="bg-[#FDFDFC] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col" style="background-image: url('/images/shopping-bag-cart.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        
+        <div class="flex items-center w-full justify-left" style="position: relative; top: 50px; left: 20px;">
+            <img src="{{ asset('images/cart.png') }}" alt="Cart Logo" style="width: 200px;">
+        </div>
+
+        <div class="flex items-center w-full justify-left" style="position: absolute; padding-left: 50px; font-size: 50px; font-family: 'Arial Black', sans-serif; color: black; text-shadow: 5px 5px 10px #ffffff;">
+            <h1>Welcome to <span class="shoppify" style="color: #cc5500">Shoppify!</span></h1>
+        </div>
+
+        <div class="flex items-center w-full justify-left" style="position: absolute; margin-top: 80px; padding-left: 50px; font-family: 'Arial', sans-serif;">
+            <h2>Your trusted cart partner.<h2>
+        </div>
+        
+        <div class="flex items-center w-full justify-left transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 pt-0" style="margin-top: 100px;">
+
+            <main class="flex max-w-[280px] w-full flex-col-reverse lg:max-w-[400px] lg:flex-row bg-[#242424] rounded-[20px]">
                 
-
-                <div class="text-[13px] leading-[20px] flex-1 p-4 lg:p-6 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-[20px] bg-blue-500 p-4">
+                
+                <div class="text-[13px] leading-[50px] flex-1 p-4 lg:p-6 dark:text-[#EDEDEC] p-4" >
                     @if (Route::has('login'))
                         <nav class="flex items-center justify-center gap-4">
                             @auth
@@ -52,7 +55,7 @@
                             @else
                                 <a
                                     href="{{ route('login') }}"
-                                    class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#cc5500] rounded-sm text-sm leading-normal"
+                                    class="inline-block px-5 py-1.5 text-white border border-white hover:border-[#19140035] dark:hover:border-[#cc5500] hover:bg-[#cc5500] rounded-sm text-sm leading-normal"
                                 >
                                     Log in
                                 </a>
@@ -60,7 +63,8 @@
                                 @if (Route::has('register'))
                                     <a
                                         href="{{ route('register') }}"
-                                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#cc5500] rounded-sm text-sm leading-normal">
+                                        class="inline-block px-5 py-1.5 text-white border border-white hover:border-[#19140035] dark:hover:border-[#cc5500] hover:bg-[#cc5500] rounded-sm text-sm leading-normal"
+                                    >
                                         Register
                                     </a>
                                 @endif
