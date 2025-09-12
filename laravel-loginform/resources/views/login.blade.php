@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- Link sa separate CSS -->
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-
-
 </head>
 <body>
     <div class="login-container">
-        <h2>LOGIN</h2>
+        <h2>Login form</h2>
 
         @if(session('success'))
             <div class="success-msg">{{ session('success') }}</div>
@@ -25,6 +22,7 @@
             </div>
         @endif
 
+        
         <form method="POST" action="{{ url('/login') }}">
             @csrf
             <label>Email:</label>
@@ -36,7 +34,14 @@
             <button type="submit">Login</button>
         </form>
 
+        
+        <a href="{{ route('google.login') }}" class="google-btn">
+            Login with Google
+        </a>
+
         <p>Don't have an account? <a href="{{ url('/register') }}">Register here</a></p>
+        
     </div>
+
 </body>
 </html>
