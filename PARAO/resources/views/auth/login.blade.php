@@ -25,6 +25,11 @@
                     <input type="password" name="password" class="form-control" required>
                 </div>
                 <button class="btn btn-primary w-100">Login</button>
+                <div class="mb-1 text-center">
+                    <a href="{{ route('redirect.google') }}">
+                        <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" alt="Sign in with Google">
+                    </a>
+                </div>
             </form>
         </div>
     </div>

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\URL;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,7 +41,7 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
     if ($user->hasVerifiedEmail()) {
         return redirect()->route('dashboard')->with('success', 'Email already verified.');
     }
-
+    $user->is_verified = '1';
     $user->markEmailAsVerified();
     $user->status = 'active';
     $user->save();
@@ -62,3 +63,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/profile', function () {
     return 'Profile edit page (coming soon)';
 })->name('profile.edit');
+
+Route::get("auth/google", [GoogleController::class, 'redirectToGoogle'])->name('redirect.google');
+Route::get("auth/google/callback", [GoogleController::class, 'handleGoogleCallback']);
