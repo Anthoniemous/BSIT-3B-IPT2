@@ -144,6 +144,11 @@
     <button type="submit" class="w-full py-2.5 font-medium text-white transition-colors bg-gray-900 rounded-lg hover:bg-gray-800 hover-lift">
         Sign In
     </button>
+
+    <button type="submit" class="w-full py-2.5 font-medium text-white transition-colors bg-gray-900 rounded-lg hover:bg-gray-800 hover-lift">
+        Sign In2
+    </button>
+    
 </form>
 
 <!-- Register Form -->
@@ -187,10 +192,6 @@
     </button>
 </form>
 
-
-              
-              
-
     <script>
         // Clean tab switching
         const loginTab = document.getElementById('loginTab');
@@ -227,4 +228,4 @@
     </script>
 
 </body>
-</html>
+</html> 
