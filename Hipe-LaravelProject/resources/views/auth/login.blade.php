@@ -136,6 +136,8 @@
             <input type="checkbox" name="remember" class="w-4 h-4 mr-2 border border-gray-300 rounded focus:ring-0 focus:ring-offset-0">
             Remember me
         </label>
+       
+
         <a href="#" class="text-sm text-gray-600 transition-colors hover:text-gray-900">
             Forgot password?
         </a>
@@ -145,10 +147,10 @@
         Sign In
     </button>
 
-    <button type="submit" class="w-full py-2.5 font-medium text-white transition-colors bg-gray-900 rounded-lg hover:bg-gray-800 hover-lift">
-        Sign In2
-    </button>
-    
+    <a href="{{ route('auth.google') }}" class="inline-block w-full px-6 py-2 text-center text-white bg-red-600 rounded-lg hover:bg-red-700 hover-lift">
+            Login With Google
+        </a>
+
 </form>
 
 <!-- Register Form -->
