@@ -1,0 +1,158 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  background: url("../css/img/sd.jpg") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+header {
+  width: 100%;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* Logo */
+.logo {
+  font-family: 'Dancing Script', cursive;
+  font-weight: bold;
+  font-size: 32px;
+  color: #ffffff;
+  cursor: default;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  color: #fbb034;
+}
+
+header nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+}
+
+header nav ul li a {
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  transition: 0.3s;
+}
+
+header nav ul li a:hover {
+  color: #fbb034;
+}
+
+.user-option {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.user-option a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.user-option a:hover {
+  color: #fbb034;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 2px solid #fbb034;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #fbb034;
+  color: #000;
+}
+
+/* Hero Section */
+.hero {
+   margin-top: 250px; 
+  text-align: center;
+  padding-left: 0;
+}
+
+.hero h1 {
+  font-family: 'Dancing Script', cursive;
+  font-weight: bold;
+  font-size: 32px;
+  color: #ffffff;
+  cursor: default;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.hero h1:hover {
+  transform: scale(1.05);
+  color: #fbb034;
+}
+
+/* Content Section */
+.content {
+  margin-top: 20px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.content h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #fbb034;
+}
+
+.content p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #f1f1f1;
+}
+
+.btn {
+  display: inline-block;
+  background: #fbb034;
+  margin-top: 90px; 
+  padding: 10px 20px;
+  border-radius: 25px;
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #fff;
+  color: #fbb034;
+}
