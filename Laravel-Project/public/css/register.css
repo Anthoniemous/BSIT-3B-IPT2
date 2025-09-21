@@ -1,23 +1,33 @@
-/* Body setup */
-body {
+/* ===== Reset & Base ===== */
+* {
     margin: 0;
     padding: 0;
-    background-color: #0c1a33;  
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== Body Setup ===== */
+body {
+    height: 100vh;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    background: url("../css/img/u.jpg") no-repeat center center fixed;
+    background-size: cover;
 }
 
-/* Register container */
+/* ===== Register Container ===== */
 .register-container {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.2); /* semi-transparent */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
     padding: 50px 35px;
-    border-radius: 25px; /* aesthetic rounded corners */
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    border-radius: 25px;
     width: 100%;
     max-width: 400px;
     text-align: center;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -26,84 +36,102 @@ body {
     box-shadow: 0 20px 35px rgba(0,0,0,0.15);
 }
 
-/* Heading */
+/* ===== Heading ===== */
 .register-container h2 {
     margin-bottom: 25px;
-    color: #333333;
     font-weight: 600;
     font-size: 28px;
+    color: #ffffff;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
 }
 
-/* Input fields */
+/* ===== Input Fields ===== */
+.register-container label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 500;
+    color: #fff;
+    text-align: left;
+}
+
 .register-container input {
     width: 100%;
-    padding: 14px 2px;
-    margin: 12px 0;
+    padding: 14px 15px;
+    margin-bottom: 15px;
     border-radius: 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid rgba(255,255,255,0.6);
     font-size: 16px;
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-container input::placeholder {
+    color: rgba(255,255,255,0.7);
 }
 
 .register-container input:focus {
     outline: none;
-    border-color: #007BFF;
-    box-shadow: 0 0 8px rgba(0,123,255,0.2);
+    border-color: #fbb034;
+    box-shadow: 0 0 8px rgba(251,176,52,0.3);
 }
 
-/* Button */
+/* ===== Buttons ===== */
 .register-container button {
     width: 100%;
     padding: 14px;
-    background-color: #970707;
-    color: white;
+    margin-top: 15px;
+    background-color: #1877f2; /* Facebook-style blue */
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    font-size: 18px;
-    margin-top: 15px;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .register-container button:hover {
+    background-color: #145dbf;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* Messages */
+/* ===== Messages ===== */
 .error-msg, .success-msg {
     margin-bottom: 15px;
     padding: 12px;
     border-radius: 8px;
     font-size: 14px;
+    text-align: left;
 }
 
 .error-msg {
-    background-color: #fde2e1;
+    background-color: rgba(255,0,0,0.2);
     color: #b71c1c;
 }
 
 .success-msg {
-    background-color: #e1f5e4;
+    background-color: rgba(0,255,0,0.2);
     color: #1b5e20;
 }
 
-/* Links */
+/* ===== Links ===== */
 .register-container a {
     display: inline-block;
     margin-top: 15px;
-    color: #007BFF;
-    text-decoration: none;
+    color: #1504b1ff; /* golden color for links */
     font-weight: 500;
+    text-decoration: none;
     transition: color 0.2s ease;
 }
 
 .register-container a:hover {
-    color: #0056b3;
+    color: #1504b1ff;
     text-decoration: underline;
 }
 
-/* Responsive */
+/* ===== Responsive ===== */
 @media (max-width: 480px) {
     .register-container {
         padding: 40px 25px;
