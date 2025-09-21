@@ -1,42 +1,45 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-use Illuminate\Support\Facades\Auth;
-
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
-    return redirect()->route('login');
+    // If logged in → home, otherwise → login
+    return Auth::check() ? redirect()->route('home') : redirect()->route('login');
 });
 
 Auth::routes([
-    'verify'=>true
+    'verify' => true
 ]);
 
+// Home page (Gym website homepage after login)
+Route::get('/home', [HomeController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('home');
+
+// Dashboard (keep it if you still need it separately)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); 
 });
 
-Route::get('home', [App\Http\Controllers\HomeControllers::class, 'index'])->name('home');
+// Google login
+Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
+Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
 require __DIR__.'/auth.php';
