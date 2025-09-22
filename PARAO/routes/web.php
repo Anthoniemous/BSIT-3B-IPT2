@@ -10,6 +10,8 @@ use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\PasswordController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -60,9 +62,10 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/profile', function () {
-    return 'Profile edit page (coming soon)';
-})->name('profile.edit');
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 
 Route::get("auth/google", [GoogleController::class, 'redirectToGoogle'])->name('redirect.google');
 Route::get("auth/google/callback", [GoogleController::class, 'handleGoogleCallback']);
