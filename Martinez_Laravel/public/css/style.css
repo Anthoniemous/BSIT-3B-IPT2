@@ -1,0 +1,219 @@
+/* ==== General Reset ==== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+.btn-login {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #f39c12;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.btn-login:hover {
+    background: #e67e22;
+}
+
+
+/* ==== Header ==== */
+header {
+    background: #333;
+    color: #fff;
+    padding: 20px 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    transition: 0.3s;
+}
+
+.nav-links li:hover {
+   background-color: orange; 
+    color: #fff;               
+    border-radius: 4px;       
+}
+
+/* ==== Hero Section ==== */
+.hero {
+    background: url('cars.jpg') no-repeat center center;
+    background-size: cover;       
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.hero-text {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.hero-text h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-text p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+
+/* ==== Content Section ==== */
+.content {
+    padding: 40px 0;
+    background: #fff;
+    text-align: center;
+}
+
+.content h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.content p {
+    width: 80%;
+    max-width: 800px;
+    margin: auto;
+    font-size: 18px;
+}
+
+/* ==== Footer ==== */
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+}
+/* ==== Car Section ==== */
+.car-section {
+    background: #fff;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.car-section h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.car-image {
+    max-width: 90%;
+    width: 600px;       /* Optional fixed width */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+}
+
+.car-image:hover {
+    transform: scale(1.05);
+}
+
+/* ==== Email Verification Banner ==== */
+.verification-banner {
+    background: linear-gradient(135deg, #fef3c7, #fed7aa);
+    border-bottom: 3px solid #f59e0b;
+    padding: 20px 0;
+    position: relative;
+}
+
+.verification-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.verification-icon {
+    flex-shrink: 0;
+    color: #d97706;
+}
+
+.verification-text {
+    flex-grow: 1;
+}
+
+.verification-text h3 {
+    color: #92400e;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.verification-text p {
+    color: #78350f;
+    font-size: 14px;
+    margin: 0;
+}
+
+.verification-actions {
+    flex-shrink: 0;
+}
+
+.btn-resend {
+    background: #d97706;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn-resend:hover {
+    background: #b45309;
+}
