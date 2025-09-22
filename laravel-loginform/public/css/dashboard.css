@@ -1,0 +1,244 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  background: url("../css/img/hero-bg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;  
+  flex-direction: column;
+  color: #fff;
+}
+
+header {
+  width: 100%;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* Feane Logo (Left) */
+.logo {
+  font-family: 'Dancing Script', cursive;
+  font-weight: bold;
+  font-size: 32px;
+  color: #ffffff;
+  cursor: default;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  color: #fbb034;
+}
+
+header nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+}
+
+header nav ul li a {
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  transition: 0.3s;
+}
+
+header nav ul li a:hover {
+  color: #fbb034;
+}
+
+.user-option {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.user-option a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.user-option a:hover {
+  color: #fbb034;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 2px solid #fbb034;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #fbb034;
+  color: #000;
+}
+
+/* Hero Section */
+.hero {
+  margin-top: 80px;
+  padding-left: 60px;
+  text-align: left;
+}
+
+/* Welcome Text - Match Logo Style */
+.hero h1 {
+  margin-left: 20px;
+  font-family: 'Dancing Script', cursive;
+  font-weight: bold;
+  font-size: 32px;
+  color: #ffffff;
+  cursor: default;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.hero h1:hover {
+  transform: scale(1.05);
+  color: #fbb034;
+}
+
+/* Content Section */
+.content {
+  margin-top: 40px;
+  padding-left: 60px;
+  max-width: 600px;
+}
+
+.content h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #fbb034;
+}
+
+.content p {
+  
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #f1f1f1;
+}
+
+.btn {
+  display: inline-block;
+  background: #fbb034;
+  padding: 10px 20px;
+  border-radius: 25px;
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #fff;
+  color: #fbb034;
+}
+
+/* Menu Grid Layout */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Menu Item Style */
+.menu-item {
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Menu Item Image (circle effect) */
+.menu-item img {
+    width: 120px;         /* adjust size gamay */
+    height: 120px;
+    object-fit: cover;    /* para dili ma-distort */
+    border-radius: 50%;   /* para lingin jud */
+    margin-bottom: 12px;
+    border: 3px solid #fbb034; /* optional border */
+}
+
+/* Text styles */
+.menu-item h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 10px 0 5px;
+    color: #333;
+}
+
+.menu-item p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.menu-item .price {
+    font-weight: bold;
+    color: #fbb034;
+    font-size: 16px;
+}
+
+.user-option a {
+  margin-left: 15px;
+  padding: 8px 16px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+/* Login Button Style */
+.user-option a:first-child {
+  background-color: transparent;
+  border: 2px solid #fbb034;   /* orange border */
+  color: #fbb034;
+}
+
+.user-option a:first-child:hover {
+  background-color: #fbb034;
+  color: #fff;
+}
+
+/* Sign Up Button Style */
+.user-option a:nth-child(2) {
+  background-color: #fbb034;   /* orange background */
+  color: #fff;
+  border: 2px solid #fbb034;
+}
+
+.user-option a:nth-child(2):hover {
+  background-color: #e89b20;
+  border-color: #e89b20;
+}
