@@ -10,7 +10,7 @@ use App\Http\Controllers\Socialite\ProviderRedirectController;
 use App\Http\Controllers\Socialite\ProviderCallbackController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('layouts.index');
 });
 
 Route::get('/dashboard', function () {
