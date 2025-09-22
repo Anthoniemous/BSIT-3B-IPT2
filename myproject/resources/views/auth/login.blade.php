@@ -16,12 +16,14 @@
       background: #0e0c0a;
       font-family: 'Segoe UI', sans-serif;
       color: #fff;
+      overflow-x: hidden;
     }
 
     /* Navbar */
     .navbar {
       background: transparent;
       padding: 15px 50px;
+      z-index: 1000;
     }
 
     .navbar-brand {
@@ -48,22 +50,15 @@
       color: #000;
     }
 
-    .btn-google {
-      background-color: #db4437;
-      border-radius: 10px;
-      padding: 6px 16px;
-      font-weight: 600;
-      color: #fff;
-    }
-
     /* Hero */
     .hero {
-      min-height: 90vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       padding: 0 10%;
-      background: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
+      background-size: cover;
+      background-position: center;
       position: relative;
     }
 
@@ -125,23 +120,6 @@
       color: #fff;
     }
 
-    .nav-tabs {
-      border-bottom: none;
-      justify-content: center;
-    }
-
-    .nav-tabs .nav-link {
-      color: #fff;
-      font-weight: 600;
-      border: none;
-      border-bottom: 2px solid transparent;
-    }
-
-    .nav-tabs .nav-link.active {
-      color: #d9b08c;
-      border-bottom: 2px solid #d9b08c;
-    }
-
     .form-control {
       border-radius: 12px;
       padding: 12px;
@@ -175,7 +153,7 @@
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="#"><i class="fas fa-mug-hot"></i> Coffee ' Sodoso</a>
       <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -196,17 +174,50 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Enjoy The Most <span>Delicious Coffee</span></h1>
-      <p>Start Your Day With Coffee, Enhancing Productivity And Mood. Its Invigorating Aroma Sets A Focused Tone For Tackling Tasks With Energy And Positivity.</p>
-      <button class="btn btn-explore">Explore</button>
-      <button class="btn btn-order">Order Coffee</button>
-    </div>
-  </section>
+  <!-- Hero Carousel -->
+  <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+    <div class="carousel-inner">
 
-  <!-- Auth Modal (Tabbed Login & Register) -->
+      <!-- Slide 1 -->
+      <div class="carousel-item active">
+        <section class="hero" style="background-image:url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80');">
+          <div class="hero-content">
+            <h1>Enjoy The Most <span>Delicious Coffee</span></h1>
+            <p>Start your day with coffee, enhancing productivity and mood. Its invigorating aroma sets a focused tone for tackling tasks with energy and positivity.</p>
+            <button class="btn btn-explore">Explore</button>
+            <button class="btn btn-order">Order Coffee</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="carousel-item">
+        <section class="hero" style="background-image:url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1600&q=80');">
+          <div class="hero-content">
+            <h1>Freshly Roasted <span>Coffee Beans</span></h1>
+            <p>We carefully roast our beans to perfection, ensuring the bold flavors and rich aromas stay in every cup you drink.</p>
+            <button class="btn btn-explore">Explore</button>
+            <button class="btn btn-order">Order Now</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="carousel-item">
+        <section class="hero" style="background-image:url('https://images.unsplash.com/photo-1554797589-7241bb691973?auto=format&fit=crop&w=1600&q=80');">
+          <div class="hero-content">
+            <h1>Relax in Our <span>Cozy Café</span></h1>
+            <p>Enjoy your favorite drinks in a warm and welcoming atmosphere, perfect for chilling with friends or working productively.</p>
+            <button class="btn btn-explore">Explore</button>
+            <button class="btn btn-order">Visit Us</button>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
   <div class="modal fade" id="authModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
