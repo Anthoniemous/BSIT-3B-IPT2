@@ -7,7 +7,10 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
 
-Route::get('/', [Controller::class, 'showLogin']);
+// Home page (store front)
+Route::get('/', function () {
+    return view('welcome'); // imong store design
+})->name('home');
 
 
 Route::get('/login', [Controller::class, 'showLogin'])->name('login');

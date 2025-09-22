@@ -17,11 +17,13 @@ class Controller extends BaseController
     use \Illuminate\Foundation\Bus\DispatchesJobs;
     use \Illuminate\Foundation\Validation\ValidatesRequests;
 
+    // Show login page
     public function showLogin()
     {
         return view('login');
     }
 
+    // Handle login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -32,23 +34,27 @@ class Controller extends BaseController
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            // Check if verified email
             if (! Auth::user()->hasVerifiedEmail()) {
                 return redirect()->route('verification.notice');
             }
 
-            return redirect()->intended('/dashboard');
+            // ✅ Redirect to dashboard
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
-        ]);
+        ])->onlyInput('email');
     }
 
+    // Show register page
     public function showRegister()
     {
         return view('register');
     }
 
+    // Handle registration
     public function register(Request $request)
     {
         $request->validate([
@@ -65,22 +71,27 @@ class Controller extends BaseController
 
         event(new Registered($user));
 
-        return redirect('/login')->with('success', 'Registration successful. Please check your email to verify your account.');
+        return redirect()->route('login')->with('success', 'Registration successful. Please check your email to verify your account.');
     }
 
+    // Handle logout
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+
+        // After logout → back to homepage
+        return redirect()->route('home')->with('success', 'You have been logged out.');
     }
 
+    // Show forgot password page
     public function showForgotPassword()
     {
         return view('forgotpassword');
     }
 
+    // Handle reset link request
     public function sendResetLink(Request $request)
     {
         $request->validate([
@@ -90,6 +101,7 @@ class Controller extends BaseController
         return back()->with('success', 'If your email exists, a password reset link has been sent.');
     }
 
+    // Google login redirect
     public function redirectToGoogle()
     {
         return Socialite::driver('google')
@@ -97,6 +109,7 @@ class Controller extends BaseController
             ->redirect();
     }
 
+    // Google login callback
     public function handleGoogleCallback()
     {
         try {
@@ -113,7 +126,8 @@ class Controller extends BaseController
 
             Auth::login($user);
 
-            return redirect('/dashboard');
+            // ✅ Redirect to dashboard after Google login
+            return redirect()->route('dashboard');
 
         } catch (\Exception $e) {
             dd($e->getMessage(), $e->getCode(), $e->getTraceAsString());
