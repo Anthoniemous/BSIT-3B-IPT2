@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\User;  
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth; // typo fixed: Illuminte → Illuminate
+use Illuminate\Support\Facades\Auth; // fixed typo
 use Exception;
 
 class SocialiteController extends Controller
@@ -20,7 +20,8 @@ class SocialiteController extends Controller
 
         try{
 
-            $googleUser = Socialite::driver('google')->user();
+           $googleUser = Socialite::driver('google')->stateless()->user();
+
 
             $user = User::where('google_id', $googleUser->id)->first();
 
