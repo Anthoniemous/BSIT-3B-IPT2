@@ -3,162 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feane FoodStore</title>
+  <title>NBA Fan Store</title>
   <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 </head>
 <body>
 
-  <header>
-    <div class="logo">Feane</div>
-     <section class="hero text-center">
-    <h1>Welcome to Feane FoodStore</h1>
-    <p>Discover the best food collections made fresh for you!</p>
-    <a href="#menu" class="btn btn-primary">Explore Menu</a>
-  </section>
-    <div class="user-option">
-      @guest
-        <!-- If user is NOT logged in -->
-        <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-        <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Sign Up</a>
-      @else
-        <!-- If user IS logged in -->
-        <a href="{{ route('dashboard') }}">
-          <i class="fa fa-user" aria-hidden="true"></i> {{ Auth::user()->name }}
-        </a>
+<header>
+  <div class="logo">NBA Fan Store</div>
+  <nav>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Merch</a></li>
+      <li><a href="#">Teams</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
 
-        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-          @csrf
-          <button type="submit" class="logout-btn">Logout</button>
-        </form>
-      @endguest
-    </div>
+  <div class="user-option">
+    <button class="btn" id="openLogin">Login</button>
+    <button class="btn" id="openRegister">Sign Up</button>
+  </div>
+</header>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeLogin">&times;</span>
+    <h2>Login</h2>
     
-  </header>
+    <form method="POST" action="{{ url('/login') }}">
+        @csrf
+        <label>Email:</label>
+        <input type="email" name="email" required>
+        
+        <label>Password:</label>
+        <input type="password" name="password" required>
+        
+        <button type="submit">Login</button>
+    </form>
 
+    <a href="{{ route('google.login') }}" class="btn google-login">
+        <i class="fa fa-google"></i> Login with Google
+    </a>
 
-  <div id="menu" class="content">
-  <h2>Our Menu</h2>
-  <div class="menu-grid">
-    <div class="menu-item">
-      <img src="{{ asset('/css/img/image0.png') }}" alt="Burger">
-      <h3>Cheesy Burger</h3>
-      <p>Juicy beef patty with melted cheese and fresh veggies.</p>
-      <span class="price">₱120</span>
+    <p>Don't have an account? <a href="#" id="switchToRegister">Register here</a></p>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeRegister">&times;</span>
+    <h2>Register</h2>
+    <form method="POST" action="{{ url('/register') }}">
+        @csrf
+        <label>Name:</label>
+        <input type="text" name="name" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Password:</label>
+        <input type="password" name="password" required>
+
+        <label>Confirm Password:</label>
+        <input type="password" name="password_confirmation" required>
+
+        <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="#" id="switchToLogin">Login here</a></p>
+  </div>
+</div>
+
+<section class="hero">
+  <h1>Welcome to NBA Fan Store</h1>
+  <p>Get your favorite NBA merch and gear!</p>
+</section>
+
+<div class="content">
+  <h2>Featured Merch</h2>
+  <div class="product-cards">
+    <div class="product-card">
+      <img src="{{ asset('css/img/jordan.png') }}" alt="Jordan Shoes">
+      <h3>Jordan Shoes</h3>
+      <p>$250.00</p>
+      <button>Add to Cart</button>
     </div>
-    <div class="menu-item">
-      <img src="{{ asset('/css/img/image1.png') }}" alt="Pizza">
-      <h3>Italian Pizza</h3>
-      <p>Thin crust pizza topped with mozzarella & pepperoni.</p>
-      <span class="price">₱350</span>
+    <div class="product-card">
+      <img src="{{ asset('css/img/jersey.png') }}" alt="Lakers Jersey">
+      <h3>Lakers Jersey</h3>
+      <p>$120.00</p>
+      <button>Add to Cart</button>
     </div>
-    <div class="menu-item">
-      <img src="{{ asset('/css/img/image2.png') }}" alt="Fries">
-      <h3>Crispy Fries</h3>
-      <p>Golden crispy fries served with ketchup & mayo.</p>
-      <span class="price">₱80</span>
-    </div>
-    <div class="menu-item">
-      <img src="{{ asset('/css/img/image.png') }}" alt="Hotdog">
-      <h3>Grilled Hotdog</h3>
-      <p>Smoky grilled hotdog served with mustard & relish.</p>
-      <span class="price">₱100</span>
+    <div class="product-card">
+      <img src="{{ asset('css/img/cap.png') }}" alt="Brooklyn Cap">
+      <h3>Brooklyn Cap</h3>
+      <p>$45.00</p>
+      <button>Add to Cart</button>
     </div>
   </div>
 </div>
 
-  <!-- LOGIN MODAL -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content p-3">
-        <div class="modal-header">
-          <h5 class="modal-title">Log In</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-          @endif
+<script>
+  const loginModal = document.getElementById("loginModal");
+  const registerModal = document.getElementById("registerModal");
+  const openLogin = document.getElementById("openLogin");
+  const openRegister = document.getElementById("openRegister");
+  const closeLogin = document.getElementById("closeLogin");
+  const closeRegister = document.getElementById("closeRegister");
+  const switchToRegister = document.getElementById("switchToRegister");
+  const switchToLogin = document.getElementById("switchToLogin");
 
-          @if($errors->any())
-            <div class="alert alert-danger">
-              @foreach($errors->all() as $error)
-                <p>{{ $error }}</p>
-              @endforeach
-            </div>
-          @endif
+  openLogin.onclick = () => loginModal.style.display = "flex";
+  openRegister.onclick = () => registerModal.style.display = "flex";
+  closeLogin.onclick = () => loginModal.style.display = "none";
+  closeRegister.onclick = () => registerModal.style.display = "none";
 
-          <form method="POST" action="{{ url('/login') }}">
-            @csrf
-            <div class="mb-3">
-              <label>Email:</label>
-              <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-            </div>
-            <div class="mb-3">
-              <label>Password:</label>
-              <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-          </form>
+  switchToRegister.onclick = (e) => {
+    e.preventDefault();
+    loginModal.style.display = "none";
+    registerModal.style.display = "flex";
+  };
+  switchToLogin.onclick = (e) => {
+    e.preventDefault();
+    registerModal.style.display = "none";
+    loginModal.style.display = "flex";
+  };
 
-          <a href="{{ route('google.login') }}" class="btn btn-danger w-100 mt-2">Login with Google</a>
+  window.onclick = (event) => {
+    if (event.target === loginModal) loginModal.style.display = "none";
+    if (event.target === registerModal) registerModal.style.display = "none";
+  };
+</script>
 
-          <div class="mt-3 text-center">
-            <p>Forgot your password? <a href="{{ url('/forgotpassword') }}">Click here</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- REGISTER MODAL -->
-  <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content p-3">
-        <div class="modal-header">
-          <h5 class="modal-title">REGISTER NA GWAPO</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          @if($errors->any())
-            <div class="alert alert-danger">
-              @foreach($errors->all() as $error)
-                <p>{{ $error }}</p>
-              @endforeach
-            </div>
-          @endif
-
-          <form method="POST" action="{{ url('/register') }}">
-            @csrf
-            <div class="mb-3">
-              <label>Name:</label>
-              <input type="text" name="name" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label>Email:</label>
-              <input type="email" name="email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label>Password:</label>
-              <input type="password" name="password" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label>Confirm Password:</label>
-              <input type="password" name="password_confirmation" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-success w-100">Register</button>
-          </form>
-
-          <div class="mt-3 text-center">
-            <p>Already have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login here</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

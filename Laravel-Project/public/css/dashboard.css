@@ -1,244 +1,207 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
+/* General */
 body {
-  height: 100vh;
-  width: 100%;
-  background: url("../css/img/hero-bg.jpg") no-repeat center center fixed;
-  background-size: cover;
-  display: flex;  
-  flex-direction: column;
-  color: #fff;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f1f1f1;
 }
 
+/* Header */
 header {
-  width: 100%;
-  padding: 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1d428a; /* NBA Blue */
+    padding: 15px 30px;
+    color: #fff;
 }
 
-/* Feane Logo (Left) */
-.logo {
-  font-family: 'Dancing Script', cursive;
-  font-weight: bold;
-  font-size: 32px;
-  color: #ffffff;
-  cursor: default;
-  transition: transform 0.3s, color 0.3s;
-}
-
-.logo:hover {
-  transform: scale(1.05);
-  color: #fbb034;
-}
-
-header nav {
-  flex: 1;
-  display: flex;
-  justify-content: center;
+header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ff4c00; /* NBA Orange */
 }
 
 header nav ul {
-  list-style: none;
-  display: flex;
-  gap: 40px;
+    list-style: none;
+    display: flex;
+    gap: 25px;
 }
 
 header nav ul li a {
-  text-decoration: none;
-  font-size: 18px;
-  font-weight: 500;
-  color: #fff;
-  transition: 0.3s;
-}
-
-header nav ul li a:hover {
-  color: #fbb034;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
 }
 
 .user-option {
-  display: flex;
-  gap: 20px;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.user-option a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: 0.3s;
+.user-option .btn, .user-option .logout-btn {
+    background-color: #ff4c00;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
 }
 
-.user-option a:hover {
-  color: #fbb034;
+.user-option .btn:hover, .user-option .logout-btn:hover {
+    background-color: #e63900;
 }
 
-.logout-btn {
-  background: transparent;
-  border: 2px solid #fbb034;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.logout-btn:hover {
-  background: #fbb034;
-  color: #000;
-}
-
-/* Hero Section */
+/* Hero section */
 .hero {
-  margin-top: 80px;
-  padding-left: 60px;
-  text-align: left;
+    text-align: center;
+    padding: 80px 20px;
+    background: linear-gradient(to right, #1d428a, #ff4c00);
+    color: white;
 }
 
-/* Welcome Text - Match Logo Style */
 .hero h1 {
-  margin-left: 20px;
-  font-family: 'Dancing Script', cursive;
-  font-weight: bold;
-  font-size: 32px;
-  color: #ffffff;
-  cursor: default;
-  transition: transform 0.3s, color 0.3s;
+    font-size: 3rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 5px black;
 }
 
-.hero h1:hover {
-  transform: scale(1.05);
-  color: #fbb034;
+.hero p {
+    font-size: 1.2rem;
 }
 
-/* Content Section */
+/* Content */
 .content {
-  margin-top: 40px;
-  padding-left: 60px;
-  max-width: 600px;
+    padding: 50px 30px;
+    text-align: center;
 }
 
 .content h2 {
-  font-size: 28px;
-  margin-bottom: 15px;
-  color: #fbb034;
+    font-size: 2rem;
+    color: #1d428a;
+    margin-bottom: 30px;
 }
 
-.content p {
-  
-  font-size: 16px;
-  line-height: 1.6;
-  margin-bottom: 20px;
-  color: #f1f1f1;
+/* Product cards */
+.product-cards {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
 }
 
-.btn {
-  display: inline-block;
-  background: #fbb034;
-  padding: 10px 20px;
-  border-radius: 25px;
-  color: #000;
-  font-weight: 600;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.btn:hover {
-  background: #fff;
-  color: #fbb034;
-}
-
-/* Menu Grid Layout */
-.menu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-/* Menu Item Style */
-.menu-item {
+.product-card {
     background: #fff;
     border-radius: 15px;
-    padding: 15px;
+    padding: 20px;
+    width: 200px;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
 }
 
-.menu-item:hover {
+.product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-/* Menu Item Image (circle effect) */
-.menu-item img {
-    width: 120px;         /* adjust size gamay */
-    height: 120px;
-    object-fit: cover;    /* para dili ma-distort */
-    border-radius: 50%;   /* para lingin jud */
-    margin-bottom: 12px;
-    border: 3px solid #fbb034; /* optional border */
+.product-card img {
+    width: 100px;
+    margin-bottom: 15px;
 }
 
-/* Text styles */
-.menu-item h3 {
-    font-size: 18px;
+.product-card h3 {
+    color: #ff4c00;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.product-card p {
+    color: #1d428a;
+    margin-bottom: 10px;
+}
+
+.product-card button {
+    background-color: #1d428a;
+    border: none;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    cursor: pointer;
     font-weight: 600;
-    margin: 10px 0 5px;
-    color: #333;
 }
 
-.menu-item p {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
+.product-card button:hover {
+    background-color: #ff4c00;
 }
 
-.menu-item .price {
-    font-weight: bold;
-    color: #fbb034;
-    font-size: 16px;
+/* Modal background */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
 }
 
-.user-option a {
-  margin-left: 15px;
-  padding: 8px 16px;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: 0.3s ease;
+/* Modal box */
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 350px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-/* Login Button Style */
-.user-option a:first-child {
-  background-color: transparent;
-  border: 2px solid #fbb034;   /* orange border */
-  color: #fbb034;
+.close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 22px;
+  cursor: pointer;
 }
 
-.user-option a:first-child:hover {
-  background-color: #fbb034;
-  color: #fff;
+.modal-content h2 {
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-/* Sign Up Button Style */
-.user-option a:nth-child(2) {
-  background-color: #fbb034;   /* orange background */
-  color: #fff;
-  border: 2px solid #fbb034;
+.modal-content form {
+  display: flex;
+  flex-direction: column;
 }
 
-.user-option a:nth-child(2):hover {
-  background-color: #e89b20;
-  border-color: #e89b20;
+.modal-content input {
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.modal-content button {
+  background: #1d428a;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #ff4c00;
+}
+
+.google-login {
+    background-color: #db4437;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    border-radius: 6px;
+}
+
+.google-login:hover {
+    background-color: #c1351d;
 }
