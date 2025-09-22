@@ -32,19 +32,6 @@
     <circle cx="42" cy="45" r="2" fill="#FFFFFF" opacity="0.6"/>
   </g>
   
-  <!-- Text -->
-  <g transform="translate(100, 35)">
-    <!-- "Shopping" text -->
-    <text x="0" y="20" font-family="Arial, sans-serif" font-size="24" font-weight="600" fill="#FFFFFF">
-      Shopping
-    </text>
-    
-    <!-- "Cartkada" text -->
-    <text x="0" y="50" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">
-      Cartkada
-    </text>
-  </g>
-  
   <!-- Decorative elements -->
   <circle cx="350" cy="30" r="3" fill="#F59E0B" opacity="0.7"/>
   <circle cx="360" cy="40" r="2" fill="#EF4444" opacity="0.7"/>

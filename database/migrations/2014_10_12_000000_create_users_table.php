@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable(); // nullable for social login
+            $table->string('google_id')->unique()->nullable(); // ✅ ensure uniqueness
             $table->rememberToken();
             $table->timestamps();
         });
