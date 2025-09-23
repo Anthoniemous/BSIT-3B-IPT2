@@ -1,0 +1,141 @@
+/* Basic reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html,body { height: 100%; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color: #0f1724; background: #f8fafc; }
+
+/* container */
+.container { width: 92%; max-width: 1150px; margin: 0 auto; }
+
+/* Header */
+.site-header { background: #0b1220; color: #fff; }
+.site-header .container { display:flex; align-items:center; justify-content:space-between; padding: 18px 0; }
+.brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; }
+.logo { width:42px; height:42px; object-fit:contain; }
+.brand-name { font-weight:700; letter-spacing:1px; font-size:1.05rem; }
+.nav { display:flex; gap:18px; align-items:center; }
+.nav-link { color: rgba(255,255,255,0.85); text-decoration:none; font-weight:500; padding:6px 8px; }
+.nav-link:hover { opacity:.9; transform: translateY(-1px); }
+.cta { background: #f97316; color:#fff; padding:8px 12px; border-radius:8px; font-weight:600; }
+
+/* Hero */
+.hero { padding:48px 0; }
+.hero-grid { display:grid; grid-template-columns: 1fr 420px; gap:40px; align-items:center; }
+.hero-left h1 { font-size:2.4rem; line-height:1.05; color:#07102a; margin-bottom:14px; }
+.hero-left p { color:#334155; margin-bottom:20px; font-size:1.05rem; }
+.hero-actions { display:flex; gap:12px; }
+.btn { display:inline-block; text-decoration:none; padding:12px 18px; border-radius:10px; font-weight:700; }
+.btn-primary { background:#0ea5a4; color:#fff; }
+.btn-outline { border:2px solid #0ea5a4; color:#0b1220; background:transparent; }
+
+/* product card in hero */
+.product-card { background:#fff; border-radius:14px; box-shadow: 0 8px 24px rgba(9,30,66,.06); padding:14px; text-align:center; }
+.product-card.featured img { width:100%; height:260px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
+.product-info h3 { margin-bottom:6px; font-size:1.05rem; }
+.price { color:#0ea5a4; font-weight:700; }
+
+/* Products grid */
+.products { padding:36px 0; }
+.section-title { font-size:1.3rem; color:#07102a; margin-bottom:18px; }
+.grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:18px; }
+.product-card img { width:100%; height:160px; object-fit:cover; border-radius:8px; }
+.product-card h4 { margin-top:10px; font-size:0.98rem; }
+.product-card .price { margin-top:6px; color:#ef4444; font-weight:700; }
+
+/* Footer */
+.site-footer { background:#041222; color:#cfe7f5; padding:30px 0 18px; margin-top:30px; }
+.footer-grid { display:flex; gap:30px; justify-content:space-between; align-items:flex-start; }
+.site-footer h3, .site-footer h4 { color:#fff; margin-bottom:6px; }
+.site-footer p { color:rgba(255,255,255,.8); font-size:.95rem; }
+.copyright { text-align:center; color:rgba(255,255,255,.65); padding:12px 0; font-size:.9rem; }
+
+/* Responsive */
+@media (max-width:920px) {
+  .hero-grid{ grid-template-columns:1fr; }
+  .nav { display:none; }
+  .footer-grid { flex-direction:column; gap:16px; }
+}
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 9999; 
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: 600;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.modal-content .btn {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.close {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+}
+
+.close:hover {
+  color: #ff4444;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Google login button */
+.btn-google {
+  display: flex;
+  align-items: center;   /* centers icon + text vertically */
+  justify-content: center; /* centers them horizontally */
+  gap: 10px;             /* space between icon and text */
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #444;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  width: 100%;           /* make button full width like Login button */
+  text-align: center;
+}
+.btn-google img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;   /* para di ma-stretch */
+}
+.btn-google:hover {
+  background: #f5f5f5;
+  border-color: #bbb;
+}
