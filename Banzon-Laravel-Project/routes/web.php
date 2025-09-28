@@ -7,8 +7,10 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\GoogleAuthController;
 
-// Default landing → login page
-Route::get('/', [Controller::class, 'showLogin']);
+// Default landing → welcome page
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
 
 // Login routes
 Route::get('/login', [Controller::class, 'showLogin'])->name('login');

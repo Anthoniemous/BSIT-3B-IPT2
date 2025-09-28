@@ -35,8 +35,7 @@
             <div class="google-login">
                 <p>Or login with:</p>
                 <a href="{{ route('google-auth')}}">
-                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
-                    Sign in with Google
+                    <P>-> Sign in with Google </P>
                 </a>
             </div>
         </form>

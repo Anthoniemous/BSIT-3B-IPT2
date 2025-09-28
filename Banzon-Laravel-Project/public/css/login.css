@@ -5,6 +5,7 @@
 }   
 
 body{
+    background-image: url("../img/carousel-1.jpg");
     background-color: #4bb6b7;
     background-repeat: no-repeat;
     background-size: cover;

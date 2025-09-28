@@ -1,6 +1,5 @@
 <x-app-layout>
     <!-- Test update -->
-
     <head>
         <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
         <script src="{{ asset('js/main.js') }}" defer></script>
