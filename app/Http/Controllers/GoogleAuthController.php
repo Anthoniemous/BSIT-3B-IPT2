@@ -9,12 +9,12 @@ use App\Models\User; // make sure you import your User model
 
 class GoogleAuthController extends Controller
 {
-    public function redirect()
+    public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function callbackGoogle()
+    public function handleGoogleCallback()
     {
         try {
             $google_user = Socialite::driver('google')->user();

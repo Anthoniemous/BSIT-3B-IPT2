@@ -12,10 +12,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="antialiased bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 min-h-screen flex items-center justify-center font-[Poppins]">
+<body class="antialiased bg-gradient-to-r from-purple-600 via-pink-500 to-purple-400 min-h-screen flex items-center justify-center font-[Poppins]">
 
     <div class="bg-white dark:bg-gray-900 shadow-2xl rounded-2xl w-full max-w-md p-8">
-        
+
         <!-- Logo -->
         <div class="text-center mb-6">
         <h1 class="text-3xl font-extrabold text-gray-800 dark:text-white">🛒</h1>
@@ -27,13 +27,13 @@
             @csrf
             <div class="mb-4">
                 <label class="block text-sm text-gray-600 dark:text-gray-300">Email</label>
-                <input type="email" name="email" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 dark:bg-gray-700 dark:text-white">
+                <input type="email" name="email" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-purple-400 dark:bg-gray-700 dark:text-white">
             </div>
             <div class="mb-4">
                 <label class="block text-sm text-gray-600 dark:text-gray-300">Password</label>
-                <input type="password" name="password" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-pink-400 dark:bg-gray-700 dark:text-white">
+                <input type="password" name="password" required class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-purple-400 dark:bg-gray-700 dark:text-white">
             </div>
-            <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-lg font-semibold transition">Login</button>
+            <button type="submit" class="w-full bg-purple-600 hover:bg-pink-600 text-white py-2 px-4 rounded-lg font-semibold transition">Login</button>
         </form>
 
         <!-- Divider -->
@@ -45,7 +45,7 @@
 
         <!-- Google Login Button -->
         @if(Route::has('google-auth'))
-        <a href="{{ route('google-auth') }}" 
+        <a href="{{ route('google-auth') }}"
            class="flex items-center justify-center gap-3 w-full bg-white border border-gray-300 text-gray-700 rounded-lg py-2 px-4 hover:bg-gray-50 transition duration-200 shadow-sm">
             <!-- Google Icon SVG -->
             <svg class="w-5 h-5" viewBox="0 0 24 24">
