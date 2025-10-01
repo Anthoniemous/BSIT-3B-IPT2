@@ -2,8 +2,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    background-color: #f7f9fc;
-    color: #333;
+    background-color: #f7f5f0; /* light coffee background */
+    color: #3e2723; /* dark coffee brown */
 }
 
 /* Header */
@@ -11,17 +11,26 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #1d428a;
+    background-color: #6f4e37; /* espresso brown */
     padding: 20px 40px;
     color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 header .logo {
-    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 2rem;
     font-weight: bold;
-    color: #ff4c00;
+    color: #c0a581; /* latte accent */
     letter-spacing: 1px;
+}
+
+header .logo img {
+    width: 50px;   /* pwede nimo adjust */
+    height: auto;
+    border-radius: 8px; /* kung gusto nimo smooth edges */
 }
 
 header nav ul {
@@ -34,13 +43,13 @@ header nav ul {
 
 header nav ul li a {
     text-decoration: none;
-    color: #fff;
+    color: #fff3e0; /* light cream */
     font-weight: 600;
     transition: color 0.3s;
 }
 
 header nav ul li a:hover {
-    color: #ffcc00;
+    color: #c0a581; /* latte hover */
 }
 
 .user-option {
@@ -49,9 +58,9 @@ header nav ul li a:hover {
 }
 
 .user-option .btn, .user-option .logout-btn {
-    background-color: #ff4c00;
+    background-color: #c0a581;
     border: none;
-    color: white;
+    color: #3e2723;
     padding: 10px 18px;
     border-radius: 8px;
     cursor: pointer;
@@ -61,7 +70,8 @@ header nav ul li a:hover {
 
 .user-option .btn:hover,
 .user-option .logout-btn:hover {
-    background-color: #e63900;
+    background-color: #8d6e63; /* mocha */
+    color: #fff;
     transform: scale(1.05);
 }
 
@@ -69,7 +79,7 @@ header nav ul li a:hover {
 .hero {
     text-align: center;
     padding: 100px 20px;
-    background: linear-gradient(to right, #1d428a, #ff4c00);
+    background: linear-gradient(to right, #6f4e37, #c0a581); /* coffee gradient */
     color: white;
 }
 
@@ -88,13 +98,12 @@ header nav ul li a:hover {
 .content {
     padding: 60px 30px;
     text-align: center;
-    background: linear-gradient(to right, #1d428a, #ff4c00);
-    color: white;
+    background: linear-gradient(to right, #c0a581, #6f4e37); /* latte to espresso */
+    color: #fff;
 }
 
 .content h2 {
     font-size: 2.2rem;
-    color: #fff;
     margin-bottom: 40px;
 }
 
@@ -107,18 +116,18 @@ header nav ul li a:hover {
 }
 
 .product-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: #fffaf3; /* cream */
     border-radius: 20px;
     padding: 25px;
     width: 220px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 .product-card img {
@@ -129,19 +138,19 @@ header nav ul li a:hover {
 }
 
 .product-card h3 {
-    color: #ff4c00;
+    color: #6f4e37; /* espresso brown */
     font-size: 1.3rem;
     margin-bottom: 8px;
 }
 
 .product-card p {
-    color: #1d428a;
+    color: #c0a581; /* latte */
     font-weight: 600;
     margin-bottom: 12px;
 }
 
 .product-card button {
-    background-color: #1d428a;
+    background-color: #6f4e37;
     border: none;
     color: white;
     padding: 10px 22px;
@@ -152,13 +161,14 @@ header nav ul li a:hover {
 }
 
 .product-card button:hover {
-    background-color: #ff4c00;
+    background-color: #c0a581;
+    color: #3e2723;
     transform: scale(1.05);
 }
 
 /* Modal background */
 .modal {
-    display: none;
+    display: none; /* ✅ fixed: dili na auto show */
     position: fixed;
     z-index: 999;
     left: 0;
@@ -168,47 +178,79 @@ header nav ul li a:hover {
     background: rgba(0, 0, 0, 0.6);
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 /* Modal box */
 .modal-content {
-    background: #fff;
-    padding: 35px;
+    background: #fffaf3;
+    padding: 35px 30px;
     border-radius: 12px;
     width: 380px;
-    position: relative;
+    max-width: 95%;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 .close {
     position: absolute;
     top: 12px;
     right: 18px;
-    font-size: 22px;
+    font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
+    color: #6f4e37;
+    background: #fff;
+    border: 2px solid #6f4e37;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease;
+}
+
+.close:hover {
+    background: #6f4e37;
+    color: #fff;
+    transform: scale(1.1);
 }
 
 .modal-content h2 {
     margin-bottom: 18px;
     text-align: center;
-    color: #1d428a;
+    color: #6f4e37;
 }
 
 .modal-content form {
     display: flex;
     flex-direction: column;
+    width: 100%;
+}
+
+.modal-content label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #3e2723;
+    text-align: left;
 }
 
 .modal-content input {
     margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    border: 1px solid #c0a581;
     border-radius: 8px;
     font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .modal-content button {
-    background: #1d428a;
+    background: #6f4e37;
     color: white;
     border: none;
     padding: 12px;
@@ -216,14 +258,16 @@ header nav ul li a:hover {
     font-weight: 600;
     cursor: pointer;
     transition: background 0.3s;
+    margin-top: 5px;
 }
 
 .modal-content button:hover {
-    background-color: #ff4c00;
+    background-color: #c0a581;
+    color: #3e2723;
 }
 
 .google-login {
-    background-color: #db4437;
+    background-color: #8d6e63;
     color: white;
     text-align: center;
     display: block;
@@ -231,8 +275,9 @@ header nav ul li a:hover {
     padding: 10px;
     font-weight: 600;
     text-decoration: none;
+    margin-top: 10px;
 }
 
 .google-login:hover {
-    background-color: #c1351d;
+    background-color: #6f4e37;
 }

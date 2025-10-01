@@ -11,7 +11,10 @@
 <body>
 
 <header>
-  <div class="logo">NBA Fan Store</div>
+  <div class="logo">
+    <img src="{{ asset('css/img/image.png') }}" alt="NBA Logo">
+    <span>NBA Fan Store</span>
+  </div>
   <nav>
     <ul>
       <li><a href="#">Home</a></li>
