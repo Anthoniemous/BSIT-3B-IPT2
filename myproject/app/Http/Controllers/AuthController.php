@@ -55,14 +55,12 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         // ✅ Hardcoded admin credentials
-        if ($credentials['email'] === 'admin@empowerpath.com' && $credentials['password'] === 'admin123') {
-            // Store admin role in session
-            $request->session()->put('role', 'admin');
-            $request->session()->regenerate();
+     if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
+    $request->session()->put('role', 'admin');
+    $request->session()->regenerate();
 
-            return redirect('/admin/dashboard')->with('success', 'Welcome back, Admin!');
-        }
-
+    return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Admin!');
+}
         // ✅ Existing customer login (from database)
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();

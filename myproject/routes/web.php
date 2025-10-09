@@ -5,9 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\GoogleAuthController;
-use Laravel\Socialite\Facades\Socialite;
-use App\Http\Controllers\ProductController; // ✅ Added for admin coffee products CRUD
-
+use App\Http\Controllers\ProductController;
 
 // Homepage → Login view
 Route::get('/', function () {
@@ -40,30 +38,23 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Dashboard (protected route)
+// Dashboard (protected route for customer)
 Route::get('/dashboard', [AuthController::class, 'dashboard'])
     ->middleware('auth')
     ->name('dashboard');
 
-// ✅ Google Login (keep existing)
+// Google Login
 Route::get('auth/google', [GoogleAuthController::class,'redirect'])->name('google-auth');
 Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
+// Admin Dashboard (use ProductController to load products)
+Route::get('/admin/dashboard', [ProductController::class, 'index'])->name('admin.dashboard');
 
-// ✅ ADD: Admin Dashboard (for hardcoded admin)
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-
-
-// ✅ ADD: Admin Coffee Products CRUD Routes
+// Admin Products CRUD
 Route::prefix('admin')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-    Route::resource('products', ProductController::class);
-
 });
