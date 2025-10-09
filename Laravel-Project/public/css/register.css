@@ -1,0 +1,92 @@
+/* Body styling */
+body {
+    background-color: #f0f4f8;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container for the form */
+.register-container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Form title */
+.register-container h2 {
+    margin-bottom: 25px;
+    color: #333333;
+}
+
+/* Input fields */
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"] {
+    width: 95%;
+    padding: 12px 10px;
+    margin: 8px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Labels */
+.register-container label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555555;
+}
+
+/* Submit button */
+.register-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.register-container button:hover {
+    background-color: #2563eb;
+}
+
+/* Error messages */
+.error-msg {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Login link */
+.register-container .login-link {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555555;
+}
+
+.register-container .login-link a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.register-container .login-link a:hover {
+    text-decoration: underline;
+}

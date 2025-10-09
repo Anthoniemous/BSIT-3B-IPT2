@@ -17,68 +17,26 @@
   </div>
   <nav>
     <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Merch</a></li>
+      <li><a href="{{ url('/') }}">Home</a></li>
+      <li><a href="{{ url('/merch') }}">Merch</a></li>
       <li><a href="#">Teams</a></li>
       <li><a href="#">About</a></li>
     </ul>
   </nav>
 
   <div class="user-option">
-    <button class="btn" id="openLogin">Login</button>
-    <button class="btn" id="openRegister">Sign Up</button>
+    @auth
+      <a href="{{ route('dashboard') }}" class="btn">Dashboard</a>
+      <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+        @csrf
+        <button type="submit" class="btn">Logout</button>
+      </form>
+    @else
+      <a href="{{ route('login') }}" class="btn">Login</a>
+      <a href="{{ route('register') }}" class="btn">Sign Up</a>
+    @endauth
   </div>
 </header>
-
-<!-- Login Modal -->
-<div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeLogin">&times;</span>
-    <h2>Login</h2>
-    
-    <form method="POST" action="{{ url('/login') }}">
-        @csrf
-        <label>Email:</label>
-        <input type="email" name="email" required>
-        
-        <label>Password:</label>
-        <input type="password" name="password" required>
-        
-        <button type="submit">Login</button>
-    </form>
-
-    <a href="{{ route('google.login') }}" class="btn google-login">
-        <i class="fa fa-google"></i> Login with Google
-    </a>
-
-    <p>Don't have an account? <a href="#" id="switchToRegister">Register here</a></p>
-  </div>
-</div>
-
-<!-- Register Modal -->
-<div id="registerModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeRegister">&times;</span>
-    <h2>Register</h2>
-    <form method="POST" action="{{ url('/register') }}">
-        @csrf
-        <label>Name:</label>
-        <input type="text" name="name" required>
-
-        <label>Email:</label>
-        <input type="email" name="email" required>
-
-        <label>Password:</label>
-        <input type="password" name="password" required>
-
-        <label>Confirm Password:</label>
-        <input type="password" name="password_confirmation" required>
-
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="#" id="switchToLogin">Login here</a></p>
-  </div>
-</div>
 
 <section class="hero">
   <h1>Welcome to NBA Fan Store</h1>
@@ -87,59 +45,21 @@
 
 <div class="content">
   <h2>Featured Merch</h2>
+  <h2>Available Products</h3>
   <div class="product-cards">
-    <div class="product-card">
-      <img src="{{ asset('css/img/jordan.png') }}" alt="Jordan Shoes">
-      <h3>Jordan Shoes</h3>
-      <p>$250.00</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product-card">
-      <img src="{{ asset('css/img/jersey.png') }}" alt="Lakers Jersey">
-      <h3>Lakers Jersey</h3>
-      <p>$120.00</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product-card">
-      <img src="{{ asset('css/img/cap.png') }}" alt="Brooklyn Cap">
-      <h3>Brooklyn Cap</h3>
-      <p>$45.00</p>
-      <button>Add to Cart</button>
-    </div>
+    @foreach($products as $product)
+        <div class="product-card">
+            <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->product_name }}">
+            <h3>{{ $product->product_name }}</h3>
+            <p>${{ number_format($product->price, 2) }}</p>
+            <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
+                @csrf
+                <button type="submit">Add to Cart</button>
+            </form>
+        </div>
+    @endforeach
   </div>
 </div>
-
-<script>
-  const loginModal = document.getElementById("loginModal");
-  const registerModal = document.getElementById("registerModal");
-  const openLogin = document.getElementById("openLogin");
-  const openRegister = document.getElementById("openRegister");
-  const closeLogin = document.getElementById("closeLogin");
-  const closeRegister = document.getElementById("closeRegister");
-  const switchToRegister = document.getElementById("switchToRegister");
-  const switchToLogin = document.getElementById("switchToLogin");
-
-  openLogin.onclick = () => loginModal.style.display = "flex";
-  openRegister.onclick = () => registerModal.style.display = "flex";
-  closeLogin.onclick = () => loginModal.style.display = "none";
-  closeRegister.onclick = () => registerModal.style.display = "none";
-
-  switchToRegister.onclick = (e) => {
-    e.preventDefault();
-    loginModal.style.display = "none";
-    registerModal.style.display = "flex";
-  };
-  switchToLogin.onclick = (e) => {
-    e.preventDefault();
-    registerModal.style.display = "none";
-    loginModal.style.display = "flex";
-  };
-
-  window.onclick = (event) => {
-    if (event.target === loginModal) loginModal.style.display = "none";
-    if (event.target === registerModal) registerModal.style.display = "none";
-  };
-</script>
 
 </body>
 </html>

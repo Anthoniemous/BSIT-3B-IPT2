@@ -1,0 +1,135 @@
+/* General Layout */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0d1117;
+    color: #e6edf3;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #161b22;
+    border-bottom: 1px solid #30363d;
+}
+
+/* Button Styles */
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #238636;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2ea043;
+}
+
+.btn-warning {
+    background-color: #d29922;
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background-color: #f0b429;
+}
+
+.btn-danger {
+    background-color: #da3633;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #f85149;
+}
+
+/* Table Styles */
+.table-container {
+    margin: 30px auto;
+    width: 90%;
+    background-color: #161b22;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #21262d;
+    color: #fff;
+}
+
+thead th {
+    padding: 15px 10px;
+    text-align: left;
+    font-size: 15px;
+    border-bottom: 2px solid #30363d;
+}
+
+tbody tr {
+    border-bottom: 1px solid #30363d;
+}
+
+tbody tr:hover {
+    background-color: #1c2128;
+}
+
+td {
+    padding: 12px 10px;
+    vertical-align: middle;
+}
+
+/* Product Image */
+td img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 15px;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    td {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+}

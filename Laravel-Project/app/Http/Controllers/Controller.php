@@ -6,7 +6,6 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
@@ -24,55 +23,64 @@ class Controller extends BaseController
     }
 
     // Handle login
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required','email'],
-            'password' => ['required'],
-        ]);
+   public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => ['required','email'],
+        'password' => ['required'],
+    ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
 
-            // Check if verified email
-            if (! Auth::user()->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice');
-            }
-
-            // ✅ Redirect to dashboard
-            return redirect()->route('dashboard');
+        // Check if email verified
+        if (! Auth::user()->hasVerifiedEmail()) {
+            Auth::logout(); // logout user until verified
+            return redirect()->route('verification.notice')
+                ->with('error', 'Please verify your email before logging in.');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        return redirect()->route('dashboard');
     }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->onlyInput('email');
+}
+
 
     // Show register page
     public function showRegister()
     {
-        return view('register');
+          return view('register'); 
     }
 
     // Handle registration
     public function register(Request $request)
-    {
-        $request->validate([
-            'name' => ['required','string','max:255'],
-            'email' => ['required','email','unique:users'],
-            'password' => ['required','confirmed','min:8'],
-        ]);
+{
+    $request->validate([
+        'name' => ['required','string','max:255'],
+        'email' => ['required','email','unique:users'],
+        'password' => ['required','confirmed','min:8'],
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'user',
+    ]);
 
-        event(new Registered($user));
+    // Fire event to send verification email
+    event(new \Illuminate\Auth\Events\Registered($user));
 
-        return redirect()->route('login')->with('success', 'Registration successful. Please check your email to verify your account.');
-    }
+    Auth::login($user); // auto login after register
+
+    // Redirect user to email verification page
+    return redirect()->route('verification.notice')
+        ->with('success', 'Registration successful! Please verify your email before continuing.');
+}
+
 
     // Handle logout
     public function logout(Request $request)
@@ -81,24 +89,7 @@ class Controller extends BaseController
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // After logout → back to homepage
-        return redirect()->route('home')->with('success', 'You have been logged out.');
-    }
-
-    // Show forgot password page
-    public function showForgotPassword()
-    {
-        return view('forgotpassword');
-    }
-
-    // Handle reset link request
-    public function sendResetLink(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
-
-        return back()->with('success', 'If your email exists, a password reset link has been sent.');
+        return redirect()->route('welcome')->with('success', 'You have been logged out.');
     }
 
     // Google login redirect
@@ -126,7 +117,6 @@ class Controller extends BaseController
 
             Auth::login($user);
 
-            // ✅ Redirect to dashboard after Google login
             return redirect()->route('dashboard');
 
         } catch (\Exception $e) {

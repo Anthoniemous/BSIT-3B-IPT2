@@ -1,0 +1,130 @@
+/* Body styling */
+body {
+    background-color: #f0f4f8;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container for the form */
+.login-container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* consistent vertical spacing */
+}
+
+/* Form title */
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #333333;
+}
+
+/* Labels */
+.login-container label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555555;
+}
+
+/* Input fields */
+.login-container input[type="email"],
+.login-container input[type="password"] {
+    width: 95%;
+    padding: 12px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Submit button */
+.login-container button {
+        width: 50%;
+    margin-left: 95px;
+    padding: 12px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.login-container button:hover {
+    background-color: #2563eb;
+}
+
+/* Google button */
+.login-container .google-btn {
+    display: block;
+    width: 50%;
+    margin-left: 85px;
+    padding: 12px;
+    background-color: #db4437;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.login-container .google-btn:hover {
+    background-color: #c23321;
+}
+
+/* Success & error messages */
+.success-msg,
+.error-msg {
+    border-radius: 8px;
+    padding: 10px;
+    text-align: left;
+}
+
+.success-msg {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.error-msg {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Links container */
+.login-container .links {
+    font-size: 14px;
+    color: #555555;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* small spacing between links */
+    text-align: center;
+}
+
+.login-container .links a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.login-container .links a:hover {
+    text-decoration: underline;
+}
+
+/* Optional: add spacing between form elements and messages */
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
