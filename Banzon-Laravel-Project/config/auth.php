@@ -13,10 +13,10 @@ return [
     |
     */
 
-    'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
-    ],
+'defaults' => [
+    'guard' => 'customer', // use customer as the default guard
+    'passwords' => 'customers',
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -35,13 +35,24 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+'guards' => [
+
+    // 👇 Keep this for Laravel system routes like login sessions
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'customers', // You can also use 'admins' if needed
     ],
 
+    'customer' => [
+        'driver' => 'session',
+        'provider' => 'customers',
+    ],
+
+    'admin' => [
+        'driver' => 'session',
+        'provider' => 'admins',
+    ],
+],
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -59,17 +70,18 @@ return [
     |
     */
 
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+'providers' => [
+    'customers' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Customer::class,
     ],
+
+    'admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Admin::class,
+    ],
+],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -86,14 +98,21 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
+'passwords' => [
+    'customers' => [
+        'provider' => 'customers',
+        'table' => 'password_resets',
+        'expire' => 60,
+        'throttle' => 60,
     ],
+
+    'admins' => [
+        'provider' => 'admins',
+        'table' => 'password_resets',
+        'expire' => 60,
+        'throttle' => 60,
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------

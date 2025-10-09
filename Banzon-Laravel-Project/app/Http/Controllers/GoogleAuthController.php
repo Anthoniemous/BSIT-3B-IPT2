@@ -3,48 +3,54 @@
 namespace App\Http\Controllers;
 
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class GoogleAuthController extends Controller
 {
-    // 🔹 Step 1: send user to Google login
+    // 🔹 Step 1: Redirect to Google for authentication
     public function redirect()
     {
         return Socialite::driver('google')
-        ->redirectUrl(config('services.google.redirect'))
-        ->redirect();
+            ->redirectUrl(config('services.google.redirect'))
+            ->redirect();
     }
 
-    // 🔹 Step 2: handle Google callback
+    // 🔹 Step 2: Handle Google callback
     public function callbackGoogle()
     {
         try {
-            $google_user = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->user();
 
-            // Try to find by google_id OR email
-            $user = User::where('google_id', $google_user->getId())
-                        ->orWhere('email', $google_user->getEmail())
-                        ->first();
+            // Find the customer by Google ID or email
+            $customer = Customer::where('google_id', $googleUser->getId())
+                ->orWhere('email', $googleUser->getEmail())
+                ->first();
 
-            if (!$user) {
-                $user = User::create([
-                    'name'      => $google_user->getName(),
-                    'email'     => $google_user->getEmail(),
-                    'google_id' => $google_user->getId(),
-                    'password'  => bcrypt(Str::random(16)), // dummy password
+            // Create a new customer if not found
+            if (!$customer) {
+                $customer = Customer::create([
+                    'first_name' => $googleUser->user['given_name'] ?? explode(' ', $googleUser->getName())[0] ?? null,
+                    'last_name'  => $googleUser->user['family_name'] ?? (count(explode(' ', $googleUser->getName())) > 1 ? array_pop(explode(' ', $googleUser->getName())) : ''),
+                    'name'       => $googleUser->getName(), // optional
+                    'email'      => $googleUser->getEmail(),
+                    'google_id'  => $googleUser->getId(),
+                    'password'   => bcrypt(Str::random(16)), // dummy password
                 ]);
             } else {
-                if (!$user->google_id) {
-                    $user->update([
-                        'google_id' => $google_user->getId(),
+                // Update Google ID if missing
+                if (!$customer->google_id) {
+                    $customer->update([
+                        'google_id' => $googleUser->getId(),
                     ]);
                 }
             }
 
-            Auth::login($user);
+            // Login the customer using the 'customer' guard
+            Auth::guard('customer')->login($customer);
+
             return redirect()->intended('dashboard');
 
         } catch (\Throwable $th) {
