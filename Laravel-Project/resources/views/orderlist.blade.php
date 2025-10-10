@@ -58,7 +58,7 @@
 
    
     <div class="mt-4">
-        <a href="{{ route('user.dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+        <a href="{{ route('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
     </div>
 
 </div>

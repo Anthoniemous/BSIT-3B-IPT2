@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function userDashboard()
     {
         $products = Product::all();
-        return view('welcome', compact('products'));
+        return view('userdashboard', compact('products'));
     }
 
     // Show create product form

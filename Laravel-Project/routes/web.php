@@ -5,13 +5,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\OrderController;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
-
-
 
 // ====================== HOME ======================
 Route::get('/', function () {
@@ -25,6 +23,12 @@ Route::post('/login', [Controller::class, 'login'])->name('login.post');
 
 Route::get('/register', [Controller::class, 'showRegister'])->name('register');
 Route::post('/register', [Controller::class, 'register'])->name('register.post');
+
+Route::get('/forgotpassword', [\App\Http\Controllers\Auth\PasswordController::class, 'showForgotForm'])->name('password.request');
+Route::post('/forgotpassword', [\App\Http\Controllers\Auth\PasswordController::class, 'sendResetLink'])->name('password.email');
+
+Route::get('/reset-password/{token}', [PasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordController::class, 'reset'])->name('password.update');
 
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
@@ -41,7 +45,6 @@ Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
     ->name('user.dashboard');
 
 // ====================== PRODUCTS ======================
-// Admin Products
 Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::resource('admin/products', ProductController::class);
 });
@@ -49,10 +52,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 // ====================== CART ======================
 Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
-    // Updated route for Add to Cart (Route Model Binding)
-   Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-
+    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{cart}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 });
