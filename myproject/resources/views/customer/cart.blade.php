@@ -130,7 +130,7 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    @if(count($cart) > 0)
+    @if(count($cartItems) > 0)
     <form action="">
         <table>
             <thead>
@@ -144,24 +144,27 @@
             </thead>
             <tbody>
                 @php $total = 0; @endphp
-                @foreach($cart as $id => $item)
-                    @php $subtotal = $item['price'] * $item['quantity']; $total += $subtotal; @endphp
+                @foreach($cartItems as $item)
+                    @php 
+                        $subtotal = $item->product->price * $item->quantity; 
+                        $total += $subtotal; 
+                    @endphp
                     <tr>
                         <td>
-                            <img class="product-img" src="{{ $item['image'] ? asset('storage/products/'.$item['image']) : 'https://via.placeholder.com/80' }}" alt="{{ $item['name'] }}">
-                            <div>{{ $item['name'] }}</div>
+                            <img class="product-img" src="{{ $item->product->image ? asset('storage/products/'.$item->product->image) : 'https://via.placeholder.com/80' }}" alt="{{ $item->product->name }}">
+                            <div>{{ $item->product->name }}</div>
                         </td>
-                        <td>₱ {{ number_format($item['price'], 2) }}</td>
+                        <td>₱ {{ number_format($item->product->price, 2) }}</td>
                         <td>
-                            <form action="{{ route('cart.update', $id) }}" method="POST" style="display:inline-block;">
+                            <form action="{{ route('cart.update', $item->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
-                                <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1" style="width:60px;">
+                                <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" style="width:60px;">
                                 <button type="submit" class="btn-update">Update</button>
                             </form>
                         </td>
                         <td>₱ {{ number_format($subtotal, 2) }}</td>
                         <td>
-                            <form action="{{ route('cart.remove', $id) }}" method="POST" style="display:inline-block;">
+                            <form action="{{ route('cart.remove', $item->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 <button type="submit" class="btn-remove">Remove</button>
                             </form>

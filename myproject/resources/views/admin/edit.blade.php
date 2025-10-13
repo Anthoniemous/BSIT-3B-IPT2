@@ -14,13 +14,14 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 class="fw-bold" style="color: #6b4e2e;">✏️ Edit Product</h1>
-                    <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-dark"
+                    <!-- Updated route for back button -->
+                    <a href="{{ route('products.index') }}" class="btn btn-sm btn-outline-dark"
                         style="background-color:#d2b48c; color:white; border:none;">
-                        ← Back to Dashboard
+                        ← Back to Product List
                     </a>
                 </div>
 
-                <form action="{{ route('products.update', $product->id) }}" method="POST" class="mt-3">
+                <form action="{{ route('products.update', $product->id) }}" method="POST" class="mt-3" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -39,6 +40,14 @@
                             <label class="form-label fw-semibold">Description:</label>
                             <textarea name="description" class="form-control" rows="1">{{ $product->description }}</textarea>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Product Image:</label>
+                        <input type="file" name="image" class="form-control">
+                        @if($product->image)
+                            <img src="{{ asset('storage/products/'.$product->image) }}" alt="Current Image" class="mt-2" style="max-height:100px;">
+                        @endif
                     </div>
 
                     <button type="submit" class="btn" 
