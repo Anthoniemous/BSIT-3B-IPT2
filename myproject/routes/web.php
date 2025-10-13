@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -119,3 +120,27 @@ Route::get('/test-mail', function () {
 
     return '✅ Test email sent successfully!';
 });
+
+// routes/web.php
+// Add to Cart
+Route::post('/cart/add/{id}', [CartController::class, 'add'])
+    ->middleware(['auth', 'verified']) // optional: only logged-in users
+    ->name('cart.add');
+
+// View Cart
+Route::get('/cart', [CartController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('cart.index');
+
+// Update quantity
+Route::post('/cart/update/{id}', [CartController::class, 'update'])
+    ->middleware(['auth', 'verified'])
+    ->name('cart.update');
+
+// Remove from cart
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])
+    ->middleware(['auth', 'verified'])
+    ->name('cart.remove');
+
+ 
+
