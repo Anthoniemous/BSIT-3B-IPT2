@@ -48,6 +48,7 @@
       padding: 6px 16px;
       font-weight: 600;
       color: #000;
+      margin-left: 10px;
     }
 
     /* Hero */
@@ -132,14 +133,14 @@
       color: #ddd;
     }
 
-    .btn-login, .btn-register-submit {
+    .btn-login {
       background: #6f4e37;
       color: #fff;
       font-weight: 600;
       border-radius: 10px;
     }
 
-    .btn-login:hover, .btn-register-submit:hover {
+    .btn-login:hover {
       background: #a37b60;
     }
 
@@ -147,6 +148,10 @@
       background: #db4437;
       color: #fff;
       border-radius: 10px;
+    }
+
+    .alert ul {
+      margin-bottom: 0;
     }
   </style>
 </head>
@@ -167,7 +172,10 @@
           <li class="nav-item"><a class="nav-link" href="#">Category</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
           <li class="nav-item">
-            <button class="btn btn-register" data-bs-toggle="modal" data-bs-target="#authModal">Login / Register</button>
+            <a href="{{ route('register') }}" class="btn btn-register">Register</a>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-register" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
           </li>
         </ul>
       </div>
@@ -190,62 +198,33 @@
     </div>
   </div>
 
-  <!-- Auth Modal -->
-  <div class="modal fade" id="authModal" tabindex="-1">
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
-        <!-- Tabs -->
-        <ul class="nav nav-tabs" id="authTab" role="tablist">
-          <li class="nav-item">
-            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#loginTab" type="button" role="tab">Login</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#registerTab" type="button" role="tab">Register</button>
-          </li>
-        </ul>
+        <h5 class="mb-3">Login to Your Account</h5>
 
-        <!-- Tab Content -->
-        <div class="tab-content mt-3">
-          <!-- Login Form -->
-          <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
-            <form action="{{ route('login.post') }}" method="POST">
-              @csrf
-              <div class="mb-3">
-                <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-              </div>
-              <div class="mb-3">
-                <input type="password" name="password" class="form-control" placeholder="Password" required>
-              </div>
-              <button type="submit" class="btn btn-login w-100">Login</button>
-            </form>
+        <form action="{{ route('login.post') }}" method="POST">
+          @csrf
+          @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+          @endif
+          <div class="mb-3">
+            <input type="email" name="email" class="form-control" placeholder="Email Address" required>
           </div>
+          <div class="mb-3">
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
+          </div>
+          <button type="submit" class="btn btn-login w-100">Login</button>
+        </form>
 
-          <!-- Register Form -->
-          <div class="tab-pane fade" id="registerTab" role="tabpanel">
-            <form action="{{ route('register.post') }}" method="POST">
-              @csrf
-              <div class="mb-3">
-                <input type="text" name="name" class="form-control" placeholder="Full Name" required>
-              </div>
-              <div class="mb-3">
-                <input type="email" name="email" class="form-control" placeholder="Email" required>
-              </div>
-              <div class="mb-3">
-                <input type="password" name="password" class="form-control" placeholder="Password" required>
-              </div>
-              <div class="mb-3">
-                <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password" required>
-              </div>
-              <button type="submit" class="btn btn-register-submit w-100">Register</button>
-            </form>
-            <hr class="bg-light">
-            <div class="text-center">
-              <a href="{{ url('auth/google') }}" class="btn btn-google-login w-100">
-                <i class="fab fa-google"></i> Continue with Google
-              </a>
-            </div>
-          </div>
+        <hr class="bg-light">
+
+        <div class="text-center">
+          <a href="{{ url('auth/google') }}" class="btn btn-google-login w-100">
+            <i class="fab fa-google"></i> Continue with Google
+          </a>
         </div>
 
       </div>

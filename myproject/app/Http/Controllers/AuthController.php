@@ -48,6 +48,11 @@ class AuthController extends Controller
     // ✅ Handle Login
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         // ✅ Hardcoded Admin Login
@@ -55,7 +60,6 @@ class AuthController extends Controller
             $request->session()->put('role', 'admin');
             $request->session()->regenerate();
 
-            // Redirect to Admin Dashboard
             return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
         }
 
@@ -64,7 +68,13 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $request->session()->put('role', 'customer');
 
-            return redirect()->route('customer.dashboard')->with('success', 'Welcome to your dashboard!');
+            // Check if email is verified
+            if (Auth::user()->hasVerifiedEmail()) {
+                return redirect()->route('customer.dashboard')->with('success', 'Welcome to your dashboard!');
+            } else {
+                Auth::logout();
+                return redirect()->route('login')->with('error', 'Please verify your email first.');
+            }
         }
 
         // ❌ Invalid credentials
