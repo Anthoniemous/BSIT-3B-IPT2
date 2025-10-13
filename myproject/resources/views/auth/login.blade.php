@@ -177,8 +177,6 @@
   <!-- Hero Carousel -->
   <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">
-
-      <!-- Slide 1 -->
       <div class="carousel-item active">
         <section class="hero" style="background-image:url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80');">
           <div class="hero-content">
@@ -189,31 +187,6 @@
           </div>
         </section>
       </div>
-
-      <!-- Slide 2 -->
-      <div class="carousel-item">
-        <section class="hero" style="background-image:url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1600&q=80');">
-          <div class="hero-content">
-            <h1>Freshly Roasted <span>Coffee Beans</span></h1>
-            <p>We carefully roast our beans to perfection, ensuring the bold flavors and rich aromas stay in every cup you drink.</p>
-            <button class="btn btn-explore">Explore</button>
-            <button class="btn btn-order">Order Now</button>
-          </div>
-        </section>
-      </div>
-
-      <!-- Slide 3 -->
-      <div class="carousel-item">
-        <section class="hero" style="background-image:url('https://images.unsplash.com/photo-1554797589-7241bb691973?auto=format&fit=crop&w=1600&q=80');">
-          <div class="hero-content">
-            <h1>Relax in Our <span>Cozy Café</span></h1>
-            <p>Enjoy your favorite drinks in a warm and welcoming atmosphere, perfect for chilling with friends or working productively.</p>
-            <button class="btn btn-explore">Explore</button>
-            <button class="btn btn-order">Visit Us</button>
-          </div>
-        </section>
-      </div>
-
     </div>
   </div>
 
@@ -250,7 +223,7 @@
 
           <!-- Register Form -->
           <div class="tab-pane fade" id="registerTab" role="tabpanel">
-            <form action="{{ route('register') }}" method="POST">
+            <form action="{{ route('register.post') }}" method="POST">
               @csrf
               <div class="mb-3">
                 <input type="text" name="name" class="form-control" placeholder="Full Name" required>

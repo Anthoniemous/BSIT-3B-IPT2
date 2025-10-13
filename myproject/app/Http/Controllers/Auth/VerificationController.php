@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
@@ -15,11 +16,16 @@ class VerificationController extends Controller
     }
 
     // Handle verification when user clicks the link
-    public function verify(EmailVerificationRequest $request)
-    {
-        $request->fulfill(); // mark email as verified
-        return redirect()->route('dashboard')->with('success', 'Email verified!');
-    }
+public function verify(EmailVerificationRequest $request)
+{
+    $request->fulfill(); // marks email as verified
+
+    // login the user after verification
+    Auth::login($request->user());
+
+    return redirect()->route('customer.dashboard')->with('success', 'Email verified! Welcome!');
+}
+
 
     // Resend verification link
     public function resend(Request $request)

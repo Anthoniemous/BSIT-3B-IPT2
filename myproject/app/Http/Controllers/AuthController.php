@@ -1,23 +1,22 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class AuthController extends Controller
 {
-    // Show register form
+    // ✅ Show Register Form
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // Handle registration → save user then redirect to login
+    // ✅ Handle Registration
     public function register(Request $request)
     {
         $request->validate([
@@ -30,51 +29,51 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'customer',
         ]);
 
-        // auto-login user after registration
-        Auth::login($user);
-
-        // send only one verification email
+        // Send email verification link
         $user->sendEmailVerificationNotification();
 
-        // redirect to verify notice page
         return redirect()->route('verification.notice')
-                        ->with('message', 'We sent you a verification link! Please check your email.');
+            ->with('message', 'Verification link sent! Check your email.');
     }
 
-    // Show login form
+    // ✅ Show Login Page
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Handle login (updated with admin logic)
+    // ✅ Handle Login
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
-        // ✅ Hardcoded admin credentials
-     if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
-    $request->session()->put('role', 'admin');
-    $request->session()->regenerate();
+        // ✅ Hardcoded Admin Login
+        if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
+            $request->session()->put('role', 'admin');
+            $request->session()->regenerate();
 
-    return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Admin!');
-}
-        // ✅ Existing customer login (from database)
+            // Redirect to Admin Dashboard
+            return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
+        }
+
+        // ✅ Customer Login via Database
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             $request->session()->put('role', 'customer');
-            return redirect()->route('dashboard');
+
+            return redirect()->route('customer.dashboard')->with('success', 'Welcome to your dashboard!');
         }
 
         // ❌ Invalid credentials
         return back()->withErrors([
-            'email' => 'BUGO MALI MANA! USABA.',
+            'email' => 'Incorrect email or password!',
         ]);
     }
 
-    // Logout
+    // ✅ Logout
     public function logout(Request $request)
     {
         Auth::logout();
@@ -84,10 +83,10 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-    // Dashboard for customer
+    // ✅ Customer Dashboard
     public function dashboard()
     {
-        $products = Product::all(); // kuha tanan products
-    return view('dashboard', compact('products'));
+        $products = Product::all();
+        return view('customer.dashboard', compact('products'));
     }
 }

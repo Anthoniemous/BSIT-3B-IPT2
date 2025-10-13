@@ -1,60 +1,70 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\GoogleAuthController;
-use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
-// Homepage → Login view
+// Default redirect to login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Register
+// ✅ Auth Routes with Email Verification
+Auth::routes(['verify' => true]);
+
+// ✅ Register Routes
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
-// Verification notice page
+// ✅ Email Verification Routes
 Route::get('/email/verify', [VerificationController::class, 'notice'])
     ->middleware('auth')
     ->name('verification.notice');
 
-// Handle verification link
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
     ->middleware(['auth', 'signed'])
     ->name('verification.verify');
 
-// Resend verification link
 Route::post('/email/resend', [VerificationController::class, 'resend'])
     ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.resend');
 
-// Login
+// ✅ Login / Logout
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Dashboard (protected route for customer)
-Route::get('/dashboard', [AuthController::class, 'dashboard'])
-    ->middleware('auth')
-    ->name('dashboard');
+// ✅ Customer Dashboard (must be verified)
+Route::get('/customer/dashboard', [AuthController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('customer.dashboard');
 
-// Google Login
-Route::get('auth/google', [GoogleAuthController::class,'redirect'])->name('google-auth');
-Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
+// ✅ Admin Dashboard — hardcoded access (no auth middleware needed)
+Route::get('/admin/dashboard', [ProductController::class, 'index'])
+    ->name('admin.dashboard');
 
-// Admin Dashboard (use ProductController to load products)
-Route::get('/admin/dashboard', [ProductController::class, 'index'])->name('admin.dashboard');
-
-// Admin Products CRUD
+// ✅ Admin Product Management CRUD
 Route::prefix('admin')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+});
+
+// ✅ Google Login Routes
+Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
+Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
+
+// ✅ Test Mail Route (Mailpit)
+Route::get('/test-mail', function () {
+    Mail::raw('Test email from Coffee Shop system.', function ($message) {
+        $message->to('test@example.com')->subject('Test Email');
+    });
+
+    return 'Email sent!';
 });

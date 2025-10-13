@@ -19,7 +19,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|max:10240',
         ]);
 
         $product = new Product();
@@ -30,9 +30,8 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time().'_'.$file->getClientOriginalName();
-            // ✅ Store inside storage/app/public/products
-            $file->storeAs('public/products', $filename);
-            $product->image = $filename; // ✅ Save only filename
+            $file->storeAs('public/products', $filename); // Save to storage/app/public/products
+            $product->image = $filename; // Save only filename
         }
 
         $product->save();
@@ -58,11 +57,9 @@ class ProductController extends Controller
         $product->description = $request->description;
 
         if ($request->hasFile('image')) {
-            // ✅ Delete old image if exists
-            if ($product->image && Storage::exists('public/products/'.$product->image)) {
-                Storage::delete('public/products/'.$product->image);
+            if ($product->image && Storage::disk('public')->exists('products/'.$product->image)) {
+                Storage::disk('public')->delete('products/'.$product->image);
             }
-
             $file = $request->file('image');
             $filename = time().'_'.$file->getClientOriginalName();
             $file->storeAs('public/products', $filename);
@@ -78,8 +75,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        if ($product->image && Storage::exists('public/products/'.$product->image)) {
-            Storage::delete('public/products/'.$product->image);
+        if ($product->image && Storage::disk('public')->exists('products/'.$product->image)) {
+            Storage::disk('public')->delete('products/'.$product->image);
         }
 
         $product->delete();
