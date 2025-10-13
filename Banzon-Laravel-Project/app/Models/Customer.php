@@ -12,7 +12,6 @@ class Customer extends Authenticatable
     protected $table = 'customer'; // singular table name
     protected $primaryKey = 'customer_id';
 
-    // Let Eloquent manage created_at/updated_at (recommended) 
     public $timestamps = true;
 
     protected $fillable = [

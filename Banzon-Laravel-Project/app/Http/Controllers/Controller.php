@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered; // ✅ import for event
-use App\Models\User;
+use App\Models\Customer;
 
 class Controller extends BaseController
 {
@@ -52,25 +52,26 @@ class Controller extends BaseController
     }
 
     // Handle registration
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => ['required','string','max:255'],
-            'email' => ['required','email','unique:users'],
-            'password' => ['required','confirmed','min:8'],
-        ]);
+public function register(Request $request)
+{
+    $request->validate([
+        'username' => 'required|string|max:50|unique:admin,username',
+        'email'    => 'required|email|max:100|unique:admin,email',
+        'password' => 'required|confirmed|min:8',
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $admin = \App\Models\Admin::create([
+        'username' => $request->username,
+        'email'    => $request->email,
+        'password' => bcrypt($request->password),
+    ]);
 
-        // ✅ Fire registered event para mo-send og email verification link
-        event(new Registered($user));
+    Auth::login($admin);
 
-        return redirect('/login')->with('success', 'Registration successful. Please check your email to verify your account.');
-    }
+    return redirect()->route('dashboard');
+}
+
+
 
     // Handle logout
     public function logout(Request $request)

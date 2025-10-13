@@ -66,10 +66,31 @@ Route::middleware('auth')->group(function () {
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'callbackGoogle'])->name('google-callback');
 
-Route::get('/admin/auth/google', [AdminGoogleAuthController::class, 'redirect'])->name('admin.google.redirect');
-Route::get('/admin/auth/google/callback', [AdminGoogleAuthController::class, 'callback']);
+// Google Auth for Admin
+Route::get('/admin/auth/google', [App\Http\Controllers\AdminGoogleAuthController::class, 'redirect'])
+    ->name('admin.google.redirect');
+
+Route::get('/admin/auth/google/callback', [App\Http\Controllers\AdminGoogleAuthController::class, 'callback'])
+    ->name('admin.google.callback');
+
+// Admin Dashboard (protected)
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->middleware('auth:admin')->name('admin.dashboard');
+
+// Admin Logout
+Route::post('/admin/logout', function () {
+    Auth::guard('admin')->logout();
+    return redirect('/admin/auth/google');
+})->name('admin.logout');
+
 
 // ===================================================
 // Product Routes
 // ===================================================
 Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
+Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
+Route::put('/product/{id}/toggle-status', [ProductController::class, 'toggleStatus'])
+    ->name('product.toggleStatus');
+
+

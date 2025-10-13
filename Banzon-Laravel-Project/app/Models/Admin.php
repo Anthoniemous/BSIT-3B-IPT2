@@ -9,15 +9,16 @@ class Admin extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = 'admin'; // singular table name
+    protected $table = 'admin'; // exact table name
+    protected $primaryKey = 'admin_id'; 
+    public $timestamps = false; // disable created_at and updated_at
 
-   protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'google_id',
-];
-
+    protected $fillable = [
+        'username',
+        'email',
+        'password',
+        'google_id',
+    ];
 
     protected $hidden = [
         'password',

@@ -14,8 +14,8 @@ return [
     */
 
 'defaults' => [
-    'guard' => 'customer', // use customer as the default guard
-    'passwords' => 'customers',
+    'guard' => 'admin',   // 👈 default to admin
+    'passwords' => 'admins',
 ],
 
     /*
@@ -36,11 +36,9 @@ return [
     */
 
 'guards' => [
-
-    // 👇 Keep this for Laravel system routes like login sessions
     'web' => [
         'driver' => 'session',
-        'provider' => 'customers', // You can also use 'admins' if needed
+        'provider' => 'users',
     ],
 
     'customer' => [
@@ -71,6 +69,11 @@ return [
     */
 
 'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+
     'customers' => [
         'driver' => 'eloquent',
         'model' => App\Models\Customer::class,

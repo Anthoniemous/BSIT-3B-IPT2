@@ -1,5 +1,52 @@
 <x-app-layout>
     <!-- Page Body -->
+     <!-- Carousel Start -->
+    <div class="container-fluid px-0 mb-5">
+        <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="w-100" src="img/carousel-1.jpg" alt="Image">
+                    <div class="carousel-caption">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-7 text-center">
+                                    <p class="fs-4 text-white animated zoomIn">Welcome to <strong class="text-dark">TEA House</strong></p>
+                                    <h1 class="display-1 text-dark mb-4 animated zoomIn">Organic & Quality Tea Production</h1>
+                                    <a href="" class="btn btn-light rounded-pill py-3 px-5 animated zoomIn">Explore More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img class="w-100" src="img/carousel-2.jpg" alt="Image">
+                    <div class="carousel-caption">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-7 text-center">
+                                    <p class="fs-4 text-white animated zoomIn">Welcome to <strong class="text-dark">TEA House</strong></p>
+                                    <h1 class="display-1 text-dark mb-4 animated zoomIn">Organic & Quality Tea Production</h1>
+                                    <a href="" class="btn btn-light rounded-pill py-3 px-5 animated zoomIn">Explore More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#header-carousel"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+    <!-- Carousel End -->
+
     <!-- Store Start -->
     <div class="container-xxl py-5">
         <div class="container">
@@ -7,17 +54,11 @@
                 <p class="fs-5 fw-medium fst-italic text-primary">Online Store</p>
                 <h1 class="display-6">Want to stay healthy? Choose tea taste</h1>
             </div>
-            
             <!-- Add Product Button -->
-            <div class="d-flex justify-content-center align-items-center mb-4 gap-2">
-                <form id="searchForm" class="d-flex" style="max-width: 400px;">
-                    <input type="text" id="searchInput" class="form-control rounded-pill px-3" placeholder="Search product name..." required>
-                    <button type="submit" class="btn btn-primary rounded-pill ms-2">Search</button>
-                </form>
-
+            <div class="text-center mb-4">
                 <button class="btn btn-success rounded-pill py-2 px-4" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#addProductModal">
+                data-bs-toggle="modal" 
+                data-bs-target="#addProductModal">
                     + Add Product
                 </button>
             </div>
@@ -61,50 +102,6 @@
                     </div>
                 </div>
             </div>
-
-                    <!-- Edit Product Modal -->
-            <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <form id="editProductForm" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" id="edit_product_id" name="product_id">
-
-                                <div class="mb-3">
-                                    <label for="edit_name" class="form-label">Product Name</label>
-                                    <input type="text" name="name" id="edit_name" class="form-control" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_description" class="form-label">Description</label>
-                                    <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_price" class="form-label">Price</label>
-                                    <input type="number" name="price" id="edit_price" step="0.01" class="form-control" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_stock_quantity" class="form-label">Stock Quantity</label>
-                                    <input type="number" name="stock_quantity" id="edit_stock_quantity" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <div class="row g-4">
                 @foreach($products as $product)
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
@@ -125,26 +122,8 @@
                                 <h4 class="text-primary">${{ number_format($product->price, 2) }}</h4>
                             </div>
                             <div class="store-overlay">
-                               <button 
-                                    class="btn btn-warning rounded-pill py-2 px-4 m-2 editProductBtn"
-                                    data-id="{{ $product->id }}"
-                                    data-name="{{ $product->name }}"
-                                    data-description="{{ $product->description }}"
-                                    data-price="{{ $product->price }}"
-                                    data-stock="{{ $product->stock_quantity }}"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editProductModal">
-                                    Edit
-                                </button>
-                                  <form action="{{ route('product.toggleStatus', $product->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" 
-                                            class="btn rounded-pill py-2 px-4 m-2 
-                                            {{ $product->status == 'active' ? 'btn-success' : 'btn-secondary' }}">
-                                            {{ $product->status == 'active' ? 'Deactivate' : 'Activate' }}
-                                        </button>
-                                    </form>
+                                <a href="#" class="btn btn-primary rounded-pill py-2 px-4 m-2">More Detail <i class="fa fa-arrow-right ms-2"></i></a>
+                                <a href="#" class="btn btn-dark rounded-pill py-2 px-4 m-2">Add to Cart <i class="fa fa-cart-plus ms-2"></i></a>
                             </div>
                         </div>
                     </div>
@@ -160,7 +139,7 @@
     </div>
     <!-- Store End -->
 
-    <!-- Footer Start -->
+     <!-- Footer Start -->
     <div class="container-fluid bg-dark footer mt-5 py-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row g-5">
@@ -205,81 +184,4 @@
         </div>
     </div>
     <!-- Footer End -->
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const editButtons = document.querySelectorAll('.editProductBtn');
-    const form = document.getElementById('editProductForm');
-
-    editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const id = this.dataset.id;
-            const name = this.dataset.name;
-            const description = this.dataset.description;
-            const price = this.dataset.price;
-            const stock = this.dataset.stock;
-
-            // Fill modal fields
-            document.getElementById('edit_product_id').value = id;
-            document.getElementById('edit_name').value = name;
-            document.getElementById('edit_description').value = description;
-            document.getElementById('edit_price').value = price;
-            document.getElementById('edit_stock_quantity').value = stock;
-
-            // Set form action dynamically
-            form.action = `/product/${id}`;
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-    const editForm = document.getElementById('editProductForm');
-
-    searchForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const searchValue = searchInput.value.trim().toLowerCase();
-        if (!searchValue) return;
-
-        // Find the product in the list
-        const productButtons = document.querySelectorAll('.editProductBtn');
-        let found = false;
-
-        productButtons.forEach(button => {
-            const name = button.dataset.name.toLowerCase();
-
-            if (name.includes(searchValue)) {
-                found = true;
-
-                // Auto-fill edit modal
-                const id = button.dataset.id;
-                const description = button.dataset.description;
-                const price = button.dataset.price;
-                const stock = button.dataset.stock;
-
-                document.getElementById('edit_product_id').value = id;
-                document.getElementById('edit_name').value = button.dataset.name;
-                document.getElementById('edit_description').value = description;
-                document.getElementById('edit_price').value = price;
-                document.getElementById('edit_stock_quantity').value = stock;
-
-                // Set form action
-                editForm.action = `/product/${id}`;
-
-                // Show modal
-                const editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-                editModal.show();
-            }
-        });
-
-        if (!found) {
-            alert("No product found with that name.");
-        }
-    });
-});
-</script>
-
 </x-app-layout>
-
