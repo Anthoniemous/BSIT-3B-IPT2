@@ -5,11 +5,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use App\Http\Controllers\OrderController;
-use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
 
 // ====================== HOME ======================
 Route::get('/', function () {
@@ -24,15 +26,31 @@ Route::post('/login', [Controller::class, 'login'])->name('login.post');
 Route::get('/register', [Controller::class, 'showRegister'])->name('register');
 Route::post('/register', [Controller::class, 'register'])->name('register.post');
 
+// Forgot / Reset Password
 Route::get('/forgotpassword', [\App\Http\Controllers\Auth\PasswordController::class, 'showForgotForm'])->name('password.request');
 Route::post('/forgotpassword', [\App\Http\Controllers\Auth\PasswordController::class, 'sendResetLink'])->name('password.email');
-
 Route::get('/reset-password/{token}', [PasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordController::class, 'reset'])->name('password.update');
 
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+// ====================== ORDERS ======================
+Route::middleware('auth')->group(function () {
+    // User: create order from cart
+    Route::get('/order/{cart_id}', [OrderController::class, 'create'])->name('orders.order');
+
+    // Store order
+    Route::post('/order/store', [OrderController::class, 'store'])->name('orders.store');
+
+    // User: view their own orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+});
+
+// ✅ ADMIN: View all orders
+Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
+});
 
 // ====================== DASHBOARDS ======================
+
 // Admin Dashboard
 Route::get('/dashboard', function () {
     $products = Product::all();
@@ -53,7 +71,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-    Route::delete('/cart/remove/{cart}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 });
 
@@ -62,12 +80,24 @@ Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect()->intended(
-        auth()->user()->role === 'admin' ? route('dashboard') : route('user.dashboard')
-    );
-})->middleware(['auth', 'signed'])->name('verification.verify');
+// ✅ Guest-safe version (no need to log in first)
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $user = User::findOrFail($id);
+
+    if (! hash_equals(sha1($user->getEmailForVerification()), (string) $hash)) {
+        abort(403, 'Invalid verification link.');
+    }
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect()->route('login')->with('message', 'Email already verified.');
+    }
+
+    if ($user->markEmailAsVerified()) {
+        event(new Verified($user));
+    }
+
+    return redirect()->route('login')->with('message', 'Email verified successfully!');
+})->middleware('signed')->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();

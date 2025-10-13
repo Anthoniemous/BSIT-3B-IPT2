@@ -8,19 +8,29 @@ return new class extends Migration
 {
     public function up(): void
     {
-       Schema::create('order_items', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('order_id')->constrained()->onDelete('cascade');
+        Schema::create('order_items', function (Blueprint $table) {
+            $table->id();
 
-    // Explicitly reference 'product_id' if your products table uses it
-    $table->unsignedBigInteger('product_id');
-    $table->foreign('product_id')
-          ->references('product_id') // or 'id' depending on your products table
-          ->on('products')
-          ->onDelete('cascade');
+            // ✅ Match the actual 'order_id' field from orders table
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')
+                ->references('order_id')
+                ->on('orders')
+                ->onDelete('cascade');
 
-    $table->integer('quantity')->default(1);
-    $table->timestamps();
+            // ✅ Match your products table (uses product_id)
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')
+                ->references('product_id')
+                ->on('products')
+                ->onDelete('cascade');
+
+            $table->integer('quantity')->default(1);
+
+            // ADD missing price column here
+            $table->decimal('price', 10, 2);
+
+            $table->timestamps();
         });
     }
 

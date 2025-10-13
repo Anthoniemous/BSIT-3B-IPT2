@@ -7,12 +7,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa; /* light gray background */
+            background-color: #f8f9fa; 
         }
 
         .card {
-            max-width: 600px; /* limit the width */
-            margin: 3rem auto; /* center vertically & horizontally */
+            max-width: 600px; 
+            margin: 3rem auto;
             border-radius: 12px;
         }
 
@@ -21,7 +21,7 @@
         }
 
         .btn-primary, .btn-secondary {
-            min-width: 120px; /* consistent button width */
+            min-width: 120px;
         }
 
         .alert {

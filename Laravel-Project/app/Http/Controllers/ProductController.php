@@ -34,7 +34,7 @@ class ProductController extends Controller
             'product_name' => 'required|string|max:255',
             'description'  => 'nullable|string',
             'price'        => 'required|numeric',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|max:10240', 
         ]);
 
         $imagePath = null;

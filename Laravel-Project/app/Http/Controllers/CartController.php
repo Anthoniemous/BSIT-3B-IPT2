@@ -36,22 +36,27 @@ class CartController extends Controller
         $cartItem->save();
     } else {
         Cart::create([
-            'user_id' => $userId,
-            'product_id' => $product->id,
-            'quantity' => 1,
-        ]);
+    'user_id' => $userId,
+    'product_id' => $product->product_id,
+    'quantity' => 1,
+]);
     }
 
     return redirect()->route('cart.index')->with('success', 'Product added to cart!');
 }
 
     // Remove item from cart
-    public function remove(Cart $cart)
+   public function remove($id)
     {
-        $this->authorize('delete', $cart); // Optional: ensure only owner can delete
-        $cart->delete();
+        $cartItem = Cart::find($id);
 
-        return back()->with('success', 'Item removed.');
+        if (!$cartItem) {
+            return redirect()->back()->with('error', 'Cart item not found!');
+        }
+
+        $cartItem->delete();
+
+        return redirect()->back()->with('success', 'Item removed from cart successfully!');
     }
 
     // Checkout (clear cart)

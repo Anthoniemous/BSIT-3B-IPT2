@@ -18,23 +18,22 @@
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <img src="{{ asset('css/img/image1.png') }}" alt="NBA Logo">
+        <img src="{{ asset('css/img/logo.jpg') }}" alt="NBA Logo">
         <span class="brand">NBA Fan Store</span>
       </div>
 
       <nav class="main-nav">
         <ul>
           <li><a href="{{ url('/') }}">Home</a></li>
-          <li><a href="{{ url('/merch') }}">Shop</a></li>
-          <li><a href="#">Teams</a></li>
-          <li><a href="#">About</a></li>
+          
+          
         </ul>
       </nav>
 
       <div class="user-option">
         @auth
-          <a href="{{ route('dashboard') }}" class="btn small">Dashboard</a>
-
+          <a href="{{ route('orders.index') }}" class="btn small">My Orders</a>
+       
           <form method="POST" action="{{ route('logout') }}" style="display:inline;">
             @csrf
             <button type="submit" class="btn outline small">Logout</button>
@@ -44,9 +43,7 @@
     </div>
   </header>
 
-  <!-- ❌ NO HERO HERE -->
 
-  <!-- ✅ DIRECTLY SHOW PRODUCTS -->
   <main class="container" style="padding-top: 30px;">
     <header class="section-header">
       <h2>All Products</h2>

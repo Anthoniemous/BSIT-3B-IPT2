@@ -36,7 +36,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <img src="{{ asset('css/img/image1.png') }}" alt="NBA Logo">
+        <img src="{{ asset('css/img/logo.jpg') }}" alt="NBA Logo">
         <span class="brand">NBA Fan Store</span>
       </div>
 
@@ -44,8 +44,7 @@
         <ul>
           <li><a href="{{ url('/') }}">Home</a></li>
           <li><a href="{{ url('/userdashboard') }}">Shop</a></li>
-          <li><a href="#">Teams</a></li>
-          <li><a href="#">About</a></li>
+          
         </ul>
       </nav>
 
@@ -64,11 +63,11 @@
     </div>
   </header>
 
-  <!-- HERO -->
+
   <section class="hero container">
     <div class="hero-inner">
       <div class="hero-copy">
-        <h1>Nike New Collection!</h1>
+        <h1>Basketll Shoes Collection!</h1>
         <p class="lead">
           Get the latest NBA-inspired sneakers and merch — premium quality, limited drops, and fast delivery.
         </p>
@@ -78,12 +77,12 @@
         </div>
       </div>
       <div class="hero-media">
-        <img id="hero-img" src="{{ asset('css/img/image0.png') }}" alt="Hero Product">
+        <img id="hero-img" src="{{ asset('css/img/image.png') }}" alt="Hero Product">
       </div>
     </div>
   </section>
 
-  <!-- Feature Row -->
+  
   <section class="features container">
     <div class="feature-card">
       <i class="fa fa-truck"></i>
