@@ -83,10 +83,12 @@ Route::get('/customer/dashboard', [AuthController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('customer.dashboard');
 
-// ✅ Admin Dashboard (hardcoded admin account)
-Route::get('/admin/dashboard', [ProductController::class, 'index'])
+// ✅ Admin Dashboard (pass products to view)
+Route::get('/admin/dashboard', [ProductController::class, 'mainDashboard'])
     ->name('admin.dashboard');
 
+
+    
 /*
 |--------------------------------------------------------------------------|
 | ADMIN PRODUCT MANAGEMENT ROUTES

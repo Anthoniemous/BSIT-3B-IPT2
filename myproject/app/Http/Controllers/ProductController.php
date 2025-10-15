@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     public function index()
-    {
+    {   
         $products = Product::all();
         return view('admin.dashboard', compact('products'));
     }
@@ -83,4 +83,25 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Product deleted successfully!');
     }
+    // View-only admin dashboard
+public function mainDashboard()
+{
+    $products = Product::all();
+    return view('admin.main-dashboard', compact('products'));
+}
+
+//searchbar filter
+public function customerDashboard(Request $request)
+{
+    $query = Product::query();
+
+    if ($request->has('search') && $request->search != '') {
+        $query->where('name', 'like', '%'.$request->search.'%')
+              ->orWhere('description', 'like', '%'.$request->search.'%');
+    }
+
+    $products = $query->get();
+
+    return view('customer.dashboard', compact('products'));
+}
 }

@@ -54,14 +54,13 @@ class AuthController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
-
-        // ✅ Hardcoded Admin Login
-        if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
-            $request->session()->put('role', 'admin');
-            $request->session()->regenerate();
-
-            return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
-        }
+// Hardcoded Admin Login
+if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
+    $request->session()->put('role', 'admin');
+    $request->session()->put('admin_name', 'Eljohn Sodoso'); // Add this
+    $request->session()->regenerate();
+    return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
+}
 
         // ✅ Customer Login via Database
         if (Auth::attempt($credentials)) {
@@ -94,9 +93,25 @@ class AuthController extends Controller
     }
 
     // ✅ Customer Dashboard
-    public function dashboard()
-    {
+   // ✅ Customer Dashboard with Search
+public function dashboard(Request $request)
+{
+    $search = trim($request->input('search'));
+
+    $products = Product::query();
+
+    if ($search) {
+        $products->where('name', 'like', "%{$search}%")
+                 ->orWhere('description', 'like', "%{$search}%");
+    }
+
+    $products = $products->get();
+
+    return view('customer.dashboard', compact('products'));
+}
+     // ✅ Admin Dashboard
+    public function adminDashboard() {
         $products = Product::all();
-        return view('customer.dashboard', compact('products'));
+        return view('admin.main-dashboard', compact('products'));
     }
 }
