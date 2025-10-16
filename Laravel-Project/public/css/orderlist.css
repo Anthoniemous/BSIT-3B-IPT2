@@ -1,98 +1,150 @@
+/* ---------- Base & Layout ---------- */
 body {
-    background-color: #0d1117;
-    color: #e6edf3;
-    font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:
+    radial-gradient(circle at top left, #ff9a3c, transparent 60%),
+    radial-gradient(circle at bottom right, #ff6a00, transparent 60%),
+    #ffffff;
+  color: #222;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
 }
 
 .container {
-    width: 90%;
-    margin: 40px auto;
+  width: 94%;
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  padding: 30px;
 }
 
+/* ---------- Page Title ---------- */
 .page-title {
-    font-size: 28px;
-    color: #fff;
-    margin-bottom: 25px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f57c00;
+  margin-bottom: 24px;
 }
 
-/* Flash Messages */
+/* ---------- Flash Messages ---------- */
 .alert {
-    padding: 10px 15px;
-    border-radius: 6px;
-    margin-bottom: 20px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  text-align: center;
 }
 .alert-success {
-    background-color: #d1e7dd;
-    color: #0f5132;
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid #2ecc71;
+  color: #27ae60;
 }
 .alert-danger {
-    background-color: #f8d7da;
-    color: #842029;
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid #e74c3c;
+  color: #c0392b;
 }
 
-/* Table */
-.order-table {
-    background-color: #161b22;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-thead {
-    background-color: #21262d;
-}
-
-th, td {
-    padding: 15px;
-    text-align: left;
-}
-
-th {
-    color: #fff;
-    font-weight: 600;
-    border-bottom: 2px solid #30363d;
-}
-
-td {
-    border-bottom: 1px solid #30363d;
-    font-size: 15px;
-}
-
-tbody tr:hover {
-    background-color: #1c2128;
-}
-
-/* Order Status */
-.status {
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.status.pending {
-    background-color: #f8d7da;
-    color: #842029;
-}
-
-.status.processing {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.status.completed {
-    background-color: #d1e7dd;
-    color: #0f5132;
-}
-
-/* Empty Orders */
+/* ---------- No Orders ---------- */
 .no-orders {
-    color: #9ba3af;
-    font-size: 16px;
-    margin-top: 20px;
+  text-align: center;
+  font-size: 1.05rem;
+  color: #555;
+  padding: 20px;
+}
+
+/* ---------- Orders Table ---------- */
+.order-table {
+  overflow-x: auto;
+}
+.order-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.order-table th, .order-table td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.order-table th {
+  background: linear-gradient(90deg, #ff8a00, #ff6a00);
+  color: white;
+  font-weight: 700;
+}
+.order-table tr:hover {
+  background-color: rgba(255, 138, 0, 0.08);
+}
+
+/* ---------- Status Badges ---------- */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+.status.pending { background: rgba(255,165,0,0.1); color: #f39c12; }
+.status.completed { background: rgba(46,204,113,0.1); color: #27ae60; }
+.status.cancelled { background: rgba(231,76,60,0.1); color: #c0392b; }
+
+/* ---------- Back Button ---------- */
+.mt-6 {
+  margin-top: 28px;
+}
+.mt-6 a {
+  background: linear-gradient(90deg, #ff8a00, #ff6a00);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 26px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 16px rgba(245,124,0,0.2);
+}
+.mt-6 a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(245,124,0,0.3);
+}
+
+/* ---------- Pagination ---------- */
+.pagination-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination {
+  display: inline-flex;
+  gap: 8px;
+  list-style: none;
+}
+
+.pagination li a,
+.pagination li span {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  color: #333;
+  text-decoration: none;
+}
+
+.pagination li.active span {
+  background-color: #2563eb; /* blue */
+  color: white;
+  border-color: #2563eb;
+}
+
+.pagination li a:hover {
+  background-color: #f3f4f6;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .page-title { font-size: 1.6rem; }
+  .order-table th, .order-table td { font-size: 0.9rem; padding: 10px; }
+  .container { padding: 20px; }
 }

@@ -31,15 +31,17 @@
       </nav>
 
       <div class="user-option">
-        @auth
-          <a href="{{ route('orders.index') }}" class="btn small">My Orders</a>
-       
-          <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-            @csrf
-            <button type="submit" class="btn outline small">Logout</button>
-          </form>
-        @endauth
-      </div>
+  @auth
+    <a href="{{ route('orders.index') }}" class="btn small">My Orders</a>
+
+    <a href="{{ route('cart.index') }}" class="btn small">My Cart 🛒</a>
+
+    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+      @csrf
+      <button type="submit" class="btn outline small">Logout</button>
+    </form>
+  @endauth
+</div>
     </div>
   </header>
 

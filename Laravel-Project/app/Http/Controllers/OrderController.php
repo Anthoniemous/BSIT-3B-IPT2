@@ -9,16 +9,23 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    // 🔹 Show list of orders (for orderlist.blade.php)
-    public function index()
-    {
-        // Get all orders for the logged-in user with product details
-        $orders = Order::with('items.product')
-                       ->where('user_id', Auth::id())
-                       ->get();
+    public function adminIndex()
+{
+    $orders = Order::with(['items.product', 'user']) // para makita sad ang user name kung gusto nimo
+                   ->latest()
+                   ->get();
 
-        return view('orderlist', compact('orders'));
-    }
+    return view('orderlist', compact('orders'));
+}
+ public function index()
+{
+    $orders = Order::with('items.product')
+                   ->where('user_id', Auth::id())
+                   ->orderBy('created_at', 'desc')
+                   ->paginate(5); // try 5 first to test pagination
+
+    return view('orderlist', compact('orders'));
+}
 
     // 🔹 Show specific cart item for ordering
     public function create($cart_id)

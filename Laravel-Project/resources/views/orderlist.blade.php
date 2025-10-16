@@ -19,7 +19,7 @@
     @endif
 
     {{-- ✅ Check if user has any orders --}}
-    @if($orders->isEmpty())
+    @if($orders->count() === 0)
         <p class="no-orders">You have no orders yet.</p>
     @else
         <div class="order-table">
@@ -54,15 +54,19 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- ✅ Pagination --}}
+        <div class="pagination-container">
+            {{ $orders->links('pagination::bootstrap-5') }}
+        </div>
     @endif
 
-   
- <div class="mt-6 text-center">
-    <a href="{{ route('dashboard') }}" 
-       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 ease-in-out">
-        Back to Dashboard
-    </a>
-</div>
+    <div class="mt-6 text-center">
+        <a href="{{ route('dashboard') }}" 
+           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 ease-in-out">
+            Back to Dashboard
+        </a>
+    </div>
 
 </div>
 </x-app-layout>

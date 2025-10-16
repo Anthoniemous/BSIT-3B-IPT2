@@ -1,67 +1,45 @@
-/* General Layout */
+/* Background gradient for dashboard */
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #0d1117;
-    color: #e6edf3;
-    margin: 0;
-    padding: 0;
+    background: 
+        radial-gradient(circle at top left, #ff9a3c, transparent 60%),
+        radial-gradient(circle at bottom right, #ff6a00, transparent 60%);
+    background-color: #fff7f0;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
 }
 
+/* Header buttons */
 h2 {
     display: flex;
-    justify-content: space-between;
+    gap: 15px;
     align-items: center;
-    padding: 20px 40px;
-    background-color: #161b22;
-    border-bottom: 1px solid #30363d;
+    justify-content: flex-start;
+    padding: 15px;
 }
 
-/* Button Styles */
 .btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-.btn-primary {
-    background-color: #238636;
+    background-color: #ff7a00;
     color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-.btn-primary:hover {
-    background-color: #2ea043;
+.btn:hover {
+    background-color: #e86a00;
 }
 
-.btn-warning {
-    background-color: #d29922;
-    color: #fff;
-}
-
-.btn-warning:hover {
-    background-color: #f0b429;
-}
-
-.btn-danger {
-    background-color: #da3633;
-    color: #fff;
-}
-
-.btn-danger:hover {
-    background-color: #f85149;
-}
-
-/* Table Styles */
+/* Table styling */
 .table-container {
     margin: 30px auto;
     width: 90%;
-    background-color: #161b22;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 table {
@@ -69,67 +47,38 @@ table {
     border-collapse: collapse;
 }
 
-thead {
-    background-color: #21262d;
-    color: #fff;
-}
-
-thead th {
-    padding: 15px 10px;
+th {
+    background-color: #ff7a00;
+    color: white;
+    padding: 12px;
     text-align: left;
-    font-size: 15px;
-    border-bottom: 2px solid #30363d;
-}
-
-tbody tr {
-    border-bottom: 1px solid #30363d;
-}
-
-tbody tr:hover {
-    background-color: #1c2128;
 }
 
 td {
-    padding: 12px 10px;
-    vertical-align: middle;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
-/* Product Image */
 td img {
     width: 60px;
     height: 60px;
+    border-radius: 8px;
     object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid #30363d;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
+.btn-warning {
+    background-color: #ffc107;
+    color: #000;
+}
 
-    thead {
-        display: none;
-    }
+.btn-danger {
+    background-color: #dc3545;
+}
 
-    tr {
-        margin-bottom: 15px;
-        border: 1px solid #30363d;
-        border-radius: 8px;
-        padding: 10px;
-    }
+.btn-warning:hover {
+    background-color: #e0a800;
+}
 
-    td {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-    }
-
-    td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        text-transform: capitalize;
-    }
+.btn-danger:hover {
+    background-color: #c82333;
 }
