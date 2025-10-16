@@ -3,22 +3,20 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Hairnic - Single Product Website Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <title>Hairnic - Products</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
-    <!-- Google Web Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@200;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- Icon Font Stylesheet -->
+    <!-- Icon Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -26,25 +24,15 @@
     <link href="lib/animate/animate.min.css" rel="stylesheet">
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
+    <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Template Stylesheet -->
+    <!-- Template CSS -->
     <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
-
-
-    <!-- Navbar Start -->
+    <!-- Navbar -->
     <div class="container-fluid sticky-top">
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light p-0">
@@ -77,51 +65,48 @@
             </nav>
         </div>
     </div>
-    <!-- Navbar End -->
 
-
-    <!-- Hero Start -->
+    <!-- Hero -->
     <div class="container-fluid bg-primary hero-header mb-5">
         <div class="container text-center">
             <h1 class="display-4 text-white mb-3 animated slideInDown">Products</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
-                    <li class="breadcrumb-item text-white active" aria-current="page">Products</li>
-                </ol>
-            </nav>
         </div>
     </div>
-    <!-- Hero End -->
 
-
-   <!-- Product Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="text-primary mb-0"><span class="fw-light text-dark">Our Natural</span> Hair Products</h1>
-    
-    @auth
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-            + Add Product
-        </button>
-    @else
-        <p class="text-muted mb-0">Please log in to add a product.</p>
-    @endauth
-</div>
-
+    <!-- Product Section -->
+    <div class="container mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary mb-0"><span class="fw-light text-dark">Our Natural</span> Hair Products</h1>
+            @auth
+                <div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        + Add Product
+                    </button>
+                    <a href="{{ route('products.storage') }}" class="btn btn-secondary ms-2">
+                        View Deactivated Products
+                    </a>
+                </div>
+            @else
+                <p class="text-muted mb-0">Please log in to add a product.</p>
+            @endauth
+        </div>
 
         <div class="row g-4">
             @foreach($products as $product)
-                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
-                    <div class="product-item text-center border h-100 p-4">
-                        <img class="img-fluid mb-4"
-                             src="{{ $product->image ? asset('storage/' . $product->image) : asset('img/product-1.png') }}"
-                             alt="{{ $product->name }}">
-                        <a href="#" class="h6 d-inline-block mb-2">{{ $product->name }}</a>
-                        <h5 class="text-primary mb-3">${{ number_format($product->price, 2) }}</h5>
-                        <a href="#" class="btn btn-outline-primary px-3">Add To Cart</a>
+                @if($product->status == 1) {{-- Only active products --}}
+                <div class="col-md-6 col-lg-3 mb-3 product-card" id="product-{{ $product->id }}">
+                    <div class="card p-3 text-center">
+                        <img src="{{ $product->image ? asset('storage/' . $product->image) : asset('img/product-1.png') }}"
+                             class="card-img-top mb-2" style="height: 200px; object-fit: cover;">
+                        <h5>{{ $product->name }}</h5>
+                        <p>₱{{ number_format($product->price, 2) }}</p>
+                        @auth
+                        <button class="btn btn-warning mt-2" onclick="openEditProductModal(@json($product))">Edit</button>
+                        <button class="btn btn-danger mt-2" onclick="deactivateProduct({{ $product->id }})">Deactivate</button>
+                        @endauth
                     </div>
                 </div>
+                @endif
             @endforeach
         </div>
     </div>
@@ -130,7 +115,7 @@
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
+          <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="modal-header">
               <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
@@ -158,109 +143,75 @@
       </div>
     </div>
 
-
-    <!-- Newsletter Start -->
-    <div class="container-fluid newsletter bg-primary py-5 my-5">
-        <div class="container py-5">
-            <div class="mx-auto text-center wow fadeIn" data-wow-delay="0.1s" style="max-width: 600px;">
-                <h1 class="text-white mb-3"><span class="fw-light text-dark">Let's Subscribe</span> The Newsletter</h1>
-                <p class="text-white mb-4">Subscribe now to get 30% discount on any of our products</p>
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="editProductForm" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="modal-header">
+              <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-md-7 wow fadeIn" data-wow-delay="0.5s">
-                    <div class="position-relative w-100 mt-3 mb-2">
-                        <input class="form-control w-100 py-4 ps-4 pe-5" type="text" placeholder="Enter Your Email"
-                            style="height: 48px;">
-                        <button type="button" class="btn shadow-none position-absolute top-0 end-0 mt-1 me-2"><i
-                                class="fa fa-paper-plane text-white fs-4"></i></button>
-                    </div>
-                </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Product Name</label>
+                <input type="text" name="name" class="form-control" id="editProductName" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Price</label>
+                <input type="number" step="0.01" name="price" class="form-control" id="editProductPrice" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Image</label>
+                <input type="file" name="image" class="form-control" id="editProductImage">
+              </div>
             </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Save Changes</button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
-    <!-- Newsletter End -->
 
-
-    <!-- Footer Start -->
-    <div class="container-fluid bg-white footer">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
-                    <a href="index.html" class="d-inline-block mb-3">
-                        <h1 class="text-primary">Hairnic</h1>
-                    </a>
-                    <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet, erat non
-                        malesuada consequat, nibh erat tempus risus, vitae porttitor purus nisl vitae purus.</p>
-                </div>
-                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.3s">
-                    <h5 class="mb-4">Get In Touch</h5>
-                    <p><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                    <p><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                    <p><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-square btn-outline-primary me-1" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-square btn-outline-primary me-1" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-square btn-outline-primary me-1" href=""><i class="fab fa-instagram"></i></a>
-                        <a class="btn btn-square btn-outline-primary me-1" href=""><i
-                                class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.5s">
-                    <h5 class="mb-4">Our Products</h5>
-                    <a class="btn btn-link" href="">Hair Shining Shampoo</a>
-                    <a class="btn btn-link" href="">Anti-dandruff Shampoo</a>
-                    <a class="btn btn-link" href="">Anti Hair Fall Shampoo</a>
-                    <a class="btn btn-link" href="">Hair Growing Shampoo</a>
-                    <a class="btn btn-link" href="">Anti smell Shampoo</a>
-                </div>
-                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.7s">
-                    <h5 class="mb-4">Popular Link</h5>
-                    <a class="btn btn-link" href="">About Us</a>
-                    <a class="btn btn-link" href="">Contact Us</a>
-                    <a class="btn btn-link" href="">Privacy Policy</a>
-                    <a class="btn btn-link" href="">Terms & Condition</a>
-                    <a class="btn btn-link" href="">Career</a>
-                </div>
-            </div>
-        </div>
-        <div class="container wow fadeIn" data-wow-delay="0.1s">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved.
-
-                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
-                    </div>
-                    <div class="col-md-6 text-center text-md-end">
-                        <div class="footer-menu">
-                            <a href="">Home</a>
-                            <a href="">Cookies</a>
-                            <a href="">Help</a>
-                            <a href="">FAQs</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
-
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
+    <!-- JS for Edit + Deactivate -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+    function openEditProductModal(product) {
+        $('#editProductName').val(product.name);
+        $('#editProductPrice').val(product.price);
+        $('#editProductForm').attr('action', '/products/' + product.id);
+        $('#editProductModal').modal('show');
+    }
+
+    function deactivateProduct(id) {
+        if (confirm('Are you sure you want to deactivate this product?')) {
+            $.ajax({
+                url: '/products/' + id + '/deactivate',
+                type: 'PUT',
+                data: { _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Product deactivated successfully!');
+                        // Option 1: remove product card instantly (no reload)
+                        $('#product-' + id).fadeOut(400, function() { $(this).remove(); });
+                        // Option 2 (if you prefer reload): uncomment next line
+                        // window.location.href = "{{ route('products.index') }}";
+                    } else {
+                        alert('Failed to deactivate product.');
+                    }
+                },
+                error: function() {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        }
+    }
+    </script>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
 </body>
-
 </html>

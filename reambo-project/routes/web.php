@@ -32,7 +32,12 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Product routes
-Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+Route::get('/product', [ProductController::class, 'index'])->name('product.index'); 
+Route::resource('products', ProductController::class);
+Route::get('/storage-products', [ProductController::class, 'storage'])->name('products.storage');
+Route::put('/products/{product}/deactivate', [ProductController::class, 'deactivate'])->name('products.deactivate');
+Route::put('/products/{product}/activate', [ProductController::class, 'activate'])->name('products.activate');
+
 
 // Protected route example (for logged-in users only)
 Route::middleware(['auth'])->group(function () {
