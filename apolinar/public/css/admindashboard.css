@@ -1,0 +1,136 @@
+/* ---------- General Styles ---------- */
+body {
+    background: linear-gradient(135deg, #ffe6f0, #fff0f5, #ffd6e8);
+    font-family: 'Poppins', sans-serif;
+    color: #444;
+    min-height: 100vh;
+}
+
+/* ---------- Header ---------- */
+h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 25px;
+    background-color: #ffb6c1;
+    color: #fff;
+    border-radius: 12px;
+    margin: 25px auto;
+    width: 90%;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.header-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.add-btn {
+    background: linear-gradient(to right, #ff80ab, #ff4da6);
+    color: white;
+    box-shadow: 0 4px 10px rgba(255, 77, 166, 0.3);
+}
+.add-btn:hover {
+    background: linear-gradient(to right, #ff66a3, #ff1a8c);
+    transform: translateY(-2px);
+}
+
+.edit-btn {
+    background-color: #ffb6c1;
+    color: white;
+}
+.edit-btn:hover {
+    background-color: #ff99bb;
+}
+
+.delete-btn {
+    background-color: #ff4d79;
+    color: white;
+}
+.delete-btn:hover {
+    background-color: #e6005c;
+}
+
+/* ---------- Table Container ---------- */
+.table-container {
+    margin: 30px auto;
+    width: 90%;
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 25px rgba(255, 105, 180, 0.2);
+    overflow-x: auto;
+    animation: fadeIn 0.8s ease;
+}
+
+/* ---------- Table Styling ---------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #ff80ab;
+    color: white;
+    padding: 12px;
+    font-weight: 700;
+    text-align: left;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #f2cdda;
+}
+
+td img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ---------- Hover & Animation ---------- */
+tr:hover {
+    background-color: #fff5fa;
+    transition: background 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    h2 {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .table-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,126 @@
+/* 💖 Glamour Makeup Store Register Page */
+
+/* 🌸 Body styling */
+body {
+    background: radial-gradient(circle at top left, #ffd6ec, transparent 60%),
+                radial-gradient(circle at bottom right, #ffe0f0, transparent 60%),
+                #fff6fb;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* 💎 Container for the form */
+.register-container {
+    background-color: #ffffff;
+    padding: 40px 35px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(233, 99, 150, 0.15);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border: 1px solid rgba(255, 192, 203, 0.4);
+}
+
+/* 💋 Form title */
+.register-container h2 {
+    margin-bottom: 20px;
+    color: #e75480;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-shadow: 0 1px 6px rgba(231, 84, 128, 0.1);
+}
+
+/* 🩰 Labels */
+.register-container label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #8b5e83;
+}
+
+/* 🎀 Input fields */
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"] {
+    width: 95%;
+    padding: 12px 10px;
+    margin: 8px 0 20px 0;
+    border: 1px solid #f4b6c2;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: #fffafc;
+    color: #444;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.register-container input:focus {
+    border-color: #ff9ebb;
+    box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.25);
+    outline: none;
+}
+
+/* 💄 Submit button */
+.register-container button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #ffb6c1, #ff91af);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 145, 175, 0.3);
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.register-container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 145, 175, 0.45);
+}
+
+/* 🌷 Error messages */
+.error-msg {
+    background-color: #ffe0e7;
+    color: #c42d4a;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: left;
+    font-weight: 500;
+}
+
+/* 🔗 Login link */
+.register-container .login-link {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #7a557f;
+    text-align: center;
+}
+
+.register-container .login-link a {
+    color: #e75480;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.register-container .login-link a:hover {
+    color: #d94170;
+    text-decoration: underline;
+}
+
+/* 📱 Responsive */
+@media (max-width: 640px) {
+    .register-container {
+        padding: 30px 25px;
+    }
+}

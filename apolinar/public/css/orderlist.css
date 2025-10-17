@@ -1,0 +1,172 @@
+/* ---------- Base & Layout ---------- */
+body {
+  font-family: 'Poppins', 'Roboto', system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top left, #ffd6e0, transparent 60%),
+    radial-gradient(circle at bottom right, #fcb1d1, transparent 60%),
+    #fff9fb;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Main container */
+.container {
+  width: 94%;
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(255, 105, 180, 0.1);
+  padding: 35px;
+  border: 1px solid rgba(255,182,193,0.3);
+}
+
+/* ---------- Page Title ---------- */
+.page-title {
+  text-align: center;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #e75480; /* rose pink */
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- Flash Messages ---------- */
+.alert {
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.alert-success {
+  background: rgba(255,192,203,0.2);
+  border: 1px solid #f5a6c1;
+  color: #c2185b;
+}
+.alert-danger {
+  background: rgba(255,182,193,0.25);
+  border: 1px solid #ff94b3;
+  color: #b71c1c;
+}
+
+/* ---------- No Orders ---------- */
+.no-orders {
+  text-align: center;
+  font-size: 1.05rem;
+  color: #777;
+  padding: 22px;
+  font-style: italic;
+}
+
+/* ---------- Orders Table ---------- */
+.order-table {
+  overflow-x: auto;
+}
+.order-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+.order-table th,
+.order-table td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  font-size: 0.95rem;
+}
+.order-table th {
+  background: linear-gradient(90deg, #ffb6c1, #ff69b4);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.order-table tr:hover {
+  background-color: rgba(255,192,203,0.2);
+}
+
+/* ---------- Status Badges ---------- */
+.status {
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+.status.pending {
+  background: rgba(255,182,193,0.3);
+  color: #e75480;
+}
+.status.completed {
+  background: rgba(236,239,241,0.3);
+  color: #66bb6a;
+}
+.status.cancelled {
+  background: rgba(255,105,97,0.2);
+  color: #c2185b;
+}
+
+/* ---------- Back Button ---------- */
+.mt-6 {
+  margin-top: 32px;
+  text-align: center;
+}
+.mt-6 a {
+  background: linear-gradient(90deg, #ffb6c1, #ff69b4);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 6px 16px rgba(255,105,180,0.25);
+}
+.mt-6 a:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(255,105,180,0.3);
+}
+
+/* ---------- Pagination ---------- */
+.pagination-container {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.pagination {
+  display: inline-flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li a,
+.pagination li span {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #ffd6e0;
+  color: #444;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pagination li.active span {
+  background: linear-gradient(90deg, #ffb6c1, #ff69b4);
+  color: white;
+  border-color: #ff69b4;
+}
+
+.pagination li a:hover {
+  background-color: #ffe4ec;
+  color: #e75480;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .page-title { font-size: 1.7rem; }
+  .order-table th, .order-table td { font-size: 0.9rem; padding: 10px; }
+  .container { padding: 22px; }
+}
