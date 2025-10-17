@@ -21,91 +21,23 @@
     </ul>
   </nav>
 
-  <div class="user-option">
-    <button class="btn" id="openLogin">Login</button>
-    <button class="btn" id="openRegister">Sign Up</button>
-  </div>
+ <div class="user-option">
+  <button class="btn" onclick="window.location.href='{{ url('/login') }}'">Login</button>
+  <button class="btn" onclick="window.location.href='{{ url('/register') }}'">Sign Up</button>
+</div>
 </header>
 
-<!-- Login Modal -->
-<div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeLogin">&times;</span>
-    <h2>Login</h2>
-    
-    <form method="POST" action="{{ url('/login') }}">
-        @csrf
-        <label>Email:</label>
-        <input type="email" name="email" required>
-        
-        <label>Password:</label>
-        <input type="password" name="password" required>
-        
-        <button type="submit">Login</button>
-    </form>
 
-    <!-- Login with Google -->
-    <a href="{{ route('google.login') }}" class="btn" style="margin-top: 10px; display: block; text-align: center;">
-        <i class="fa fa-google"></i> Login with Google
-    </a>
-
-    <p style="margin-top: 15px;">Don't have an account? <a href="#" id="switchToRegister">Register here</a></p>
-  </div>
-</div>
-
-<!-- Register Modal -->
-<div id="registerModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeRegister">&times;</span>
-    <h2>Register</h2>
-    <form method="POST" action="{{ url('/register') }}">
-        @csrf
-        <label>Name:</label>
-        <input type="text" name="name" required>
-
-        <label>Email:</label>
-        <input type="email" name="email" required>
-
-        <label>Password:</label>
-        <input type="password" name="password" required>
-
-        <label>Confirm Password:</label>
-        <input type="password" name="password_confirmation" required>
-
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="#" id="switchToLogin">Login here</a></p>
-  </div>
-</div>
 
 <section class="hero">
   <h1>Welcome to Glamour Makeup</h1>
   <p>Discover your beauty. Shine every day.</p>
+   <div class="hero-media">
+        <img id="hero-img" src="{{ asset('css/img/image copy.png') }}" alt="Product">
+      </div>
 </section>
 
-<div class="content">
-  <h2>Featured Products</h2>
-  <div class="product-cards">
-    <div class="product-card">
-      <img src="{{ asset('css/img/image.png') }}" alt="Lipstick">
-      <h3>Velvet Lipstick</h3>
-      <p>$25.00</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product-card">
-      <img src="{{ asset('css/img/image copy.png') }}" alt="Foundation">
-      <h3>Liquid Foundation</h3>
-      <p>$30.00</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product-card">
-      <img src="{{ asset('css/img/image copy 2.png') }}" alt="Blush">
-      <h3>Rosy Blush</h3>
-      <p>$18.00</p>
-      <button>Add to Cart</button>
-    </div>
-  </div>
-</div>
+
 
 <script>
   const loginModal = document.getElementById("loginModal");

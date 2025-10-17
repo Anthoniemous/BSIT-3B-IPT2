@@ -1,0 +1,190 @@
+/* 🌸 GLAMOUR MAKEUP STORE ADMIN TABLE THEME */
+
+/* General Layout */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0d1117;
+    color: #e6edf3;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #161b22;
+    border-bottom: 2px solid #ff5ca2; /* Glamour Pink line */
+    color: #ff5ca2;
+    font-weight: 600;
+    font-size: 24px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* 🌷 Buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(255, 92, 162, 0.2);
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* 💖 Add / Primary Button */
+.btn-primary {
+    background: linear-gradient(135deg, #ff5ca2, #ff85c0);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #ff85c0, #ff5ca2);
+    box-shadow: 0 0 10px rgba(255, 92, 162, 0.6);
+}
+
+/* 💜 Edit Button */
+.btn-warning {
+    background: linear-gradient(135deg, #c89fff, #a273ff);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #a273ff, #c89fff);
+    box-shadow: 0 0 10px rgba(200, 159, 255, 0.5);
+}
+
+/* 💋 Delete Button */
+.btn-danger {
+    background: linear-gradient(135deg, #ff6f91, #ff3f7d);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #ff3f7d, #ff6f91);
+    box-shadow: 0 0 10px rgba(255, 63, 125, 0.6);
+}
+
+/* Button Focus Effect */
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 12px rgba(255, 92, 162, 0.6);
+}
+
+/* 🌸 Table Container */
+.table-container {
+    margin: 30px auto;
+    width: 90%;
+    background: linear-gradient(145deg, #161b22, #1b1f27);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+}
+
+/* 🌸 Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #292f3b;
+    color: #ff85c0; /* lighter pink header */
+}
+
+thead th {
+    padding: 15px 10px;
+    text-align: left;
+    font-size: 15px;
+    border-bottom: 2px solid #ff5ca2;
+    letter-spacing: 0.5px;
+}
+
+tbody tr {
+    border-bottom: 1px solid #30363d;
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+    background-color: #2a313d;
+    box-shadow: inset 0 0 10px rgba(255, 92, 162, 0.2);
+}
+
+td {
+    padding: 12px 10px;
+    vertical-align: middle;
+    font-size: 15px;
+}
+
+/* 🌸 Product Image */
+td img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #ff5ca2;
+    box-shadow: 0 0 8px rgba(255, 92, 162, 0.3);
+}
+
+/* 🌸 Status Badges */
+.status {
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.status.pending {
+    background-color: #ffc6c6;
+    color: #842029;
+}
+
+.status.processing {
+    background-color: #fff1a8;
+    color: #856404;
+}
+
+.status.completed {
+    background-color: #b9fbc0;
+    color: #0f5132;
+}
+
+/* 🌸 Responsive Layout */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 15px;
+        border: 1px solid #30363d;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    td {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-transform: capitalize;
+        color: #ff5ca2;
+    }
+}
