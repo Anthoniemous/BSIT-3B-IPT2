@@ -1,0 +1,169 @@
+/* ---------- BODY & BACKGROUND ---------- */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to bottom, #d4ead4, #eaf7ea);
+  color: #2b3a2f;
+  line-height: 1.5;
+}
+
+/* ---------- MAIN CONTAINER ---------- */
+.container {
+  width: 94%;
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #ffffffdd; /* slightly transparent white */
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(43, 58, 47, 0.1);
+  padding: 30px;
+}
+
+/* ---------- TITLE ---------- */
+.page-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2b3a2f;
+  margin-bottom: 24px;
+  text-shadow: 1px 1px 2px rgba(43, 58, 47, 0.1);
+}
+
+/* ---------- ALERTS ---------- */
+.alert {
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.alert-success {
+  background: rgba(126, 217, 87, 0.1);
+  border: 1px solid #6da34d;
+  color: #4e8238;
+}
+
+.alert-danger {
+  background: rgba(255, 102, 102, 0.1);
+  border: 1px solid #ff6666;
+  color: #cc3333;
+}
+
+/* ---------- EMPTY STATE ---------- */
+.no-orders {
+  text-align: center;
+  font-size: 1.05rem;
+  color: #2b3a2f;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* ---------- ORDERS TABLE ---------- */
+.order-table {
+  overflow-x: auto;
+}
+
+.order-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #f0fff4;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.order-table th,
+.order-table td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.order-table th {
+  background: linear-gradient(90deg, #4d805c, #2b3a2f);
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-table tr:hover {
+  background-color: rgba(43, 58, 47, 0.1);
+}
+
+/* ---------- STATUS BADGES ---------- */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.status.pending { background: rgba(255, 193, 94, 0.15); color: #c47f39; }
+.status.completed { background: rgba(126, 217, 87, 0.15); color: #4e8238; }
+.status.cancelled { background: rgba(205, 92, 92, 0.15); color: #a33c3c; }
+
+/* ---------- BACK BUTTON ---------- */
+.mt-6 {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.mt-6 a {
+  background: linear-gradient(90deg, #4d805c, #2b3a2f);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 26px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 16px rgba(43, 58, 47, 0.2);
+}
+
+.mt-6 a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(43, 58, 47, 0.35);
+}
+
+/* ---------- PAGINATION ---------- */
+.pagination-container {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.pagination {
+  display: inline-flex;
+  gap: 8px;
+  list-style: none;
+}
+
+.pagination li a,
+.pagination li span {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #4d805c;
+  color: #2b3a2f;
+  text-decoration: none;
+  background: #f0fff4;
+  transition: background 0.3s, color 0.3s;
+}
+
+.pagination li.active span {
+  background-color: #2b3a2f;
+  color: #fff;
+  border-color: #2b3a2f;
+}
+
+.pagination li a:hover {
+  background-color: #d0f0d0;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 720px) {
+  .page-title { font-size: 1.6rem; }
+  .order-table th, .order-table td { font-size: 0.9rem; padding: 10px; }
+  .container { padding: 20px; }
+}

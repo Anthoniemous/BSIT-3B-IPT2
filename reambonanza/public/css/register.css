@@ -1,0 +1,120 @@
+/* ===== GLOBAL & BODY ===== */
+body {
+    font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+        url('../css/img/image.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #1b3b27;
+    line-height: 1.45;
+
+    /* NEW: center login */
+    display: flex;
+    justify-content: center; /* horizontal */
+    align-items: center;     /* vertical */
+    height: 100vh;           /* full viewport height */
+}
+/* ===== CENTER WRAPPER ===== */
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ===== REGISTER CARD ===== */
+.register-container {
+    background-color: #ffffffdd; /* slightly transparent white */
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid #a3d2f2;
+}
+
+.register-container h2 {
+    margin-bottom: 25px;
+    color: #2a7f99; /* teal-blue shampoo vibe */
+    font-weight: 700;
+}
+
+/* ===== INPUTS ===== */
+.register-container input[type="text"],
+.register-container input[type="email"],
+.register-container input[type="password"] {
+    width: 95%;
+    padding: 12px 10px;
+    margin: 8px 0 20px 0;
+    border: 1px solid #a3d2f2;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #e0f7ff;
+    color: #015668;
+    transition: 0.3s;
+}
+
+.register-container input:focus {
+    border-color: #33a1c9;
+    box-shadow: 0 0 6px rgba(51, 161, 201, 0.4);
+    outline: none;
+}
+
+.register-container label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #2a7f99;
+}
+
+/* ===== BUTTON ===== */
+.register-container button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #33a1c9, #66c2e0);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.register-container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(51, 161, 201, 0.3);
+}
+
+/* ===== ERROR MESSAGES ===== */
+.error-msg {
+    background-color: #ffe5e5;
+    color: #d32f2f;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* ===== LOGIN LINK ===== */
+.login-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #33a1c9;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    color: #66c2e0;
+    text-decoration: underline;
+}

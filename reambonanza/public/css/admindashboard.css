@@ -1,0 +1,95 @@
+/* 🍃 Green-Themed Admin Dashboard */
+
+/* Base & body */
+body {
+    background: radial-gradient(circle at top left, #c3f0c3, transparent 60%),
+                radial-gradient(circle at bottom right, #77c177, transparent 60%);
+    background-color: #f0fff0; /* soft mint base */
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    color: #2a3d2a;
+}
+
+/* Header buttons and title */
+h2 {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px;
+    color: #3d7a3d; /* dark green */
+}
+
+/* Buttons */
+.btn {
+    background-color: #7bc67b; /* fresh green */
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: #3d7a3d; /* darker green on hover */
+    transform: scale(1.05);
+}
+
+/* Table container */
+.table-container {
+    margin: 30px auto;
+    width: 90%;
+    background: #f0fff0; /* soft mint */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: linear-gradient(90deg, #7bc67b, #3d7a3d); /* green gradient */
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #cce6cc;
+    color: #2a3d2a;
+}
+
+td img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #a8d5a8;
+}
+
+/* Action button variants */
+.btn-warning {
+    background-color: #a8d5a8; /* soft green highlight */
+    color: #2a3d2a;
+}
+
+.btn-warning:hover {
+    background-color: #85c785;
+}
+
+.btn-danger {
+    background-color: #b24c3e; /* muted red for delete */
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #963c31;
+}

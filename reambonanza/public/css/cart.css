@@ -1,0 +1,122 @@
+/* 🧴 Green Shampoo-Themed Cart Page */
+
+/* 🔥 Background Gradient */
+body {
+  font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url('../css/img/image.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #1b3b27;
+  line-height: 1.45;
+}
+
+/* 🌟 Container */
+.container {
+    max-width: 1000px;
+    margin: 60px auto;
+    background: #f0f8f0;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    color: #2b3a2f;
+    text-align: center;
+}
+
+/* 🛒 Title */
+.page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2b3a2f;
+    margin-bottom: 20px;
+}
+
+/* 📋 Table */
+.order-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #e6f0e6;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.order-table th {
+    background: linear-gradient(90deg, #2b3a2f, #3a4c3f);
+    color: #fff;
+    text-align: left;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.order-table td {
+    padding: 12px;
+    border-bottom: 1px solid #d9e6d9;
+    color: #2b3a2f;
+}
+
+.order-table tr:hover {
+    background-color: #d4e3d4;
+    transition: 0.3s;
+}
+
+/* ⚙️ Action Buttons */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.btn.primary {
+    background: linear-gradient(90deg, #3a4c3f, #2b3a2f);
+    color: #fff;
+}
+
+.btn.danger {
+    background: #7b1d1d;
+    color: #fff;
+}
+
+/* 🧡 No Items */
+.no-orders {
+    font-size: 18px;
+    color: #2b3a2f;
+    margin: 30px 0;
+    font-weight: 600;
+}
+
+/* 🔙 Navigation Buttons */
+.nav-btn {
+    display: inline-block;
+    background: linear-gradient(90deg, #3a4c3f, #2b3a2f);
+    color: white;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(43, 58, 47, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(43, 58, 47, 0.6);
+}

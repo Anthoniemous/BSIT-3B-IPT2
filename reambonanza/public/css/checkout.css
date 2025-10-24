@@ -1,0 +1,152 @@
+/* ☕ Green Glow Shampoo Shop Background */
+body {
+  font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url('../css/img/image.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #1b3b27;
+  line-height: 1.45;
+}
+
+/* 🧾 Checkout Layout */
+.checkout-container {
+    max-width: 700px;
+    margin: 70px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.checkout-title {
+    color: #1b5c25; /* green theme */
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.checkout-container::after {
+    content: "Sit back and relax while we craft your perfect shampoo experience ✨";
+    display: block;
+    font-size: 1rem;
+    color: #4caf50; /* green highlight */
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+/* 📦 Checkout Card */
+.checkout-card {
+    background: #f5fff7;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(76, 175, 80, 0.2);
+    text-align: left;
+    border: 1px solid #d4efd6;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2e7d32; /* dark green */
+    margin-bottom: 20px;
+    border-left: 4px solid #66bb6a;
+    padding-left: 10px;
+}
+
+/* 🧍 Form Inputs */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #1b5c25;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #a5d6a7;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #2e3b2b;
+    background-color: #f0fff4;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #66bb6a;
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.25);
+    outline: none;
+}
+
+/* ⚙️ Buttons */
+.form-actions {
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+/* 🧴 Green Glow Buttons */
+.btn.cancel {
+    background: #66bb6a;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+}
+
+.btn.cancel:hover {
+    background: #4caf50;
+    transform: translateY(-2px);
+}
+
+.btn.submit {
+    background: linear-gradient(90deg, #81c784, #388e3c);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(56, 142, 60, 0.3);
+}
+
+.btn.submit:hover {
+    box-shadow: 0 6px 18px rgba(56, 142, 60, 0.5);
+    transform: translateY(-2px);
+}
+
+/* 📱 Responsive */
+@media (max-width: 640px) {
+    .checkout-card {
+        padding: 25px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

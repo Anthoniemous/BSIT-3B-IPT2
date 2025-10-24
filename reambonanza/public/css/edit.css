@@ -1,0 +1,115 @@
+/* ---------- Edit Product Page ---------- */
+
+/* Body & Container */
+body {
+    background: radial-gradient(circle at top left, #ffefdb, #f7f0e5);
+    font-family: 'Poppins', sans-serif;
+    color: #4b2e05;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 20px;
+}
+
+/* Card */
+.container .shadow-md {
+    background-color: #fffaf3;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(97, 67, 43, 0.2);
+}
+
+/* Form Labels */
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #5c4033;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="number"],
+textarea,
+input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d7ccc8;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #4b2e05;
+    background-color: #fffdf8;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus,
+input[type="file"]:focus {
+    border-color: #a67c52;
+    box-shadow: 0 0 6px rgba(166, 124, 82, 0.4);
+    outline: none;
+}
+
+/* Error Messages */
+p.text-red-500 {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 4px;
+    font-size: 0.875rem;
+}
+
+/* Current Image */
+img {
+    border-radius: 8px;
+    border: 1px solid #d7ccc8;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #6f4e37, #8d6e63);
+    color: #fffdf8;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, #5d4037, #795548);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(97, 67, 43, 0.3);
+}
+
+.btn-secondary {
+    background: #d7ccc8;
+    color: #4b2e05;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background: #c7b198;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .container {
+        padding: 15px;
+    }
+
+    .flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
