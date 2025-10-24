@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // ✅ ADMIN: View all orders
-Route::middleware(['auth', 'is_admin'])->group(function () {
+Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
 });
 
@@ -56,7 +56,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 Route::get('/dashboard', function () {
     $products = Product::all();
     return view('dashboard', compact('products'));
-})->middleware(['auth', 'is_admin'])->name('dashboard');
+})->middleware(['auth:admin'])->name('dashboard');
 
 // User Dashboard
 Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
@@ -64,7 +64,7 @@ Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
     ->name('user.dashboard');
 
 // ====================== PRODUCTS ======================
-Route::middleware(['auth', 'is_admin'])->group(function () {
+Route::middleware(['auth:admin'])->group(function () {
     Route::resource('admin/products', ProductController::class);
 });
 
@@ -111,6 +111,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // 👉 ADD THIS
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
 });
 
 // ====================== GOOGLE AUTH ======================

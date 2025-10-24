@@ -12,7 +12,7 @@
   
   <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
   <style>
-    
+
     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
     .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; width: 90%; max-width: 400px; border-radius: 8px; position: relative; }
     .close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }

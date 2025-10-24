@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Dashboard - NBA Fan Store</title>
 
-  
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
- 
   <link rel="stylesheet" href="{{ asset('css/userdashboard.css') }}">
+  
 </head>
+
 <body>
-
-
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
@@ -25,29 +22,49 @@
       <nav class="main-nav">
         <ul>
           <li><a href="{{ url('/') }}">Home</a></li>
-          
-          
         </ul>
       </nav>
 
       <div class="user-option">
-  @auth
-    <a href="{{ route('orders.index') }}" class="btn small">My Orders</a>
+        @auth
+          <a href="{{ route('orders.index') }}" class="btn small">My Orders</a>
+          <a href="{{ route('cart.index') }}" class="btn small">My Cart 🛒</a>
 
-    <a href="{{ route('cart.index') }}" class="btn small">My Cart 🛒</a>
+          <!-- 🌸 Profile Dropdown -->
+          <div class="profile-container">
+            <img 
+              src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
+              alt="Profile" 
+              class="profile-pic" 
+              id="profileDropdownToggle"
+            >
 
-    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-      @csrf
-      <button type="submit" class="btn outline small">Logout</button>
-    </form>
-  @endauth
-</div>
+            <div class="dropdown-menu" id="profileDropdownMenu">
+              <h4>Welcome, {{ Auth::user()->name }}!</h4>
+
+              <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="profile_photo" required>
+                <button type="submit">Update Photo</button>
+              </form>
+
+              @if(session('success'))
+                <div class="alert-success">{{ session('success') }}</div>
+              @endif
+
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" style="margin-top: 10px; background: #dc3545;">Logout</button>
+              </form>
+            </div>
+          </div>
+        @endauth
+      </div>
     </div>
   </header>
 
-
   <main class="container" style="padding-top: 30px;">
-    <header class="section-header">
+    <header class="section-header" style="margin-top: 40px;">
       <h2>All Products</h2>
       <p class="section-sub">Browse and shop your favorites</p>
     </header>
@@ -72,7 +89,20 @@
     </div>
   </main>
 
- 
+  <script>
+    // 🌸 Dropdown Toggle Script
+    document.getElementById('profileDropdownToggle').addEventListener('click', function() {
+      document.getElementById('profileDropdownMenu').classList.toggle('active');
+    });
 
+    // Close dropdown if clicked outside
+    window.addEventListener('click', function(e) {
+      const menu = document.getElementById('profileDropdownMenu');
+      const toggle = document.getElementById('profileDropdownToggle');
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.remove('active');
+      }
+    });
+  </script>
 </body>
 </html>

@@ -15,7 +15,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-          'role',
+        'role',
+        'profile_photo', // 🆕 add this
     ];
 
     protected $hidden = [
@@ -26,4 +27,13 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // 🆕 Accessor for easy display
+    public function getProfilePhotoUrlAttribute()
+    {
+        if ($this->profile_photo) {
+            return asset('storage/' . $this->profile_photo);
+        }
+        return asset('images/default-avatar.png');
+    }
 }

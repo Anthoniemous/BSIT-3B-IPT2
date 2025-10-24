@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Admin; 
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 
@@ -23,24 +24,34 @@ class Controller extends BaseController
     }
 
     // Handle login
-   public function login(Request $request)
+  public function login(Request $request)
 {
-    $credentials = $request->validate([
+    $request->validate([
         'email' => ['required','email'],
         'password' => ['required'],
     ]);
 
+    $credentials = $request->only('email', 'password');
+
+    // Check if admin first
+    $admin = Admin::where('email', $credentials['email'])->first();
+
+    if ($admin && Hash::check($credentials['password'], $admin->password)) {
+    Auth::guard('admin')->login($admin); // ✅ correct guard for admin
+    return redirect()->route('dashboard')->with('success', 'Welcome Admin!');
+}
+
+    // Else, proceed with normal user login
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
 
-        // Check if email verified
         if (! Auth::user()->hasVerifiedEmail()) {
-            Auth::logout(); // logout user until verified
+            Auth::logout(); 
             return redirect()->route('verification.notice')
-                ->with('error', 'Please verify your email before logging in.');
+                ->with('error', 'Please verify your email before logging in.'); 
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route('user.dashboard')->with('success', 'Welcome User!');
     }
 
     return back()->withErrors([

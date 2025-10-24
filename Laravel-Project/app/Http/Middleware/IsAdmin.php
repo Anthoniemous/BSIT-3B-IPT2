@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Auth;
 class IsAdmin
 {
     public function handle(Request $request, Closure $next)
-    {
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            return $next($request);
-        }
-        return redirect('/')->with('error', 'Access denied.');
+{
+    // Check kung authenticated user ba, ug role = admin
+    if (!Auth::check() || Auth::user()->role !== 'admin') {
+        return redirect()->route('login')->with('error', 'You must be an admin to access this page.');
     }
+
+    return $next($request);
+}
 }
