@@ -5,233 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coffee ' Sodoso | Homepage</title>
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Connect to your CSS -->
+  <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 
-  <!-- Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-  <style>
-    body {
-      background: #0e0c0a;
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
-      overflow-x: hidden;
-    }
-
-    /* Navbar */
-    .navbar {
-      background: transparent;
-      padding: 15px 50px;
-      z-index: 1000;
-    }
-
-    .navbar-brand {
-      font-weight: bold;
-      color: #d9b08c;
-      font-size: 1.5rem;
-    }
-
-    .navbar-nav .nav-link {
-      color: #fff;
-      margin: 0 12px;
-      font-weight: 500;
-    }
-
-    .navbar-nav .nav-link:hover {
-      color: #d9b08c;
-    }
-
-    .btn-register {
-      background: #d9b08c;
-      border-radius: 10px;
-      padding: 6px 16px;
-      font-weight: 600;
-      color: #000;
-      margin-left: 10px;
-    }
-
-    /* Hero */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 0 10%;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-    }
-
-    .hero-content {
-      position: relative;
-      max-width: 550px;
-      z-index: 2;
-    }
-
-    .hero-content h1 {
-      font-size: 3rem;
-      font-weight: bold;
-      line-height: 1.3;
-    }
-
-    .hero-content h1 span {
-      color: #d9b08c;
-    }
-
-    .hero-content p {
-      margin: 20px 0;
-      font-size: 1.1rem;
-      color: #ddd;
-    }
-
-    .hero-content .btn {
-      margin-right: 15px;
-      margin-top: 10px;
-      border-radius: 10px;
-      padding: 10px 20px;
-    }
-
-    .btn-explore {
-      background: #d9b08c;
-      color: #000;
-      font-weight: 600;
-    }
-
-    .btn-order {
-      border: 1px solid #fff;
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Modal Glass Effect */
-    .modal-content {
-      border-radius: 18px;
-      padding: 25px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-    }
-
-    .form-control {
-      border-radius: 12px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #fff;
-    }
-
-    .form-control::placeholder {
-      color: #ddd;
-    }
-
-    .btn-login {
-      background: #6f4e37;
-      color: #fff;
-      font-weight: 600;
-      border-radius: 10px;
-    }
-
-    .btn-login:hover {
-      background: #a37b60;
-    }
-
-    .btn-google-login {
-      background: #db4437;
-      color: #fff;
-      border-radius: 10px;
-    }
-
-    .alert ul {
-      margin-bottom: 0;
-    }
-  </style>
 </head>
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#"><i class="fas fa-mug-hot"></i> Coffee ' Sodoso</a>
-      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Our Product</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Category</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
-          <li class="nav-item">
-            <a href="{{ route('register') }}" class="btn btn-register">Register</a>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-register" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
-          </li>
-        </ul>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="#" class="navbar-brand"><i class="fas fa-mug-hot"></i> Coffee ' Sodoso</a>
+      <div class="navbar-links">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Our Product</a>
+        <a href="#">Category</a>
+        <a href="#">Contact Us</a>
+        <a href="{{ route('register') }}" class="btn btn-register ">Register</a>
+        <a href="javascript:void(0)" id="loginBtn" class="btn btn-register1">Login</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Carousel -->
-  <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <section class="hero" style="background-image:url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80');">
-          <div class="hero-content">
-            <h1>Enjoy The Most <span>Delicious Coffee</span></h1>
-            <p>Start your day with coffee, enhancing productivity and mood. Its invigorating aroma sets a focused tone for tackling tasks with energy and positivity.</p>
-            <button class="btn btn-explore">Explore</button>
-            <button class="btn btn-order">Order Coffee</button>
-          </div>
-        </section>
-      </div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>Enjoy The Most <span>Delicious Coffee</span></h1>
+      <p>Start your day with coffee, enhancing productivity and mood. Its invigorating aroma sets a focused tone for tackling tasks with energy and positivity.</p>
+      <button class="btn btn-explore">Explore</button>
+      <button class="btn btn-order">Order Coffee</button>
     </div>
-  </div>
+  </section>
 
   <!-- Login Modal -->
-  <div class="modal fade" id="loginModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
 
-        <h5 class="mb-3">Login to Your Account</h5>
+      <h2 style="text-align: center; margin-top: 1rem;">Login to Your Account</h2>
 
-        <form action="{{ route('login.post') }}" method="POST">
-          @csrf
-          @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-          @endif
-          <div class="mb-3">
-            <input type="email" name="email" class="form-control" placeholder="Email Address" required>
-          </div>
-          <div class="mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
-          </div>
-          <button type="submit" class="btn btn-login w-100">Login</button>
-        </form>
+      
 
-        <hr class="bg-light">
+      <hr class="bg-light">
 
-        <div class="text-center">
-          <a href="{{ url('auth/google') }}" class="btn btn-google-login w-100">
-            <i class="fab fa-google"></i> Continue with Google
-          </a>
+      <!-- Traditional Login Form -->
+      <form action="{{ route('login.post') }}" method="POST">
+        @csrf
+        @if(session('error'))
+          <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+        <div class="mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email Address" required>
         </div>
+        <div class="mb-3">
+          <input type="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn btn-login">Login</button>
 
+         <!-- Google Login -->
+      <div class="text-center" style="margin-bottom: 15px; margin-top: 10px; margin-right: 20px; margin-left: 10px; ">
+        <a href="{{ url('auth/google') }}" class="btn btn-google-login">
+          <i class="fab fa-google"></i> Continue with Google
+        </a>
       </div>
+      </form>
+
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Modal script
+    const modal = document.getElementById('loginModal');
+    const openBtn = document.getElementById('loginBtn');
+    const closeBtn = document.getElementById('closeModal');
+
+    openBtn.onclick = () => modal.style.display = 'flex';
+    closeBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; }
+  </script>
 </body>
 </html>

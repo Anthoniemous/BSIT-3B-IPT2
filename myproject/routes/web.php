@@ -5,6 +5,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -126,23 +128,43 @@ Route::get('/test-mail', function () {
 // routes/web.php
 // Add to Cart
 Route::post('/cart/add/{id}', [CartController::class, 'add'])
-    ->middleware(['auth', 'verified']) // optional: only logged-in users
+    ->middleware(['auth']) // optional: only logged-in users
     ->name('cart.add');
 
 // View Cart
 Route::get('/cart', [CartController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('cart.index');
 
 // Update quantity
 Route::post('/cart/update/{id}', [CartController::class, 'update'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('cart.update');
 
 // Remove from cart
 Route::post('/cart/remove/{id}', [CartController::class, 'remove'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('cart.remove');
 
- 
+    Route::get('/profile', function () {
+    return view('customer.profile');
+})->name('customer.profile')->middleware('auth');
 
+//PROFILE CUSTOMER
+// ✅ View Profile Page
+Route::get('/profile', [CustomerController::class, 'showProfile'])
+    ->name('customer.profile')
+    ->middleware('auth');
+
+// ✅ Update Profile
+Route::put('/profile/update', [CustomerController::class, 'updateProfile'])
+    ->name('profile.update') // 👈 this now matches your Blade form
+    ->middleware('auth');
+ Route::post('/profile/store', [ProfileController::class, 'store'])->name('profile.store');
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [CustomerController::class, 'index'])->name('customer.dashboard');
+    Route::post('/save-profile', [CustomerController::class, 'saveProfile'])->name('customer.profile.save');
+});
+ 

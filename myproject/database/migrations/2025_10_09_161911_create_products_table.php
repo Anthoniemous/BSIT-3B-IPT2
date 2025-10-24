@@ -15,7 +15,8 @@ public function up()
         $table->id();
         $table->string('name');
         $table->decimal('price', 8, 2);
-        $table->text('description')->nullable(); // ✅ ADD THIS LINE
+        $table->text('description')->nullable();
+        $table->string('image')->nullable(); // ✅ ADD THIS LINE
         $table->timestamps();
     });
 }

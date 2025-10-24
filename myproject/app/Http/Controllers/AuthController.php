@@ -46,41 +46,69 @@ class AuthController extends Controller
     }
 
     // ✅ Handle Login
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+public function login(Request $request)
+{
+    // ✅ Validate inputs
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        $credentials = $request->only('email', 'password');
-// Hardcoded Admin Login
-if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
-    $request->session()->put('role', 'admin');
-    $request->session()->put('admin_name', 'Eljohn Sodoso'); // Add this
-    $request->session()->regenerate();
-    return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
-}
+    $credentials = $request->only('email', 'password');
 
-        // ✅ Customer Login via Database
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $request->session()->put('role', 'customer');
+    // 🔹 Hardcoded Admin Login
+    if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
+        // Check if admin exists in DB, if not, create
+        $admin = User::firstOrCreate(
+            ['email' => 'eljohn@example.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
 
-            // Check if email is verified
-            if (Auth::user()->hasVerifiedEmail()) {
-                return redirect()->route('customer.dashboard')->with('success', 'Welcome to your dashboard!');
-            } else {
-                Auth::logout();
-                return redirect()->route('login')->with('error', 'Please verify your email first.');
-            }
-        }
+        Auth::login($admin);
+        $request->session()->put('role', 'admin');
+        $request->session()->regenerate();
 
-        // ❌ Invalid credentials
-        return back()->withErrors([
-            'email' => 'Incorrect email or password!',
-        ]);
+        return redirect()->route('admin.dashboard')
+                         ->with('success', 'Welcome Admin!');
     }
+
+    // 🔹 Normal login attempt
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        // ✅ Role-based redirect
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard')
+                                 ->with('success', 'Welcome Admin!');
+            
+            case 'customer':
+                if (!$user->hasVerifiedEmail()) {
+                    Auth::logout();
+                    return redirect()->route('login')
+                                     ->with('error', 'Please verify your email first.');
+                }
+                return redirect()->route('customer.dashboard')
+                                 ->with('success', 'Welcome to your dashboard!');
+            
+            default:
+                Auth::logout();
+                return redirect()->route('login')
+                                 ->with('error', 'Role not recognized.');
+        }
+    }
+
+    // ❌ Invalid credentials
+    return back()->withErrors([
+        'email' => 'Incorrect email or password!',
+    ]);
+}
 
     // ✅ Logout
     public function logout(Request $request)

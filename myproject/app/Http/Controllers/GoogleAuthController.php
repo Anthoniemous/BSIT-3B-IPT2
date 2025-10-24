@@ -17,28 +17,38 @@ class GoogleAuthController extends Controller
         ->redirect();
     }
 
-    public function callbackGoogle()
-    {
-        try {
-            $google_user = Socialite::driver('google')->user();
+public function callbackGoogle()
+{
+    try {
+        $googleUser = Socialite::driver('google')->user();
 
-            $user = User::where('google_id', $google_user->getId())->first();
+        $user = User::where('google_id', $googleUser->getId())
+                    ->orWhere('email', $googleUser->getEmail())
+                    ->first();
 
-            if (!$user) {
-                $new_user = User::create([
-                    'name'      => $google_user->getName(),
-                    'email'     => $google_user->getEmail(),
-                    'google_id' => $google_user->getId()
-                ]);
+        if (!$user) {
+            // Determine role based on email (example)
+            $role = in_array($googleUser->getEmail(), ['admin@example.com']) ? 'admin' : 'customer';
 
-                Auth::login($new_user);
-                return redirect()->intended('dashboard');
-            } else {
-                Auth::login($user);
-                return redirect()->intended('dashboard');
-            }
-        } catch (\Throwable $th) {
-            dd('Something went wrong!! ' . $th->getMessage());
+            $user = User::create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'role' => $role,
+                'email_verified_at' => now(), // Google email considered verified
+            ]);
         }
+
+        Auth::login($user);
+
+        // Redirect based on role
+        return $user->role === 'admin'
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('customer.dashboard');
+
+    } catch (\Throwable $th) {
+        dd('Something went wrong!! ' . $th->getMessage());
     }
+}
+
 }

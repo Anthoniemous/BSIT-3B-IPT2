@@ -1,0 +1,242 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  background: #0e0c0a;
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px 50px;
+  z-index: 1000;
+    
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+   margin-right: 30px;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: #d9b08c;
+  font-size: 1.5rem;
+  text-decoration: none;
+   
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #d9b08c;
+}
+
+.btn-register1 {
+  background: #d9b08c;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  color: #161515;
+  text-decoration: none;
+}
+
+.btn-register1:hover {
+  background: #220f03;
+  color: #fff;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 100vh;
+  background-image: url('../images/coffee-spoon-coffee-beans-wooden-background_23-2148371048.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+ 
+}
+
+.hero .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Register Box */
+.register-box {
+  position: relative;
+  z-index: 2;
+  width: 380px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.register-box h2 {
+  color: #d9b08c;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 25px;
+ 
+}
+
+.form-control {
+  width: 100%;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  outline: none;
+  padding-right: 0px;
+ 
+}
+
+.form-control::placeholder {
+  color: #ddd;
+}
+
+.form-control:focus {
+  border-color: #d9b08c;
+  box-shadow: 0 0 6px #d9b08c;
+}
+
+.btn-login {
+  background: #6f4e37;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-login:hover {
+  background: #a37b60;
+}
+
+.btn-google-login {
+  background: #db4437;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-google-login i {
+  margin-right: 8px;
+}
+
+a {
+  color: #d9b08c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Divider */
+hr.bg-light {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 20px 0;
+}
+
+/* Alert */
+.alert {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ffb6b6;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .register-box {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .navbar {
+    padding: 15px 20px;
+  }
+}
+
+
+.btn {
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-register {
+  background: #d9b08c;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  color: #f58787;
+  text-underline-offset: unset;
+   text-decoration: none;
+}
+a {
+  text-decoration: none;
+}
+.btn-register1 {
+  background: #d9b08c;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  color: #161515;
+  margin-right: 50px;
+  
+}
+
+.btn-register:hover {
+  background: #220f03;
+   text-decoration: none;
+}
+.btn-register1:hover {
+  background: #220f03;
+  text-decoration: none;
+}
+

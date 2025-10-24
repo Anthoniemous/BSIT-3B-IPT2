@@ -1,42 +1,66 @@
-@extends('layouts.admin')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Dashboard - Coffee Shop</title>
 
-@section('content')
-<div class="container">
-  <h1 class="text-center mb-4">Welcome, {{ session('admin_name') ?? Auth::user()->name ?? 'Admin' }}!</h1>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="{{ asset('admin/main-dashboard.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
 
-  @if(session('success'))
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ session('success') }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-  @endif
-
-  <!-- Products Overview Card -->
-  <div class="mb-4">
-      <div class="card p-3 bg-transparent border-0">
-          <h2>🛍 Products Overview</h2>
-          <a href="{{ route('products.index') }}" class="btn btn-custom mt-3 w-100">Go to Product Management</a>
-      </div>
-  </div>
-
-  <!-- Product Cards -->
-  <div class="row g-4">
-      @if(isset($products) && count($products) > 0)
-          @foreach($products as $product)
-              <div class="col-md-6 col-lg-4">
-                  <div class="product-card">
-                      <img src="{{ asset('storage/products/' . ($product->image ?? 'default.png')) }}" alt="{{ $product->name }}" class="img-fluid">
-                      <div class="product-card-body">
-                          <h5 class="product-card-title">{{ $product->name }}</h5>
-                          <p class="product-card-price">₱ {{ number_format($product->price, 2) }}</p>
-                          <p>Category: {{ $product->category ?? '-' }}</p>
-                      </div>
-                  </div>
-              </div>
-          @endforeach
-      @else
-          <p class="text-center mt-4">No products yet.</p>
-      @endif
+<!-- Navbar -->
+<div class="top-nav">
+  <h3>☕ Coffee Admin</h3>
+  <div class="nav-links">
+    <a href="{{ route('admin.dashboard') }}">🏠 Dashboard</a>
+    <a href="{{ route('products.index') }}">🛍 Products</a>
+    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+      @csrf
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
   </div>
 </div>
-@endsection
+
+<!-- Main Dashboard Content -->
+<div class="main-content">
+  <div class="dashboard-container">
+    <h1 class="welcome-text">Welcome, {{ session('admin_name') ?? Auth::user()->name ?? 'Admin' }}!</h1>
+
+    @if(session('success'))
+      <div class="alert-success">
+        {{ session('success') }}
+        <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+      </div>
+    @endif
+
+    <!-- Products Overview -->
+    <div class="overview-card">
+      <h2>🛍 Products Overview</h2>
+      <a href="{{ route('products.index') }}" class="btn-custom">Go to Product Management</a>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="product-grid">
+      @if(isset($products) && count($products) > 0)
+        @foreach($products as $product)
+          <div class="product-card">
+            <img src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}">
+            <div class="product-card-body">
+              <h5 class="product-card-title">{{ $product->name }}</h5>
+              <p class="product-card-price">₱ {{ number_format($product->price, 2) }}</p>
+              <p class="product-card-category">Category: {{ $product->category ?? '-' }}</p>
+            </div>
+          </div>
+        @endforeach
+      @else
+        <p class="no-products">No products yet.</p>
+      @endif
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
