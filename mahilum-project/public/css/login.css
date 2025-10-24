@@ -1,0 +1,118 @@
+/* ===== GLOBAL ===== */
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('../css/img/1.png') no-repeat center center/cover; /* change if needed */
+}
+
+/* ===== WRAPPER TO CENTER ===== */
+.flex-center {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== LOGIN CARD ===== */
+.login-container {
+    background: #fff;
+    width: 370px;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #3e2723;
+}
+
+/* ===== FORM ===== */
+label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #3e2723;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bdbdbd;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 6px;
+    background: #6f4e37;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    opacity: .9;
+}
+
+/* ===== GOOGLE BUTTON ===== */
+.google-btn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    background: #db4437;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* ===== LINKS ===== */
+.links p {
+    font-size: 13px;
+    margin: 5px 0;
+}
+
+.links a {
+    color: #6f4e37;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* ===== MESSAGES ===== */
+.error-msg, .success-msg {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.error-msg {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.success-msg {
+    background: #e8f5e9;
+    color: #2e7d32;
+}

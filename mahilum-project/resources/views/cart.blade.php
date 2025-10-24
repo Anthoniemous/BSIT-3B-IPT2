@@ -1,0 +1,59 @@
+<x-app-layout>
+<link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+
+<div class="container">
+    <h1 class="page-title">🛍️ Your Coffee Cart</h1>
+
+    {{-- ✅ Flash messages --}}
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
+    @if($cartItems->isEmpty())
+        <p class="no-orders">☕ Your cart is empty, coffee lover! Add some brews to get started.</p>
+    @else
+        <div class="order-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Brew</th>
+                        <th>Cups</th>
+                        <th>Total</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($cartItems as $item)
+                        <tr>
+                            <td>{{ $item->product->product_name ?? 'Unknown Coffee' }}</td>
+                            <td>{{ $item->quantity }}</td>
+                            <td>₱{{ number_format($item->product->price * $item->quantity, 2) }}</td>
+                            <td>
+                                <div class="actions">
+                                    <form method="POST" action="{{ route('cart.remove', $item->cart_id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn danger">🗑️ Remove</button>
+                                    </form>
+
+                                    <form method="GET" action="{{ route('orders.order', ['cart_id' => $item->cart_id]) }}">
+                                        <button type="submit" class="btn primary">☕ Order Now</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+
+    <div class="mt-6 text-center">
+        <a href="{{ route('user.dashboard') }}" class="nav-btn">← Back to Dashboard</a>
+        <a href="{{ route('orders.index') }}" class="nav-btn ml-3">View My Orders</a>
+    </div>
+</div>
+</x-app-layout>
