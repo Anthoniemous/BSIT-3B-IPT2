@@ -7,12 +7,12 @@
         @csrf
 
         <div class="flex items-center w-full justify-center">
-            <img src="{{ asset('images/cart.png') }}" alt="Cart Logo" style="width: 150px;">
+            <img src="{{ asset('images/Logo.png') }}" alt="Cart Logo" style="width: 150px;">
             <h1 style="padding-left: 10px; font-size: 40px; font-family: 'Arial Black', sans-serif; color: #cc5500; text-shadow: 1px 2px 3px #ffffff;">
-                Shoppify
+                PAWer
             </h2>
         </div>
-
+ 
         <!-- Email Address -->
         <div >
             <x-input-label for="email" :value="__('Email')" class="text-white"/>

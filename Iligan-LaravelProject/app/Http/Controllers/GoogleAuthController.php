@@ -4,47 +4,84 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
 {
-    public function redirect() 
+    /**
+     * Redirect the user to Google for authentication.
+     */
+    public function redirect()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function callback() 
+    /**
+     * Handle the Google callback.
+     */
+    public function callback()
     {
         try {
-            $google_user = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->user();
 
-            // Look for existing user by google_id OR email
-            $user = User::where('google_id', $google_user->getId())
-                        ->orWhere('email', $google_user->getEmail())
+            // Try to find an existing user via google_id or email
+            $user = User::where('google_id', $googleUser->getId())
+                        ->orWhere('email', $googleUser->getEmail())
                         ->first();
 
             if ($user) {
-                // Update google_id if not set yet
+                /**
+                 * 🟢 EXISTING USER LOGGING IN VIA GOOGLE
+                 * - Skip email verification
+                 * - Just update google_id if not yet linked
+                 */
                 if (!$user->google_id) {
-                    $user->google_id = $google_user->getId();
-                    $user->save();
+                    $user->update([
+                        'google_id' => $googleUser->getId(),
+                    ]);
                 }
-            } else {
-                // Create new user if no match found
+
+                Auth::login($user);
+                return redirect()->intended('/dashboard');
+            } 
+            else {
+                /**
+                 * 🟡 NEW USER REGISTERING VIA GOOGLE
+                 * - Create account
+                 * - Require email verification (email_verified_at = null)
+                 * - Send verification email
+                 */
+                $fullName = explode(' ', $googleUser->getName(), 2);
+                $fname = $fullName[0] ?? '';
+                $lname = $fullName[1] ?? '';
+
                 $user = User::create([
-                    'name'      => $google_user->getName(),
-                    'email'     => $google_user->getEmail(),
-                    'google_id' => $google_user->getId(),
-                    'password'  => bcrypt(Str::random(24)), // dummy password
+                    'fname'             => $fname,
+                    'lname'             => $lname,
+                    'email'             => $googleUser->getEmail(),
+                    'google_id'         => $googleUser->getId(),
+                    'password'          => Hash::make(Str::random(24)),
+                    'email_verified_at' => null, // user must verify first
                 ]);
+
+                // Send email verification if the model uses MustVerifyEmail
+                if (in_array('Illuminate\Contracts\Auth\MustVerifyEmail', class_implements($user))) {
+                    $user->sendEmailVerificationNotification();
+                }
+
+                // Log the user in but redirect them to verification page
+                Auth::login($user);
+
+                return redirect()->route('verification.notice')
+                    ->with('status', 'Please verify your email before continuing.');
             }
 
-            Auth::login($user);
-            return redirect()->to('/dashboard');
-
         } catch (\Throwable $th) {
-            dd('Something went wrong! ' . $th->getMessage());
+            return redirect()->route('login')
+                ->with('error', 'Google login failed: ' . $th->getMessage());
         }
     }
 }

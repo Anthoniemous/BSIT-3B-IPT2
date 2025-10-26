@@ -23,18 +23,18 @@
         @endif
     </head>
 
-    <body class="bg-[#FDFDFC] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col" style="background-image: url('/images/shopping-bag-cart.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <body class="bg-[#FDFDFC] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col" style="background-image: url('/images/landing_background.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
         
         <div class="flex items-center w-full justify-left" style="position: relative; top: 50px; left: 20px;">
-            <img src="{{ asset('images/cart.png') }}" alt="Cart Logo" style="width: 200px;">
+            <img src="{{ asset('images/Logo.png') }}" alt="Cart Logo" style="width: 200px;">
         </div>
 
-        <div class="flex items-center w-full justify-left" style="position: absolute; padding-left: 50px; font-size: 50px; font-family: 'Arial Black', sans-serif; color: black; text-shadow: 5px 5px 10px #ffffff;">
-            <h1>Welcome to <span class="shoppify" style="color: #cc5500">Shoppify!</span></h1>
+        <div class="flex items-center w-full justify-left" style="position: absolute; padding-left: 50px; padding-top: 0px; font-size: 50px; font-family: 'Arial Black', sans-serif; color: black; text-shadow: 5px 5px 10px #ffffff;">
+            <h1>Welcome to <span class="shoppify" style="color: #cc5500">PAWer!</span></h1>
         </div>
 
         <div class="flex items-center w-full justify-left" style="position: absolute; margin-top: 80px; padding-left: 50px; font-family: 'Arial', sans-serif;">
-            <h2>Your trusted cart partner.<h2>
+            <h2>Your trusted pet accessories shop.<h2>
         </div>
         
         <div class="flex items-center w-full justify-left transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 pt-0" style="margin-top: 100px;">
@@ -47,7 +47,7 @@
                         <nav class="flex items-center justify-center gap-4">
                             @auth
                                 <a
-                                    href="{{ url('/dashboard') }}"
+                                    href="{{ url('/admin_dashboard') }}"
                                     class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#cc5500] rounded-sm text-sm leading-normal"
                                 >
                                     Dashboard

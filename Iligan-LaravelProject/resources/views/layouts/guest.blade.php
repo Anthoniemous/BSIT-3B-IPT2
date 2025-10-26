@@ -18,7 +18,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body class="font-sans antialiased min-h-screen flex items-stretch text-black" style="background-image: url('/images/shopping-bag-cart.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <body class="font-sans antialiased min-h-screen flex items-stretch text-black" style="background-image: url('/images/landing_background.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
         <!-- Left Panel (Form Section) -->
         <div class="w-1/2 bg-[#242424] flex items-center justify-center shadow-2xl">
             <div class="w-full max-w-lg px-12 py-16">
