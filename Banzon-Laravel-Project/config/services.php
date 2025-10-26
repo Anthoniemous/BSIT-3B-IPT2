@@ -32,10 +32,13 @@ return [
     ],
     
     'google' => [
-        'client_id'     => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect'      => env('GOOGLE_REDIRECT_URI'),
-        'admin_redirect' => env('GOOGLE_ADMIN_REDIRECT_URI'),
-    ],
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
 
+    // For customers
+    'redirect' => env('GOOGLE_REDIRECT_URI'),
+
+    // For admins (custom redirect)
+    'admin_redirect' => env('GOOGLE_ADMIN_REDIRECT_URI'),
+    ],
 ];

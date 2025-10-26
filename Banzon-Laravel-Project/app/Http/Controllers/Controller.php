@@ -6,8 +6,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered; // ✅ import for event
-use App\Models\Customer;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\Registered;
 
 class Controller extends BaseController
 {
@@ -15,13 +15,17 @@ class Controller extends BaseController
     use \Illuminate\Foundation\Bus\DispatchesJobs;
     use \Illuminate\Foundation\Validation\ValidatesRequests;
 
-    // Show login form
+    // ===================================================
+    // Show Login Form
+    // ===================================================
     public function showLogin()
     {
-        return view('login'); // /views/login.blade.php
+        return view('login');
     }
 
-    // Handle login
+    // ===================================================
+    // Handle Login (Admin or Customer)
+    // ===================================================
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -29,73 +33,102 @@ class Controller extends BaseController
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $email = $request->email;
+        $password = $request->password;
+
+        // ✅ 1. Check if the email belongs to an admin
+        $admin = DB::table('admin')->where('email', $email)->first();
+        if ($admin && Hash::check($password, $admin->password)) {
+            // Clear any old session data first
+            $request->session()->invalidate();
             $request->session()->regenerate();
 
-            // ✅ If user not verified → redirect to verification notice
-            if (! Auth::user()->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice');
-            }
+            $request->session()->put('role', 'admin');
+            $request->session()->put('admin_id', $admin->admin_id);
 
-            return redirect()->intended('/dashboard');
+            return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Admin!');
         }
 
+
+        $customer = DB::table('customer')->where('email', $email)->first();
+        if ($customer && Hash::check($password, $customer->password)) {
+            $request->session()->invalidate();
+            $request->session()->regenerate();
+
+            $request->session()->put('role', 'customer');
+            $request->session()->put('customer_id', $customer->customer_id);
+            $request->session()->put('customer_name', $customer->name); // ✅
+            $request->session()->put('customer_email', $customer->email); // ✅
+            return redirect()->route('customer.dashboard')->with('success', 'Welcome back!');
+        }
+
+
+        // ❌ Invalid credentials
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
 
-    // Show registration form
+    // ===================================================
+    // Show Registration Form (Customers Only)
+    // ===================================================
     public function showRegister()
     {
-        return view('register'); // /views/register.blade.php
+        return view('register');
     }
 
-    // Handle registration
-public function register(Request $request)
-{
-    $request->validate([
-        'username' => 'required|string|max:50|unique:admin,username',
-        'email'    => 'required|email|max:100|unique:admin,email',
-        'password' => 'required|confirmed|min:8',
-    ]);
+    // ===================================================
+    // Handle Customer Registration
+    // ===================================================
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:100|unique:customer,email',
+            'password' => 'required|confirmed|min:8',
+        ]);
 
-    $admin = \App\Models\Admin::create([
-        'username' => $request->username,
-        'email'    => $request->email,
-        'password' => bcrypt($request->password),
-    ]);
+        // ✅ Create customer
+        $customerId = DB::table('customer')->insertGetId([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'created_at' => now(),
+        ]);
 
-    Auth::login($admin);
+        // ✅ Auto-login
+        $request->session()->put('customer_id', $customerId);
+        $request->session()->put('role', 'customer');
 
-    return redirect()->route('dashboard');
-}
+        // ✅ Redirect to customer dashboard
+        return redirect()->route('customer.dashboard')
+                        ->with('success', 'Registration successful! Welcome to your dashboard.');
+    }
 
-
-
-    // Handle logout
+    // ===================================================
+    // Handle Logout (for Admin & Customer)
+    // ===================================================
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
+        $request->session()->flush();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/login')->with('success', 'You have been logged out.');
     }
 
-    // ✅ Show forgot password form
+    // ===================================================
+    // Forgot Password (optional)
+    // ===================================================
     public function showForgotPassword()
     {
-        return view('forgotpassword'); // /views/forgotpassword.blade.php
+        return view('forgotpassword');
     }
 
-    // ✅ Handle forgot password submission
     public function sendResetLink(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
         ]);
 
-        // For demo purposes: simulate sending reset link
         return back()->with('success', 'If your email exists, a password reset link has been sent.');
     }
 }

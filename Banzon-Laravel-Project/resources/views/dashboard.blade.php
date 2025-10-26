@@ -5,7 +5,7 @@
         <div class="container">
             <div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
                 <p class="fs-5 fw-medium fst-italic text-primary">Online Store</p>
-                <h1 class="display-6">Want to stay healthy? Choose tea taste</h1>
+                <h1 class="display-6 text-primary ">Want to stay healthy? Choose tea taste</h1>
             </div>
             
             <!-- Add Product Button -->

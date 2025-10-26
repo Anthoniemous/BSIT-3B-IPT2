@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\Admin; // ✅ use Admin instead of Customer
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class GoogleAuthController extends Controller
 {
-    // 🔹 Step 1: Redirect to Google for authentication
+    // Step 1: Redirect customer to Google
     public function redirect()
     {
         return Socialite::driver('google')
@@ -17,41 +17,42 @@ class GoogleAuthController extends Controller
             ->redirect();
     }
 
-    // 🔹 Step 2: Handle Google callback
+    // Step 2: Handle Google callback for customer
     public function callbackGoogle()
     {
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // Find the admin by Google ID or email
-            $admin = Admin::where('google_id', $googleUser->getId())
+            // Find or create customer
+            $customer = DB::table('customer')
+                ->where('google_id', $googleUser->getId())
                 ->orWhere('email', $googleUser->getEmail())
                 ->first();
 
-            // Create new admin if not found
-            if (!$admin) {
-                $admin = Admin::create([
-                    'username'  => $googleUser->getName(),  // ✅ matches admin table
-                    'email'     => $googleUser->getEmail(),
-                    'google_id' => $googleUser->getId(),
-                    'password'  => bcrypt(Str::random(16)), // dummy password
+            if (!$customer) {
+                $customerId = DB::table('customer')->insertGetId([
+                    'name'       => $googleUser->getName(),
+                    'email'      => $googleUser->getEmail(),
+                    'google_id'  => $googleUser->getId(),
+                    'password'   => bcrypt(Str::random(16)),
+                    'created_at' => now(),
                 ]);
-            } else {
-                // Update Google ID if missing
-                if (!$admin->google_id) {
-                    $admin->update([
-                        'google_id' => $googleUser->getId(),
-                    ]);
-                }
+
+                $customer = DB::table('customer')->where('customer_id', $customerId)->first();
             }
 
-            // Login as admin (default guard)
-            Auth::login($admin);
+            // ✅ Reset session and set customer role
+            session()->invalidate();
+            session()->regenerate();
 
-            return redirect()->intended('/dashboard');
+            session()->put('role', 'customer');
+            session()->put('customer_id', $customer->customer_id);
+
+            return redirect()->route('customer.dashboard')
+                             ->with('success', 'Welcome back, ' . $customer->name . '!');
 
         } catch (\Throwable $th) {
-            dd('Something went wrong: ' . $th->getMessage());
+            return redirect('/login')->with('error', 'Google sign-in failed: ' . $th->getMessage());
         }
     }
 }

@@ -39,11 +39,12 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             {{-- Navigation --}} 
-          @if(Auth::guard('admin')->check())
+         @if(session('role') === 'admin')
                 @include('layouts.admin_navigation')
-            @elseif(Auth::guard('customer')->check())
-                @include('layouts.navigation')
+            @elseif(session('role') === 'customer')
+                @include('layouts.customer_navigation')
             @endif
+
 
 
             <!-- Page Heading -->
