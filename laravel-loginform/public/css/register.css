@@ -1,122 +1,242 @@
-/* Body setup */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', Arial, sans-serif;
-    background-color: #5c3c86;  /* soft, light gray-blue background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  background: #0e0c0a;
+  overflow-x: hidden;
 }
 
-/* Register container */
-.register-container {
-    background-color: #ffffff;
-    padding: 50px 35px;
-    border-radius: 25px; /* aesthetic rounded corners */
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Navbar */
+.navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px 50px;
+  z-index: 1000;
+    
 }
 
-.register-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+   margin-right: 30px;
 }
 
-/* Heading */
-.register-container h2 {
-    margin-bottom: 25px;
-    color: #333333;
-    font-weight: 600;
-    font-size: 28px;
+.navbar-brand {
+  font-weight: bold;
+  color: #d9b08c;
+  font-size: 1.5rem;
+  text-decoration: none;
+   
 }
 
-/* Input fields */
-.register-container input {
-    width: 100%;
-    padding: 14px 2px;
-    margin: 12px 0;
-    border-radius: 12px;
-    border: 1px solid #d1d5db;
-    font-size: 16px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
-.register-container input:focus {
-    outline: none;
-    border-color: #007BFF;
-    box-shadow: 0 0 8px rgba(0,123,255,0.2);
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
 }
 
-/* Button */
-.register-container button {
-    width: 100%;
-    padding: 14px;
-     background-color: #321ab9;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 18px;
-    margin-top: 15px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+.navbar-links a:hover {
+  color: #d9b08c;
 }
 
-.register-container button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.btn-register1 {
+  background: #d9b08c;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  color: #161515;
+  text-decoration: none;
 }
 
-/* Messages */
-.error-msg, .success-msg {
-    margin-bottom: 15px;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 14px;
+.btn-register1:hover {
+  background: #220f03;
+  color: #fff;
 }
 
-.error-msg {
-    background-color: #fde2e1;
-    color: #b71c1c;
+/* Hero Section */
+.hero {
+  min-height: 100vh;
+  background-image: url('../images/coffee-spoon-coffee-beans-wooden-background_23-2148371048.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+ 
 }
 
-.success-msg {
-    background-color: #e1f5e4;
-    color: #1b5e20;
+.hero .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
 }
 
-/* Links */
-.register-container a {
-    display: inline-block;
-    margin-top: 15px;
-    color: #007BFF;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s ease;
+/* Register Box */
+.register-box {
+  position: relative;
+  z-index: 2;
+  width: 380px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.8s ease-in-out;
 }
 
-.register-container a:hover {
-    color: #0056b3;
-    text-decoration: underline;
+.register-box h2 {
+  color: #d9b08c;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 25px;
+ 
+}
+
+.form-control {
+  width: 100%;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  outline: none;
+  padding-right: 0px;
+ 
+}
+
+.form-control::placeholder {
+  color: #ddd;
+}
+
+.form-control:focus {
+  border-color: #d9b08c;
+  box-shadow: 0 0 6px #d9b08c;
+}
+
+.btn-login {
+  background: #6f4e37;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-login:hover {
+  background: #a37b60;
+}
+
+.btn-google-login {
+  background: #db4437;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-google-login i {
+  margin-right: 8px;
+}
+
+a {
+  color: #d9b08c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Divider */
+hr.bg-light {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 20px 0;
+}
+
+/* Alert */
+.alert {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ffb6b6;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsive */
-@media (max-width: 480px) {
-    .register-container {
-        padding: 40px 25px;
-        border-radius: 20px;
-    }
+@media (max-width: 500px) {
+  .register-box {
+    width: 90%;
+    padding: 20px;
+  }
 
-    .register-container h2 {
-        font-size: 24px;
-    }
-
-    .register-container button {
-        font-size: 16px;
-        padding: 12px;
-    }
+  .navbar {
+    padding: 15px 20px;
+  }
 }
+
+
+.btn {
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-register {
+  background: #d9b08c;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  color: #f58787;
+  text-underline-offset: unset;
+   text-decoration: none;
+}
+a {
+  text-decoration: none;
+}
+.btn-register1 {
+  background: #d9b08c;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  color: #161515;
+  margin-right: 50px;
+  
+}
+
+.btn-register:hover {
+  background: #220f03;
+   text-decoration: none;
+}
+.btn-register1:hover {
+  background: #220f03;
+  text-decoration: none;
+}
+

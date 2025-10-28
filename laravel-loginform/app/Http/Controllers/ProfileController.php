@@ -2,59 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): View
+    public function store(Request $request)
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
+        $user = Auth::user();
+
+        // ✅ Validate input fields
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
-    }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+        // ✅ Handle profile image upload
+        if ($request->hasFile('profile_image')) {
+            $imageName = time() . '.' . $request->profile_image->extension();
+            // ❌ old: $request->profile_image->storeAs('public/profile', $imageName);
+            // ✅ fixed:
+            $request->profile_image->storeAs('profile', $imageName, 'public');
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+            $user->profile_image = $imageName;
         }
 
-        $request->user()->save();
+        // ✅ Update other profile details
+        $user->name = $validated['name'];
+        $user->address = $validated['address'];
+        $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        // ✅ Redirect back to dashboard & hide modal
+        return redirect()
+            ->route('customer.dashboard')
+            ->with('success', 'Profile saved successfully!');
     }
 }
