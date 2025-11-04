@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="hero-media">
-        <img id="hero-img" src="{{ asset('css/img/bottle.jpg') }}" alt="Shampoo Bottle">
+        <img id="hero-img" src="{{ asset('css/img/2.png') }}" alt="Shampoo Bottle">
       </div>
     </div>
   </section>

@@ -7,7 +7,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/userdashboard.css') }}">
+  
 </head>
 
 <body>
@@ -19,7 +20,9 @@
       </div>
 
       <nav class="main-nav">
-        <ul></ul>
+        <ul>
+        
+        </ul>
       </nav>
 
       <div class="user-option">
@@ -27,7 +30,7 @@
       <a href="{{ route('orders.index') }}" class="btn small">Purchase History</a>
       <a href="{{ route('cart.index') }}" class="btn small">Your Shampoo Picks</a>
 
-          <!-- Profile Dropdown -->
+          <!-- 🌸 Profile Dropdown -->
           <div class="profile-container">
             <img 
               src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
@@ -37,14 +40,12 @@
             >
 
             <div class="dropdown-menu" id="profileDropdownMenu">
-              <h4>Welcome back, {{ Auth::user()->name }}!</h4>
-              <p class="greet-text">Healthy hair, happy you! Shine bright today ✨</p>
+              <h4>Welcome, {{ Auth::user()->name }}!</h4>
 
               <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <label for="profile_photo" class="upload-label">Update Your Profile Photo</label>
-                <input type="file" name="profile_photo" id="profile_photo" required>
-                <button type="submit" class="btn small">Upload</button>
+                <input type="file" name="profile_photo" required>
+                <button type="submit">Update Photo</button>
               </form>
 
               @if(session('success'))
@@ -53,7 +54,7 @@
 
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn small logout-btn">Logout</button>
+                <button type="submit" style="margin-top: 10px; background: #dc3545;">Logout</button>
               </form>
             </div>
           </div>
@@ -76,7 +77,11 @@
           </div>
           <div class="card-body">
             <h3>{{ $product->product_name }}</h3>
-            <p class="price">₱{{ number_format($product->price, 2) }}</p>
+            <h4>
+              {{ $product->description }}
+            </h4>
+
+            <p class="price">${{ number_format($product->price, 2) }}</p>
 
             <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
               @csrf
@@ -89,7 +94,7 @@
   </main>
 
   <script>
-    // Profile dropdown toggle
+    // 🌸 Dropdown Toggle Script
     document.getElementById('profileDropdownToggle').addEventListener('click', function() {
       document.getElementById('profileDropdownMenu').classList.toggle('active');
     });

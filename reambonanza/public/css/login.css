@@ -1,40 +1,42 @@
-/* 💖 Glamour Makeup Store Login Page */
+/* 💖 Glamour Makeup Store Login Page (Teal-Blue Theme) */
 
 /* 🌸 Body styling */
 body {
-    background: radial-gradient(circle at top left, #ffd6ec, transparent 60%),
-                radial-gradient(circle at bottom right, #ffe0f0, transparent 60%),
-                #fff6fb;
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+        url('../css/img/image.png') no-repeat center center fixed;
+    background-size: cover;
     font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    color: #015668;
 }
 
 /* 💎 Container for the form */
 .login-container {
-    background-color: #ffffff;
+    background-color: #ffffffdd; /* translucent white */
     padding: 40px 35px;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(233, 99, 150, 0.15);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
     width: 100%;
     max-width: 420px;
     text-align: center;
     display: flex;
     flex-direction: column;
     gap: 18px;
-    border: 1px solid rgba(255, 192, 203, 0.4);
+    border: 1px solid #a3d2f2;
 }
 
 /* 💋 Form title */
 .login-container h2 {
     margin-bottom: 15px;
-    color: #e75480;
+    color: #2a7f99; /* teal-blue */
     font-weight: 700;
     font-size: 1.8rem;
-    text-shadow: 0 1px 6px rgba(231, 84, 128, 0.1);
+    text-shadow: 0 1px 6px rgba(42, 127, 153, 0.15);
 }
 
 /* 🩰 Labels */
@@ -43,7 +45,7 @@ body {
     text-align: left;
     margin-bottom: 5px;
     font-weight: 600;
-    color: #8b5e83;
+    color: #2a7f99;
 }
 
 /* 🎀 Input fields */
@@ -51,17 +53,17 @@ body {
 .login-container input[type="password"] {
     width: 95%;
     padding: 12px 10px;
-    border: 1px solid #f4b6c2;
+    border: 1px solid #a3d2f2;
     border-radius: 10px;
     font-size: 15px;
-    background-color: #fffafc;
-    color: #444;
+    background-color: #e0f7ff;
+    color: #015668;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .login-container input:focus {
-    border-color: #ff9ebb;
-    box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.25);
+    border-color: #33a1c9;
+    box-shadow: 0 0 0 3px rgba(51, 161, 201, 0.3);
     outline: none;
 }
 
@@ -70,20 +72,20 @@ body {
     width: 50%;
     margin-left: 95px;
     padding: 12px;
-    background: linear-gradient(90deg, #ffb6c1, #ff91af);
+    background: linear-gradient(90deg, #33a1c9, #66c2e0);
     color: #ffffff;
     border: none;
     border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 145, 175, 0.3);
+    box-shadow: 0 4px 15px rgba(51, 161, 201, 0.3);
     transition: transform 0.2s, box-shadow 0.3s;
 }
 
 .login-container button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(255, 145, 175, 0.45);
+    box-shadow: 0 6px 18px rgba(51, 161, 201, 0.45);
 }
 
 /* 💄 Google button */
@@ -92,18 +94,18 @@ body {
     width: 50%;
     margin-left: 85px;
     padding: 12px;
-    background: linear-gradient(90deg, #ff7b89, #f76c83);
+    background: linear-gradient(90deg, #2a7f99, #33a1c9);
     color: #ffffff;
     text-decoration: none;
     border-radius: 10px;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(247, 108, 131, 0.3);
+    box-shadow: 0 4px 15px rgba(42, 127, 153, 0.3);
     transition: transform 0.2s, box-shadow 0.3s;
 }
 
 .login-container .google-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(247, 108, 131, 0.45);
+    box-shadow: 0 6px 20px rgba(42, 127, 153, 0.45);
 }
 
 /* 🌷 Success & Error Messages */
@@ -116,21 +118,21 @@ body {
 }
 
 .success-msg {
-    background-color: #ffeaf3;
-    color: #a83f6d;
-    border: 1px solid #ffc1d9;
+    background-color: #e0f7ff;
+    color: #015668;
+    border: 1px solid #a3d2f2;
 }
 
 .error-msg {
-    background-color: #ffe0e7;
-    color: #c42d4a;
+    background-color: #ffe5e5;
+    color: #d32f2f;
     border: 1px solid #f5a3b5;
 }
 
 /* 💕 Links container */
 .login-container .links {
     font-size: 14px;
-    color: #7a557f;
+    color: #015668;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -138,14 +140,14 @@ body {
 }
 
 .login-container .links a {
-    color: #e75480;
+    color: #33a1c9;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s;
 }
 
 .login-container .links a:hover {
-    color: #d94170;
+    color: #66c2e0;
     text-decoration: underline;
 }
 
