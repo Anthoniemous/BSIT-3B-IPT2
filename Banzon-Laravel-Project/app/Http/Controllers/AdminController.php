@@ -34,7 +34,7 @@ class AdminController extends Controller
             $request->session()->put('role', 'admin');
             $request->session()->put('admin_id', $admin->admin_id);
 
-            return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Admin!');
+            return redirect()->route('dashboard')->with('success', 'Welcome back, Admin!');
         }
 
         return back()->withErrors([

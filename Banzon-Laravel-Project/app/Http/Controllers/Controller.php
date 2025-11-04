@@ -57,8 +57,10 @@ class Controller extends BaseController
 
             $request->session()->put('role', 'customer');
             $request->session()->put('customer_id', $customer->customer_id);
-            $request->session()->put('customer_name', $customer->name); // ✅
-            $request->session()->put('customer_email', $customer->email); // ✅
+            $request->session()->put('customer_name', $customer->name); 
+            $request->session()->put('customer_email', $customer->email); 
+            $request->session()->put('customer_image', $customer->profile_image ?? 'img/default-profile.png'); 
+
             return redirect()->route('customer.dashboard')->with('success', 'Welcome back!');
         }
 

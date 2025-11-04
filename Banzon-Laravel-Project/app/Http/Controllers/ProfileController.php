@@ -2,59 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): View
+    // ✅ Show profile
+  public function edit()
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
+        $customerId = session('customer_id');
+        $customer = DB::table('customer')->where('customer_id', $customerId)->first();
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if (!$customer) {
+            return redirect()->route('login')->with('error', 'Please log in first.');
         }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return view('customer_profile', compact('customer'));
     }
 
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
+
+    // ✅ Update profile image
+    public function updateImage(Request $request)
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current-password'],
+        $request->validate([
+            'profile_image' => 'required|image|max:2048',
         ]);
 
-        $user = $request->user();
+        $customerId = session('customer_id');
+       $imagePath = $request->file('profile_image')->store('uploads/profile_images', 'public');
 
-        Auth::logout();
+        DB::table('customer')
+            ->where('customer_id', $customerId)
+            ->update(['profile_image' => $imagePath]);
 
-        $user->delete();
+        session(['customer_image' => 'storage/' . $imagePath]);
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        return back()->with('success', 'Profile image updated successfully!');
+    }
 
-        return Redirect::to('/');
+    // ✅ Update email
+    public function updateEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email|unique:customer,email,' . session('customer_id') . ',customer_id']);
+
+        DB::table('customer')
+            ->where('customer_id', session('customer_id'))
+            ->update(['email' => $request->email]);
+
+        session(['customer_email' => $request->email]);
+
+        return back()->with('success', 'Email updated successfully!');
+    }
+
+    // ✅ Change password
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|confirmed|min:8',
+        ]);
+
+        $customer = DB::table('customer')->where('customer_id', session('customer_id'))->first();
+
+        if (!$customer || !Hash::check($request->current_password, $customer->password)) {
+            return back()->with('error', 'Your current password is incorrect.');
+        }
+
+        DB::table('customer')
+            ->where('customer_id', session('customer_id'))
+            ->update(['password' => Hash::make($request->new_password)]);
+
+        return back()->with('success', 'Password changed successfully!');
     }
 }

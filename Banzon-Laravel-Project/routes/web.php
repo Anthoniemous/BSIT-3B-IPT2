@@ -56,18 +56,17 @@ Route::get('/customer/profile', function () {
     return view('customer_profile', compact('customer'));
 })->name('profile.edit');
 
-Route::get('/customer/profile', [CustomerProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/customer/profile/update', [CustomerProfileController::class, 'update'])->name('profile.update');
+// Customer Profile Management
+Route::get('/customer/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/customer/profile/update-image', [ProfileController::class, 'updateImage'])->name('profile.updateImage');
+Route::post('/customer/profile/update-email', [ProfileController::class, 'updateEmail'])->name('profile.updateEmail');
+Route::post('/customer/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
 // ===================================================
 // Admin Dashboard
 // ===================================================
-Route::get('/admin/dashboard', function () {
-    if (session('role') !== 'admin') {
-        return redirect('/login')->with('error', 'Please log in as an admin.');
-    }
-    return view('dashboard'); // admin dashboard view
-})->name('admin.dashboard');
+Route::get('/admin/dashboard', [ProductController::class, 'index'])
+    ->name('dashboard');
 
 // ===================================================
 // Google Auth (Customer)
