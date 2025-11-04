@@ -128,7 +128,7 @@ class Controller extends BaseController
 
             Auth::login($user);
 
-            return redirect()->route('dashboard');
+              return redirect()->route('user.dashboard'); // ✅ FIXED
 
         } catch (\Exception $e) {
             dd($e->getMessage(), $e->getCode(), $e->getTraceAsString());
