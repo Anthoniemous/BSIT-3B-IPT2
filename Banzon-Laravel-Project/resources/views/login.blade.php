@@ -32,10 +32,10 @@
             <input type="password" name="password" required>
             
             <button type="submit">Login</button>
-            <div class="google-login">
+           <div class="google-login">
                 <p>Or login with:</p>
-                <a href="{{ route('google-auth')}}">
-                    <P>-> Sign in with Google </P>
+                <a href="{{ route('google-auth') }}" class="google-btn">
+                    → Sign in with Google
                 </a>
             </div>
         </form>

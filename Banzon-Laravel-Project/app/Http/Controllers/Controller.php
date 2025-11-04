@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use App\Models\Customer; 
 use Illuminate\Auth\Events\Registered;
 
 class Controller extends BaseController
@@ -50,19 +51,27 @@ class Controller extends BaseController
         }
 
 
-        $customer = DB::table('customer')->where('email', $email)->first();
-        if ($customer && Hash::check($password, $customer->password)) {
-            $request->session()->invalidate();
-            $request->session()->regenerate();
+            $customer = \App\Models\Customer::where('email', $email)->first();
 
-            $request->session()->put('role', 'customer');
-            $request->session()->put('customer_id', $customer->customer_id);
-            $request->session()->put('customer_name', $customer->name); 
-            $request->session()->put('customer_email', $customer->email); 
-            $request->session()->put('customer_image', $customer->profile_image ?? 'img/default-profile.png'); 
+            if ($customer && Hash::check($password, $customer->password)) {
 
-            return redirect()->route('customer.dashboard')->with('success', 'Welcome back!');
-        }
+                // ✅ Prevent login if email not verified
+                if (!$customer->hasVerifiedEmail()) {
+                    return redirect()->back()->with('warning', 'Please verify your email before logging in.');
+                }
+
+                // ✅ Log in via customer guard
+                Auth::guard('customer')->login($customer);
+
+                $request->session()->regenerate();
+                $request->session()->put('role', 'customer');
+                $request->session()->put('customer_id', $customer->customer_id);
+                $request->session()->put('customer_name', $customer->name);
+                $request->session()->put('customer_email', $customer->email);
+                $request->session()->put('customer_image', $customer->profile_image ?? 'img/default-profile.png');
+
+                return redirect()->route('customer.dashboard')->with('success', 'Welcome back!');
+            }
 
 
         // ❌ Invalid credentials
@@ -98,13 +107,7 @@ class Controller extends BaseController
             'created_at' => now(),
         ]);
 
-        // ✅ Auto-login
-        $request->session()->put('customer_id', $customerId);
-        $request->session()->put('role', 'customer');
-
-        // ✅ Redirect to customer dashboard
-        return redirect()->route('customer.dashboard')
-                        ->with('success', 'Registration successful! Welcome to your dashboard.');
+      return redirect('/login')->with('success', 'Registration successful! Please log in to continue.');
     }
 
     // ===================================================

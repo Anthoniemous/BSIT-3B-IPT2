@@ -12,7 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerProductController;
 use App\Http\Controllers\CustomerProfileController;
-
+use Illuminate\Support\Facades\DB;
 
 // ===================================================
 // Default landing → welcome page
@@ -22,10 +22,45 @@ Route::get('/', function () {
 })->name('welcome');
 
 // ===================================================
+// Google Auth (Customer)
+// ===================================================
+Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
+Route::get('auth/google/callback', [GoogleAuthController::class, 'callbackGoogle'])->name('google-callback');
+
+// ===================================================
+// Google Auth (Admin)
+// ===================================================
+Route::get('admin/auth/google', [AdminGoogleAuthController::class, 'redirect'])->name('admin.google.redirect');
+Route::get('admin/auth/google/callback', [AdminGoogleAuthController::class, 'callback'])->name('admin.google.callback');
+
+// ===================================================
 // Admin Manual Login (Optional)
 // ===================================================
 Route::get('/admin/login', [AdminController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.post');
+
+// ===================================================
+// EMAIL VERIFICATION ROUTES
+// ===================================================
+
+// Notice (shown after registration)
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth:customer')->name('verification.notice');
+
+
+// Verification link (from email)
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->user('customer')->markEmailAsVerified(); 
+    return redirect()->route('customer.dashboard');
+})->middleware(['auth:customer', 'signed'])->name('verification.verify');
+
+
+// Resend verification link
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user('customer')->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth:customer', 'throttle:6,1'])->name('verification.send');
 
 
 // ===================================================
@@ -38,29 +73,23 @@ Route::post('/register', [Controller::class, 'register']);
 Route::post('/logout', [Controller::class, 'logout'])->name('logout');
 
 // ===================================================
-// Customer Dashboard
+// Customer Dashboard & Profile (Protected with auth:customer & verified)
 // ===================================================
-Route::get('/customer/dashboard', function () {
-    if (session('role') !== 'customer') {
-        return redirect('/login')->with('error', 'Please log in as a customer.');
-    }
-    return view('customer_dashboard');
-})->name('customer.dashboard');
+Route::middleware(['auth:customer', 'verified'])->group(function () {
+    // Dashboard
+    Route::get('/customer/dashboard', [CustomerProductController::class, 'index'])
+        ->name('customer.dashboard');
 
-Route::get('/customer/profile', function () {
-    if (session('role') !== 'customer') {
-        return redirect('/login')->with('error', 'Please log in as a customer.');
-    }
+    // Profile
+    Route::get('/customer/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/customer/profile/update-image', [ProfileController::class, 'updateImage'])->name('profile.updateImage');
+    Route::post('/customer/profile/update-email', [ProfileController::class, 'updateEmail'])->name('profile.updateEmail');
+    Route::post('/customer/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
-    $customer = DB::table('customer')->where('customer_id', session('customer_id'))->first();
-    return view('customer_profile', compact('customer'));
-})->name('profile.edit');
-
-// Customer Profile Management
-Route::get('/customer/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/customer/profile/update-image', [ProfileController::class, 'updateImage'])->name('profile.updateImage');
-Route::post('/customer/profile/update-email', [ProfileController::class, 'updateEmail'])->name('profile.updateEmail');
-Route::post('/customer/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    // Cart management
+    Route::post('/customer/cart/add/{id}', [CustomerProductController::class, 'addToCart'])->name('cart.add');
+    Route::delete('/customer/cart/remove/{id}', [CustomerProductController::class, 'removeFromCart'])->name('cart.remove');
+});
 
 // ===================================================
 // Admin Dashboard
@@ -69,30 +98,8 @@ Route::get('/admin/dashboard', [ProductController::class, 'index'])
     ->name('dashboard');
 
 // ===================================================
-// Google Auth (Customer)
-// ===================================================
-Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
-Route::get('auth/google/callback', [GoogleAuthController::class, 'callbackGoogle'])->name('google-callback');
-
-// ===================================================
-// Google Auth (Admin)
-// ===================================================
-Route::get('/admin/auth/google', [AdminGoogleAuthController::class, 'redirect'])->name('admin.google.redirect');
-Route::get('/admin/auth/google/callback', [AdminGoogleAuthController::class, 'callback'])->name('admin.google.callback');
-
-// ===================================================
 // Product Routes (for Admin)
 // ===================================================
 Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
 Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
 Route::put('/product/{id}/toggle-status', [ProductController::class, 'toggleStatus'])->name('product.toggleStatus');
-
-// Customer Dashboard (shows all active products)
-Route::get('/customer/dashboard', [CustomerProductController::class, 'index'])
-    ->name('customer.dashboard');
-
-// Cart management
-Route::post('/customer/cart/add/{id}', [CustomerProductController::class, 'addToCart'])
-    ->name('cart.add');
-Route::delete('/customer/cart/remove/{id}', [CustomerProductController::class, 'removeFromCart'])
-    ->name('cart.remove');

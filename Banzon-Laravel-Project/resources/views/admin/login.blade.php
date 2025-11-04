@@ -32,10 +32,6 @@
             <input type="password" name="password" required>
             
             <button type="submit">Login</button>
-            <div class="google-login">
-                <p>Or login with:</p>
-               <a href="{{ route('admin.google.redirect') }}" class="btn btn-danger">Sign in with Google (Admin)</a>
-            </div>
         </form>
 
         <p>Don't have an account? <a href="{{ url('/register')  }}">Register here</a></p>
