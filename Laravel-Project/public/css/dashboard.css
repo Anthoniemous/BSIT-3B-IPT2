@@ -320,3 +320,122 @@ float-animate {
   border-color: #ccc;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
+
+.products-section {
+  padding: 60px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 35px;
+}
+
+/* Product list layout */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Landscape Card */
+.product-item {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+  padding: 18px;
+  transition: 0.3s ease;
+}
+
+.product-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+}
+
+/* Image */
+.product-img img {
+  width: 220px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Text */
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-info h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.product-info .desc {
+  color: #555;
+  font-size: 0.95rem;
+  margin: 6px 0 10px;
+  max-height: 45px;
+  overflow: hidden;
+}
+
+.product-info .price {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #d62828;
+  margin-bottom: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn:hover {
+  background: #d62828;
+}
+
+.btn.outline {
+  background: transparent;
+  border: 2px solid #000;
+  color: #000;
+}
+
+.btn.outline:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .product-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .product-img img {
+    width: 100%;
+    height: 230px;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+}
+

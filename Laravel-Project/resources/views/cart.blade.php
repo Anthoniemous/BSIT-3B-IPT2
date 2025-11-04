@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
 
 <div class="container">
-    <h1 class="page-title">🛒 Your Cart</h1>
+    <h1 class="page-title">  Cart 🛒</h1>
 
     {{-- ✅ Flash messages --}}
     @if(session('success'))

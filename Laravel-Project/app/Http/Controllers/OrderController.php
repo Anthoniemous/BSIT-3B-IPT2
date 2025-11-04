@@ -15,7 +15,7 @@ class OrderController extends Controller
                    ->latest()
                    ->get();
 
-    return view('orderlist', compact('orders'));
+    return view('userorderlist', compact('orders'));
 }
  public function index()
 {

@@ -8,7 +8,6 @@ html, body {
 
 .site-footer {
   margin-top: auto;
- 
 }
 body {
   font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -226,11 +225,11 @@ body {
   box-shadow: 0 28px 60px rgba(20,20,20,0.08);
 }
 
+/* Fix image sizing */
 .card-media img {
-  width: 160px;
-  max-width: 100%;
-  height: auto;
-  object-fit: cover;
+  width: 100%;
+  height: 180px; /* Fixed height for uniform size */
+  object-fit: cover; /* Maintain aspect ratio and crop if needed */
   border-radius: 10px;
   margin-bottom: 14px;
 }
@@ -277,86 +276,71 @@ body {
   .hero-media img { width: 100%; max-width: 320px; }
   .btn { font-size: .9rem; padding: 8px 12px; }
 }
-float-animate {
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0px); }
-}
-
-/* Smooth transition */
-.hero-inner * {
-  transition: transform 0.2s ease-out;
-  will-change: transform;
-}
 
 /* 🌸 Profile Dropdown Styling */
-    .profile-container {
-      position: relative;
-      display: inline-block;
-    }
+.profile-container {
+  position: relative;
+  display: inline-block;
+}
 
-    .profile-pic {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-      cursor: pointer;
-      border: 2px solid #007bff;
-    }
+.profile-pic {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid #007bff;
+}
 
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 220px;
-      padding: 15px;
-      z-index: 100;
-      text-align: center;
-    }
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 220px;
+  padding: 15px;
+  z-index: 100;
+  text-align: center;
+}
 
-    .dropdown-menu.active {
-      display: block;
-    }
+.dropdown-menu.active {
+  display: block;
+}
 
-    .dropdown-menu h4 {
-      margin-bottom: 10px;
-      font-size: 16px;
-      color: #333;
-    }
+.dropdown-menu h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
 
-    .dropdown-menu input[type="file"] {
-      width: 100%;
-      margin: 10px 0;
-    }
+.dropdown-menu input[type="file"] {
+  width: 100%;
+  margin: 10px 0;
+}
 
-    .dropdown-menu button {
-      width: 100%;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      padding: 6px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+.dropdown-menu button {
+  width: 100%;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    .dropdown-menu button:hover {
-      background: #0056b3;
-    }
+.dropdown-menu button:hover {
+  background: #0056b3;
+}
 
-    .dropdown-menu form {
-      margin-top: 10px;
-    }
+.dropdown-menu form {
+  margin-top: 10px;
+}
 
-    .alert-success {
-      color: green;
-      margin-top: 5px;
-      font-size: 13px;
-    }
+.alert-success {
+  color: green;
+  margin-top: 5px;
+  font-size: 13px;
+}

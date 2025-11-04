@@ -82,7 +82,39 @@
     </div>
   </section>
 
+  <section class="products-section container">
+
   
+    <h2 class="section-title">
+    Available Products
+    <div class="arrow-emoji">▼</div>
+</h2>
+    
+    <div class="product-list">
+        @foreach($products as $product)
+        <div class="product-item">
+            <div class="product-img">
+                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->product_name }}">
+            </div>
+
+            <div class="product-info">
+                <h3>{{ $product->product_name }}</h3>
+                <p class="desc">{{ $product->description }}</p>
+                <p class="price">${{ number_format($product->price, 2) }}</p>
+
+                <div class="actions">
+              <form action="{{ route('cart.index') }}" method="GET">
+                  <button type="submit" class="btn add-cart">Add to Cart</button>
+              </form>
+              <button class="btn outline">View Details</button>
+          </div>
+
+            </div>
+        </div>
+        @endforeach
+    </div>
+</section>
+
   <section class="features container">
     <div class="feature-card">
       <i class="fa fa-truck"></i>

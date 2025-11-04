@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
 
 <div class="container">
-    <h1 class="page-title">🧾 Cssustomers Orders</h1>
+    <h1 class="page-title"> Customer Orders  🧾</h1>
 
     {{-- ✅ Flash Messages --}}
     @if(session('success'))
@@ -27,10 +27,13 @@
                 <thead>
                     <tr>
                         <th>Order ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Contact</th>
                         <th>Date</th>
                         <th>Product</th>
                         <th>Quantity</th>
-                        <th>Total</th>
+                        <th>Total</th>  
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -38,7 +41,10 @@
                     @foreach($orders as $order)
                         @foreach($order->items as $item)
                             <tr>
-                                <td>#{{ $order->id }}</td>
+                                <td>{{ $order->order_id }}</td>
+                                <td>{{ $order->name }}</td>
+                                <td>{{ $order->address }}</td>
+                                 <td>{{ $order->contact_number }}</td>
                                 <td>{{ $order->created_at->format('M d, Y') }}</td>
                                 <td>{{ $item->product->product_name }}</td>
                                 <td>{{ $item->quantity }}</td>

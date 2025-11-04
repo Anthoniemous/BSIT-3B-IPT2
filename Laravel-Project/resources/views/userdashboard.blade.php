@@ -27,8 +27,8 @@
 
       <div class="user-option">
         @auth
-          <a href="{{ route('orders.index') }}" class="btn small">My Orders</a>
-          <a href="{{ route('cart.index') }}" class="btn small">My Cart 🛒</a>
+          <a href="{{ route('orders.index') }}" class="btn small"> ORDERS</a>
+          <a href="{{ route('cart.index') }}" class="btn small"> CART </a>
 
           <!-- 🌸 Profile Dropdown -->
           <div class="profile-container">
@@ -77,6 +77,10 @@
           </div>
           <div class="card-body">
             <h3>{{ $product->product_name }}</h3>
+            <h4>
+              {{ $product->description }}
+            </h4>
+
             <p class="price">${{ number_format($product->price, 2) }}</p>
 
             <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
