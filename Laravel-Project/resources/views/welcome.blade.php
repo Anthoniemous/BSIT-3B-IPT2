@@ -87,7 +87,7 @@
   
     <h2 class="section-title">
     Available Products
-    <div class="arrow-emoji">▼</div>
+    <div class="arrow-emoji">▼</div>  
 </h2>
     
     <div class="product-list">
@@ -172,7 +172,7 @@
           <button type="submit">Login</button>
         </form>
         <a href="{{ route('google.login') }}" class="google-btn">
-    <img src="{{ asset('css/img/image.png') }}" alt="Google Icon"> Login with Google
+    <img src="{{ asset('css/img/google.png') }}" alt="Google Icon"> Login with Google
   </a>
         <div class="links">
           <p>Don't have an account? <a href="#" id="switchToRegister">Register here</a></p>
