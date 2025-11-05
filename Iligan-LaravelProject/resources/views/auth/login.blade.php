@@ -10,7 +10,7 @@
             <img src="{{ asset('images/Logo.png') }}" alt="Cart Logo" style="width: 150px;">
             <h1 style="padding-left: 10px; font-size: 40px; font-family: 'Arial Black', sans-serif; color: #cc5500; text-shadow: 1px 2px 3px #ffffff;">
                 PAWer
-            </h2>
+            </h2> 
         </div>
  
         <!-- Email Address -->
@@ -47,28 +47,28 @@
                 </a>
             @endif
 
-        <x-primary-button class="border border-white ms-3 !bg-[#cc5500] hover:!bg-gray-500 !focus:outline-none !focus:ring-2 !focus:ring-offset-2 focus:!ring-[#cc5500]">
+            <x-primary-button class="border border-white ms-3 !bg-[#cc5500] hover:!bg-gray-500 !focus:outline-none !focus:ring-2 !focus:ring-offset-2 focus:!ring-[#cc5500]">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
     </form>
 
     <div class="text-center my-4">
-    <hr class="my-2">
-    <span class="text-center font-bold text-white">Or</span>
-    
-    <<div class="mt-4 flex justify-center">
-    <a href="{{ route('google-auth') }}"
-       class="inline-flex items-center justify-center px-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-white bg-[#cc5500] hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#cc5500]">
+        <hr class="my-2">
+        <span class="text-center font-bold text-white">Or</span>
         
-        <!-- Google Icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" 
-             class="w-5 h-5 mr-2 fill-current text-white">
-            <path d="M564 325.8C564 467.3 467.1 568 324 568C186.8 568 76 457.2 76 320C76 182.8 186.8 72 324 72C390.8 72 447 96.5 490.3 136.9L422.8 201.8C334.5 116.6 170.3 180.6 170.3 320C170.3 406.5 239.4 476.6 324 476.6C422.2 476.6 459 406.2 464.8 369.7L324 369.7L324 284.4L560.1 284.4C562.4 297.1 564 309.3 564 325.8z"/>
-        </svg>
+        <div class="mt-4 flex justify-center">
+            <a href="{{ route('google-auth') }}"
+            class="inline-flex items-center justify-center px-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-white bg-[#cc5500] hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#cc5500]">
+                
+                <!-- Google Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" 
+                    class="w-5 h-5 mr-2 fill-current text-white">
+                    <path d="M564 325.8C564 467.3 467.1 568 324 568C186.8 568 76 457.2 76 320C76 182.8 186.8 72 324 72C390.8 72 447 96.5 490.3 136.9L422.8 201.8C334.5 116.6 170.3 180.6 170.3 320C170.3 406.5 239.4 476.6 324 476.6C422.2 476.6 459 406.2 464.8 369.7L324 369.7L324 284.4L560.1 284.4C562.4 297.1 564 309.3 564 325.8z"/>
+                </svg>
 
-        <span>Login with Google</span>
-    </a>
-</div>
-</div>
+                <span>Login with Google</span>
+            </a>
+        </div>
+    </div>
 </x-guest-layout>

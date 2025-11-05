@@ -43,7 +43,7 @@ class Admin extends Authenticatable
         'email',
         'password',
         'phone',
-        'google_id',   // ✅ Added for Google login support
+        'google_id',   
         'role',
         'status',
     ];

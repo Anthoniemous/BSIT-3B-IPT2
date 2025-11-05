@@ -26,7 +26,6 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validate the input
         $request->validate([
             'fname' => ['required', 'string', 'max:255'],
             'mname' => ['nullable', 'string', 'max:255'],
@@ -34,18 +33,18 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'region' => ['required', 'string'],
-            'province' => ['required', 'string'],
-            'city' => ['required', 'string'],
-            'barangay' => ['required', 'string'],
+            'region' => ['nullable', 'string'],
+            'province' => ['nullable', 'string'],
+            'city' => ['nullable', 'string'],
+            'barangay' => ['nullable', 'string'],
         ]);
 
-        // Concatenate address from PSGC
+        // Concatenate address
         $address = implode(', ', array_filter([
             $request->barangay,
             $request->city,
             $request->province,
-            $request->region
+            $request->region,
         ]));
 
         // Create the user
@@ -57,17 +56,16 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
             'address' => $address,
             'password' => Hash::make($request->password),
-            'email_verified_at' => null, // force email verification
         ]);
 
-        // Fire Registered event to send verification email
+        // Fire Registered event
         event(new Registered($user));
 
-        // Log the user in
+        // Log in user
         Auth::login($user);
 
-        // Redirect to verification notice
-        return redirect()->route('verification.notice')
-            ->with('status', 'Please verify your email before continuing.');
+        // Redirect to user dashboard
+        return redirect()->route('dashboard')->with('success', 'Registration successful!');
     }
+
 }

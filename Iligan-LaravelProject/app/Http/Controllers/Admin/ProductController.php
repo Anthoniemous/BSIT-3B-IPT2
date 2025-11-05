@@ -14,7 +14,7 @@ class ProductController extends Controller
     // Display admin dashboard with products (only active ones)
     public function index()
     {
-        // ✅ Fetch categories with only ACTIVE products
+        // Fetch categories with only ACTIVE products
         $categories = Category::with(['products' => function($query) {
             $query->where('status', 'active');
         }])->get();
@@ -45,7 +45,7 @@ class ProductController extends Controller
 
         $product = Product::create([
             'category_id' => $request->category_id,
-            'admin_id' => $adminId,
+            'admin_id' => 1,
             'name' => $request->name,
             'description' => $request->description,
             'quantity' => $request->quantity,

@@ -14,25 +14,18 @@
 
     <body class="bg-[#242424] flex flex-col items-center justify-center min-h-screen text-white">
 
-        <h1 class="text-4xl mb-10 font-bold">Welcome to PAWer!</h1>
+        <h1 class="text-4xl mb-10 font-bold">Administrator Authentication</h1>
 
         <div class="flex gap-6">
             <a
-                href="{{ route('user_welcome') }}"
+                href="{{ route('admin_login') }}"
                 class="inline-block px-5 py-1.5 text-white border border-white hover:bg-[#cc5500] rounded-sm text-sm leading-normal"
             >
-                User
+                Proceed to Login
             </a>
-
-            @if (Route::has('admin_welcome'))
-                <a
-                    href="{{ route('admin_welcome') }}"
-                    class="inline-block px-5 py-1.5 text-white border border-white hover:bg-[#cc5500] rounded-sm text-sm leading-normal"
-                >
-                    Admin
-                </a>
-            @endif
         </div>
 
     </body>
 </html>
+
+

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage; 
 
 class ProfileController extends Controller
 {
@@ -88,7 +88,7 @@ class ProfileController extends Controller
 
         // Log the user out
         Auth::logout();
-        $request->session()->invalidate();
+        $request->session()->invalidate(); 
         $request->session()->regenerateToken();
 
         return redirect('/')->with('status', 'account-deleted');

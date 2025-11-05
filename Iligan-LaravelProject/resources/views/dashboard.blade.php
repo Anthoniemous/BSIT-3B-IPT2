@@ -73,11 +73,6 @@
                           Logout
                       </button>
                   </form>
-
-                  <a href="{{ route('admin_dashboard') }}" 
-                    class="block px-4 py-2 text-sm hover:bg-gray-100">
-                      Admin
-                  </a>
               </div>
           </div>
       </div>

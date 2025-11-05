@@ -77,17 +77,14 @@
             </button>
 
             <!-- Dropdown Menu -->
-            <div 
-            id="user-dropdown-menu" 
-            class="hidden absolute right-0 mt-2 w-36 bg-white text-gray-800 rounded-md shadow-lg border z-50"
-            >
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                    Logout
-                </button>
-            </form>
-            <a href="{{ route('admin_dashboard') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Profile</a>
+            <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-36 bg-white text-gray-800 rounded-md shadow-lg border z-50">
+                <a href="{{ route('admin_dashboard') }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Profile</a>
+                <form method="POST" action="{{ route('admin.logout') }}">
+                    @csrf
+                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
       </header>

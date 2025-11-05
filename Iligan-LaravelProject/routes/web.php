@@ -1,16 +1,36 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\Admin\ProductController;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\Admin\AdminAuthController;
 
 // Enable auth + email verification routes
-Auth::routes(['verify' => true]);
+//Auth::routes(['verify' => true]);
+
+Route::get('/', function(){
+    return view ('welcome');
+})->name('welcome');
+
+Route::get('/user_welcome', function(){
+    return view ('user_welcome');
+})->name('user_welcome');
+
+Route::get('/admin_welcome', function(){
+    return view('admin_welcome');
+})->name('admin_welcome');
+
+Route::get('/usertype', function () {
+    return view('usertype');    
+})->name('usertype');
+
+Route::get('/admin_login', [AdminAuthController::class, 'showLoginForm'])->name('admin_login');
+Route::post('/admin_login', [AdminAuthController::class, 'login'])->name('admin_login.submit');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+Route::get('/admin/google', [AdminAuthController::class, 'redirectToGoogle'])->name('google-auth');
+Route::get('/admin/google/callback', [AdminAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -31,6 +51,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::post('/profile/soft-destroy', [ProfileController::class, 'softDestroy'])
+    ->middleware(['auth', 'verified'])
+    ->name('profile.softDestroy');
+
 Route::prefix('admin')->group(function() {
     Route::get('/dashboard', [ProductController::class, 'index'])->name('admin_dashboard');
     Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
@@ -42,9 +66,5 @@ Route::prefix('admin')->group(function() {
 
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/call-back', [GoogleAuthController::class, 'callback']);
-
-Route::post('/profile/soft-destroy', [ProfileController::class, 'softDestroy'])
-    ->middleware(['auth', 'verified'])
-    ->name('profile.softDestroy');
 
 require __DIR__.'/auth.php';

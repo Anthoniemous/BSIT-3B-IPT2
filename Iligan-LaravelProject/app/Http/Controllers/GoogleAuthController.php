@@ -34,7 +34,7 @@ class GoogleAuthController extends Controller
 
             if ($user) {
                 /**
-                 * 🟢 EXISTING USER LOGGING IN VIA GOOGLE
+                 * EXISTING USER LOGGING IN VIA GOOGLE
                  * - Skip email verification
                  * - Just update google_id if not yet linked
                  */
@@ -49,7 +49,7 @@ class GoogleAuthController extends Controller
             } 
             else {
                 /**
-                 * 🟡 NEW USER REGISTERING VIA GOOGLE
+                 * NEW USER REGISTERING VIA GOOGLE
                  * - Create account
                  * - Require email verification (email_verified_at = null)
                  * - Send verification email
