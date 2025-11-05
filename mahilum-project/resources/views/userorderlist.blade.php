@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
 
 <div class="container">
-    <h1 class="page-title">Orders 🧾</h1>
+    <h1 class="page-title"> Customer Orders</h1>
 
     {{-- ✅ Flash Messages --}}
     @if(session('success'))
@@ -11,7 +11,7 @@
             {{ session('success') }}
         </div>
     @endif
-    
+
     @if(session('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
@@ -19,7 +19,7 @@
     @endif
 
     {{-- ✅ Check if user has any orders --}}
-    @if($orders->count() === 0)
+    @if($orders->isEmpty())
         <p class="no-orders">You have no orders yet.</p>
     @else
         <div class="order-table">
@@ -27,10 +27,13 @@
                 <thead>
                     <tr>
                         <th>Order ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Contact</th>
                         <th>Date</th>
                         <th>Product</th>
                         <th>Quantity</th>
-                        <th>Total</th>
+                        <th>Total</th>  
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -39,6 +42,9 @@
                         @foreach($order->items as $item)
                             <tr>
                                 <td>{{ $order->order_id }}</td>
+                                <td>{{ $order->name }}</td>
+                                <td>{{ $order->address }}</td>
+                                 <td>{{ $order->contact_number }}</td>
                                 <td>{{ $order->created_at->format('M d, Y') }}</td>
                                 <td>{{ $item->product->product_name }}</td>
                                 <td>{{ $item->quantity }}</td>
@@ -54,18 +60,11 @@
                 </tbody>
             </table>
         </div>
-
-        {{-- ✅ Pagination --}}
-        <div class="pagination-container">
-            {{ $orders->links('pagination::bootstrap-5') }}
-        </div>
     @endif
 
-    <div class="mt-6 text-center">
-        <a href="{{ route('user.dashboard') }}" 
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 ease-in-out">
-            Back to Dashboard
-        </a>
+   
+    <div class="mt-4">
+        <a href="{{ route('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
     </div>
 
 </div>
