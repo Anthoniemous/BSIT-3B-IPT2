@@ -12,8 +12,7 @@
   
   <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
   <style>
-
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
     .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; width: 90%; max-width: 400px; border-radius: 8px; position: relative; }
     .close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
     .tabs { display: flex; justify-content: space-around; margin-bottom: 15px; }
@@ -29,7 +28,7 @@
     .success-msg { color: green; }
     .links { font-size: 13px; margin-top: 10px; }
     .links a { color: #007BFF; text-decoration: none; }
-    .links a:hover { text-decoration: underline; }
+    .links a:hover { text-decoration: underline; } 
   </style>
 </head>
 <body>
@@ -77,7 +76,7 @@
         </div>
       </div>
       <div class="hero-media">
-        <img id="hero-img" src="{{ asset('css/img/image.png') }}" alt="Hero Product">
+        <img id="hero-img" src="{{ asset('css/img/imglogo.jpg') }}" alt="Hero Product">
       </div>
     </div>
   </section>
@@ -103,7 +102,7 @@
                 <p class="price">${{ number_format($product->price, 2) }}</p>
 
                 <div class="actions">
-              <form action="{{ route('cart.index') }}" method="GET">
+              <form act ion="{{ route('cart.index') }}" method="GET">
                   <button type="submit" class="btn add-cart">Add to Cart</button>
               </form>
               <button class="btn outline">View Details</button>

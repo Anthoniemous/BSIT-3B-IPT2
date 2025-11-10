@@ -5,34 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa; 
-        }
+   <style>
+    body {
+       background: url('/css/img/background.jpg') no-repeat center center fixed;
+        background-size: 100% auto; 
+        font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+    }
 
-        .card {
-            max-width: 600px; 
-            margin: 3rem auto;
-            border-radius: 12px;
-        }
+   
 
-        .form-label {
-            font-weight: 600;
-        }
+    .card {
+        max-width: 600px;
+        width: 100%;
+        margin: 2rem auto;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* soft shadow */
+        background-color: #ffffff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-        .btn-primary, .btn-secondary {
-            min-width: 120px;
-        }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    }
 
-        .alert {
-            margin-top: 1rem;
-        }
-    </style>
+    h2 {
+        font-weight: 700;
+        color: #2b2d42;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 6px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn-primary, .btn-secondary {
+        min-width: 130px;
+        border-radius: 30px;
+        font-weight: 600;
+        padding: 10px 16px;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c757d;
+        transform: translateY(-2px);
+    }
+
+    .alert {
+        margin-top: 1rem;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+</style>
 </head>
 <body>
     <div class="container">
         <div class="card shadow p-4">
-            <h2 class="mb-4 text-center">Add New Product</h2>
+            <h2 class="mb-4 text-center">Add Product</h2>
 
             <!-- Success Message -->
             @if(session('success'))

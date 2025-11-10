@@ -13,15 +13,16 @@ html, body {
 body {
   font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   margin: 0;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  background:
-    radial-gradient(circle at top left, #ff9a3c, transparent 60%),
-    radial-gradient(circle at bottom right, #ff6a00, transparent 60%),
-    #ffffff;
-  color: #222;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: url('/css/img/background.jpg') no-repeat center center fixed;
+  background-size: 100% auto; /* 🔹 this acts like "background width" */
+  background-color: #fff;
+  color: #ffffff;
   line-height: 1.45;
+  
 }
+
 
 /* Utility container */
 .container {
@@ -125,37 +126,62 @@ body {
 
 /* Left copy */
 .hero-copy { flex: 1; max-width: 560px; }
+
 .hero-copy h1 {
   font-size: 3.2rem;
   margin:0 0 14px;
   line-height: 1.03;
-  color: #111;
+  color: #ffffff; /* 🤍 white title text */
   font-weight: 900;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4); /* soft shadow for readability */
 }
 .hero-copy .lead {
-  color: #555;
+  color: #ffffff; /* 🤍 white subtitle text */
   font-size: 1.05rem;
   margin-bottom: 18px;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 /* Hero CTA area */
 .hero-ctas { display:flex; gap:14px; align-items:center; }
+
 .text-link {
-  color: #666;
+  color: #ffffff; /* 🤍 white link text */
   text-decoration:none;
   font-weight:600;
 }
 .text-link:hover { color: #f57c00; }
 
 /* Right image */
-.hero-media { flex: 1; display:flex; justify-content:center; align-items:center; }
+.hero-media { 
+  flex: 1; 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+}
+
 .hero-media img {
-  width: 520px;
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  transform: translateY(-6px);
-  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.12));
+  width: 720px;
+  height: 720px;
+  object-fit: cover;
+  border-radius: 50%; /* 🔹 Circle shape */
+  border: 6px solid #fff; /* white border */
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  animation: float 3s ease-in-out infinite; /* floating animation */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Optional glowing red outline */
+.hero-media img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px 8px rgba(255,0,0,0.6);
+}
+
+/* Floating animation */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
 }
 
 /* ---------- Features Row ---------- */
@@ -439,3 +465,111 @@ float-animate {
   }
 }
 
+/* 🌟 Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+  z-index: 1000;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 🌟 Modal Box */
+.modal-content {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 24px;
+  width: 480px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+  transform: translateY(-40px);
+  transition: all 0.4s ease;
+  animation: slideDown 0.5s ease;
+}
+
+/* Entry animation */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-50px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s;
+}
+.close-btn:hover { color: #ff6a00; }
+
+/* Form */
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+/* Button */
+.btn-submit {
+  background: linear-gradient(90deg, #ff8a00, #ff6a00);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 700;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-submit:hover {
+  background: linear-gradient(90deg, #ff6a00, #ff3c00);
+  box-shadow: 0 4px 12px rgba(255,106,0,0.4);
+}
+
+/* Alert */
+.alert-success {
+  background: #eafaf1;
+  border-left: 5px solid #28a745;
+  color: #28a745;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+form{
+  color: #030303;
+}
+p{
+  color: #030303;
+}
+h3{
+  color: #232323;
+}
+.feature-copy{
+ color: #232323;
+}
