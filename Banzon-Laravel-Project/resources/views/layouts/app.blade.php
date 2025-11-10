@@ -45,8 +45,6 @@
                 @include('layouts.customer_navigation')
             @endif
 
-
-
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white dark:bg-gray-800 shadow">

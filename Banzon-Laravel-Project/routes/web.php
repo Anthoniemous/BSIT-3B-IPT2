@@ -87,8 +87,12 @@ Route::middleware(['auth:customer', 'verified'])->group(function () {
     Route::post('/customer/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
     // Cart management
+    Route::get('/customer/cart', [CustomerProductController::class, 'viewCart'])->name('cart.view');
     Route::post('/customer/cart/add/{id}', [CustomerProductController::class, 'addToCart'])->name('cart.add');
     Route::delete('/customer/cart/remove/{id}', [CustomerProductController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/customer/cart/update', [CustomerProductController::class, 'updateCart'])->name('cart.update');
+    Route::get('/customer/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::get('/customer/contact', [ContactController::class, 'index'])->name('contact');
 });
 
 // ===================================================

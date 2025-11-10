@@ -37,11 +37,9 @@
                             </div>
 
                             <div class="store-overlay">
-                                @php
-                                    // Use product_id here too
-                                    $inCart = session('cart', collect())->contains('id', $product->product_id);
+                               @php
+                                    $inCart = collect(session('cart', []))->contains('id', $product->product_id);
                                 @endphp
-
                                 @if(!$inCart)
                                     <form action="{{ route('cart.add', $product->product_id) }}" method="POST">
                                         @csrf

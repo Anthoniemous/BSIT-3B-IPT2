@@ -12,21 +12,19 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('customer.dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    <x-nav-link :href="url('#shop')" :active="request()->is('shop')">
+                    <x-nav-link :href="route('customer.dashboard')" :active="request()->routeIs('customer.dashboard')">
                         {{ __('Shop') }}
                     </x-nav-link>
-                    <x-nav-link :href="url('#cart')" :active="request()->is('cart')">
+
+                    <x-nav-link :href="route('cart.view')" :active="request()->routeIs('cart.view')">
                         {{ __('Cart') }}
                     </x-nav-link>
-                    <x-nav-link :href="url('#checkout')" :active="request()->is('checkout')">
+
+                    <x-nav-link :href="route('checkout')" :active="request()->routeIs('checkout')">
                         {{ __('Checkout') }}
                     </x-nav-link>
-                    <x-nav-link :href="url('#contact')" :active="request()->is('contact')">
-                        {{ __('Contact') }}
-                    </x-nav-link>
+
+                   
                 </div>
             </div>
 
