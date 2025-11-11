@@ -56,6 +56,12 @@ return [
             'throw' => false,
         ],
 
+          'ream_activity' => [
+            'driver' => 'local',
+            'root' => 'D:\REAM_ACTIVITY',
+            'throw' => false,
+        ],
+
     ],
 
     /*

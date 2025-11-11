@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        return view('profile.edit', ['user' => $request->user()]);
     }
 
     public function update(ProfileUpdateRequest $request): RedirectResponse
@@ -29,6 +29,8 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        $this->syncUsersToLocal(); // ✅ Sync to local JSON
+
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
@@ -39,10 +41,10 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
-
         Auth::logout();
-
         $user->delete();
+
+        $this->syncUsersToLocal(); // ✅ Sync to local JSON
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -50,7 +52,7 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    // 🆕 NEW METHOD: Handle profile photo upload
+    // Handle profile photo upload
     public function updatePhoto(Request $request): RedirectResponse
     {
         $request->validate([
@@ -59,17 +61,33 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        // Delete old photo if exists
         if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
             Storage::disk('public')->delete($user->profile_photo);
         }
 
-        // Store new one
         $path = $request->file('profile_photo')->store('profiles', 'public');
-
-        // Save path to DB
         $user->update(['profile_photo' => $path]);
-         $user->save();
+        $user->save();
+
+        $this->syncUsersToLocal(); // ✅ Sync to local JSON
+
         return back()->with('success', 'Profile picture updated!');
+    }
+
+    // 🔸 Private helper for JSON sync
+    private function syncUsersToLocal()
+    {
+        $users = User::all();
+        $folder = 'USERS';
+        $this->ensureFolderExists(storage_path("app/local_activity/$folder"));
+        Storage::disk('local_activity')->put("$folder/users.json", $users->toJson(JSON_PRETTY_PRINT));
+    }
+
+    // 🔹 Ensure folder exists
+    private function ensureFolderExists($folderPath)
+    {
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
+        }
     }
 }

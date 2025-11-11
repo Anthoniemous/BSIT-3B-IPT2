@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -24,8 +26,7 @@ class ProductController extends Controller
     // Show create product form
     public function create()
     {
-        $products = Product::all(); // Add this line
-        return view('create', compact('products'));
+        return view('create');
     }
 
     // Store new product
@@ -35,7 +36,7 @@ class ProductController extends Controller
             'product_name' => 'required|string|max:255',
             'description'  => 'nullable|string',
             'price'        => 'required|numeric',
-            'image' => 'nullable|image|max:10240', 
+            'image'        => 'nullable|image|max:10240',
         ]);
 
         $imagePath = null;
@@ -46,9 +47,11 @@ class ProductController extends Controller
         Product::create([
             'product_name' => $request->product_name,
             'description'  => $request->description,
-            'price'        => $request->price,
+            'price'        => (float) $request->price, // cast to float
             'image'        => $imagePath,
         ]);
+
+        $this->syncProductsToLocal(); // ✅ Sync to local JSON
 
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
@@ -69,13 +72,19 @@ class ProductController extends Controller
             'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->only(['product_name', 'description', 'price']);
+        $data = [
+            'product_name' => $request->product_name,
+            'description'  => $request->description,
+            'price'        => (float) $request->price, // cast to float
+        ];
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
         }
 
         $product->update($data);
+
+        $this->syncProductsToLocal(); // ✅ Sync to local JSON
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
@@ -84,6 +93,26 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
+
+        $this->syncProductsToLocal(); // ✅ Sync to local JSON
+
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
+    }
+
+    // 🔸 Private helper for JSON sync
+    private function syncProductsToLocal()
+    {
+        $products = Product::all();
+        $folder = 'PRODUCTS';
+        $this->ensureFolderExists(storage_path("app/ream_activity/$folder"));
+        Storage::disk('ream_activity')->put("$folder/products.json", $products->toJson(JSON_PRETTY_PRINT));
+    }
+
+    // 🔹 Ensure folder exists
+    private function ensureFolderExists($folderPath)
+    {
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
+        }
     }
 }
