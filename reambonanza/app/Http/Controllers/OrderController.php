@@ -20,20 +20,19 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::with('items.product')
-                       ->where('user_id', Auth::id())
-                       ->orderBy('created_at', 'desc')
-                       ->paginate(5);
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
         return view('orderlist', compact('orders'));
     }
 
-    // Show specific cart item for ordering
     public function create($cart_id)
-    {   
+    {
         $cart = Cart::with('product')->findOrFail($cart_id);
         return view('order', compact('cart'));
     }
 
-    // Store new order
     public function store(Request $request)
     {
         $request->validate([
@@ -44,7 +43,6 @@ class OrderController extends Controller
         ]);
 
         $user = Auth::user();
-
         $order = new Order();
         $order->user_id = $user->id;
         $order->name = $request->name;
@@ -63,32 +61,71 @@ class OrderController extends Controller
             ]);
             $order->total_price += $cart->product->price * $cart->quantity;
         }
-        $order->save();
 
+        $order->save();
         Cart::where('user_id', $user->id)->delete();
 
-        $this->syncOrdersToLocal(); // ✅ Sync to local JSON
+        $this->syncOrdersToLocal(); // ✅ Sync JSON + XML
 
         return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
     }
 
-    // 🔸 Private helper for JSON sync
+    // 🔸 Private helper: sync JSON + XML
     private function syncOrdersToLocal()
     {
-        $orders = \App\Models\Order::with(['items.product', 'user'])->get();
-        $ordersFolder = 'ORDERS';
+        $orders = Order::with(['items.product', 'user'])->get();
+        $jsonFolder = 'ORDERS';
+        $xmlFolder = 'ORDERS';
         $userOrdersFolder = 'USERS-ORDER';
 
-        $this->ensureFolderExists(storage_path("app/ream_activity/$ordersFolder"));
+        $this->ensureFolderExists(storage_path("app/ream_activity/$jsonFolder"));
+        $this->ensureFolderExists(storage_path("app/ream_activity/XML/$xmlFolder"));
         $this->ensureFolderExists(storage_path("app/ream_activity/$userOrdersFolder"));
+        $this->ensureFolderExists(storage_path("app/ream_activity/XML/$userOrdersFolder"));
 
-        Storage::disk('ream_activity')->put("$ordersFolder/orders.json", $orders->toJson(JSON_PRETTY_PRINT));
+        // Save JSON
+        Storage::disk('ream_activity')->put("$jsonFolder/orders.json", $orders->toJson(JSON_PRETTY_PRINT));
+
+        // Save XML
+        $xmlContent = $this->convertToXml($orders, 'orders', 'order');
+        Storage::disk('ream_activity')->put("XML/$xmlFolder/orders.xml", $xmlContent);
 
         // Save each user's orders separately
         foreach ($orders->groupBy('user_id') as $userId => $userOrders) {
             Storage::disk('ream_activity')->put("$userOrdersFolder/user_$userId.json", $userOrders->toJson(JSON_PRETTY_PRINT));
+
+            $xmlUserContent = $this->convertToXml($userOrders, 'orders', 'order');
+            Storage::disk('ream_activity')->put("XML/$userOrdersFolder/user_$userId.xml", $xmlUserContent);
         }
     }
+
+    // 🔹 Convert collection to XML
+    private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
+{
+    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+
+    foreach ($data as $record) {
+        $item = $xml->addChild($itemElement);
+        $this->arrayToXml($record->toArray(), $item);
+    }
+
+    return $xml->asXML();
+}
+
+// Recursive function to handle nested arrays
+private function arrayToXml(array $data, \SimpleXMLElement &$xml)
+{
+    foreach ($data as $key => $value) {
+        if (is_array($value)) {
+            // Use numeric keys as 'item' by default
+            $childKey = is_numeric($key) ? 'item' : $key;
+            $subnode = $xml->addChild($childKey);
+            $this->arrayToXml($value, $subnode);
+        } else {
+            $xml->addChild($key, htmlspecialchars($value));
+        }
+    }
+}
 
     // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)

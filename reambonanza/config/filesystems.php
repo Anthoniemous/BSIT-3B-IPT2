@@ -60,7 +60,13 @@ return [
             'driver' => 'local',
             'root' => 'D:\REAM_ACTIVITY',
             'throw' => false,
+
+            'xml_activity' => [
+            'driver' => 'local',
+            'root' => 'D:/REAM_ACTIVITY/XML',
+            'throw' => false,
         ],
+    ],
 
     ],
 
