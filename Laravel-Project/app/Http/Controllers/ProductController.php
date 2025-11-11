@@ -34,9 +34,9 @@ class ProductController extends Controller
     {
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'description'  => 'nullable|string',
-            'price'        => 'required|numeric',
-            'image'        => 'nullable|image|max:10240',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|max:10240',
         ]);
 
         $imagePath = null;
@@ -46,13 +46,12 @@ class ProductController extends Controller
 
         Product::create([
             'product_name' => $request->product_name,
-            'description'  => $request->description,
-            'price'        => (float) $request->price, // cast to float
-            'image'        => $imagePath,
+            'description' => $request->description,
+            'price' => (float) $request->price,
+            'image' => $imagePath,
         ]);
 
-        $this->syncProductsToLocal(); // ✅ Sync to local JSON
-
+        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
 
@@ -67,15 +66,15 @@ class ProductController extends Controller
     {
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'description'  => 'nullable|string',
-            'price'        => 'required|numeric',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = [
             'product_name' => $request->product_name,
-            'description'  => $request->description,
-            'price'        => (float) $request->price, // cast to float
+            'description' => $request->description,
+            'price' => (float) $request->price,
         ];
 
         if ($request->hasFile('image')) {
@@ -83,9 +82,7 @@ class ProductController extends Controller
         }
 
         $product->update($data);
-
-        $this->syncProductsToLocal(); // ✅ Sync to local JSON
-
+        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
@@ -93,20 +90,48 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-
-        $this->syncProductsToLocal(); // ✅ Sync to local JSON
-
+        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
-    // 🔸 Private helper for JSON sync
+    // 🔸 Private helper: sync JSON + XML
     private function syncProductsToLocal()
     {
         $products = Product::all();
-        $folder = 'ADMIN-PRODUCTS';
-        $this->ensureFolderExists(storage_path("app/local_activity/$folder"));
-        Storage::disk('local_activity')->put("$folder/products.json", $products->toJson(JSON_PRETTY_PRINT));
+        $jsonFolder = 'ADMIN-PRODUCTS';
+        $xmlFolder = 'ADMIN-PRODUCTS';
+
+        // Ensure folders exist
+        $this->ensureFolderExists(storage_path("app/local_activity/$jsonFolder"));
+        $this->ensureFolderExists(storage_path("app/local_activity/XML/$xmlFolder"));
+
+        // Save JSON
+        Storage::disk('local_activity')->put("$jsonFolder/products.json", $products->toJson(JSON_PRETTY_PRINT));
+
+        // Save XML
+        $xmlContent = $this->convertToXml($products, 'products', 'product');
+        Storage::disk('local_activity')->put("XML/$xmlFolder/products.xml", $xmlContent);
     }
+
+    // 🔹 Convert collection to XML
+    private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
+{
+    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+
+    foreach ($data as $record) {
+        $item = $xml->addChild($itemElement);
+        foreach ($record->toArray() as $key => $value) {
+            // Optional: rename 'product_id' to 'id'
+            if ($key === 'product_id') {
+                $key = 'id';
+            }
+            $item->addChild($key, htmlspecialchars($value));
+        }
+    }
+
+    return $xml->asXML();
+}
+
 
     // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)

@@ -113,38 +113,78 @@ body {
 
 /* ---------- Pagination ---------- */
 .pagination-container {
-  margin-top: 20px;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 8px;
 }
 
-.pagination {
-  display: inline-flex;
-  gap: 8px;
-  list-style: none;
+.pagination-info p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
 }
 
-.pagination li a,
-.pagination li span {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  color: #333;
-  text-decoration: none;
+.pagination-links nav {
+    display: flex;
+    justify-content: center;
 }
 
-.pagination li.active span {
-  background-color: #2563eb; /* blue */
-  color: white;
-  border-color: #2563eb;
+.pagination-links .pagination {
+    display: flex;
+    gap: 4px;
 }
 
-.pagination li a:hover {
-  background-color: #f3f4f6;
+.pagination-links .page-item.active .page-link {
+    background-color: #ff7a00;
+    border-color: #ff7a00;
+    color: white;
 }
+
+.pagination-links .page-link {
+    color: #333;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+.pagination-links .page-link:hover {
+    background-color: #ff7a00;
+    color: white;
+}
+
 
 /* ---------- Responsive ---------- */
 @media (max-width: 720px) {
   .page-title { font-size: 1.6rem; }
   .order-table th, .order-table td { font-size: 0.9rem; padding: 10px; }
   .container { padding: 20px; }
+}
+.order-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.order-table th, .order-table td {
+    text-align: center;
+    padding: 10px 15px;
+}
+
+.order-table th {
+    background: linear-gradient(90deg, #ff8000, #ff5500);
+    color: white;
+}
+
+.order-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 13px;
 }

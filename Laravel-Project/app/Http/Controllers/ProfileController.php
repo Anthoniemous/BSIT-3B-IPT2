@@ -2,85 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-use Illuminate\View\View;
 use App\Models\User;
 
 class ProfileController extends Controller
 {
-    public function edit(Request $request): View
+    public function edit(Request $request)
     {
         return view('profile.edit', ['user' => $request->user()]);
     }
 
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request)
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->only(['name', 'email'])); // example fields
+        $user->save();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+        $this->syncUsersToLocal(); // ✅ Sync JSON + XML
 
-        $request->user()->save();
-
-        $this->syncUsersToLocal(); // ✅ Sync to local JSON
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return redirect()->route('profile.edit')->with('status', 'Profile updated');
     }
 
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current-password'],
-        ]);
-
         $user = $request->user();
         Auth::logout();
         $user->delete();
 
-        $this->syncUsersToLocal(); // ✅ Sync to local JSON
+        $this->syncUsersToLocal(); // ✅ Sync JSON + XML
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        return redirect('/')->with('success', 'User deleted');
     }
 
-    // Handle profile photo upload
-    public function updatePhoto(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-        ]);
-
-        $user = $request->user();
-
-        if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
-            Storage::disk('public')->delete($user->profile_photo);
-        }
-
-        $path = $request->file('profile_photo')->store('profiles', 'public');
-        $user->update(['profile_photo' => $path]);
-        $user->save();
-
-        $this->syncUsersToLocal(); // ✅ Sync to local JSON
-
-        return back()->with('success', 'Profile picture updated!');
-    }
-
-    // 🔸 Private helper for JSON sync
+    // 🔸 Private helper: sync JSON + XML
     private function syncUsersToLocal()
     {
         $users = User::all();
-        $folder = 'USERS';
-        $this->ensureFolderExists(storage_path("app/local_activity/$folder"));
-        Storage::disk('local_activity')->put("$folder/users.json", $users->toJson(JSON_PRETTY_PRINT));
+        $jsonFolder = 'USERS';
+        $xmlFolder = 'USERS';
+
+        $this->ensureFolderExists(storage_path("app/local_activity/$jsonFolder"));
+        $this->ensureFolderExists(storage_path("app/local_activity/XML/$xmlFolder"));
+
+        // JSON
+        Storage::disk('local_activity')->put("$jsonFolder/users.json", $users->toJson(JSON_PRETTY_PRINT));
+
+        // XML
+        $xmlContent = $this->convertToXml($users, 'users', 'user');
+        Storage::disk('local_activity')->put("XML/$xmlFolder/users.xml", $xmlContent);
+    }
+
+    // 🔹 Convert collection to XML
+    private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
+    {
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            foreach ($record->toArray() as $key => $value) {
+                $item->addChild($key, htmlspecialchars($value));
+            }
+        }
+        return $xml->asXML();
     }
 
     // 🔹 Ensure folder exists

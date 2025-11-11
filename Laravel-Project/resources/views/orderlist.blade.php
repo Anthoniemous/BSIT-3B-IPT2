@@ -57,8 +57,13 @@
 
         {{-- ✅ Pagination --}}
         <div class="pagination-container">
-            {{ $orders->links('pagination::bootstrap-5') }}
-        </div>
+    <div class="pagination-info">
+        <p>Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of {{ $orders->total() }} results</p>
+    </div>
+    <div class="pagination-links">
+        {{ $orders->links('pagination::bootstrap-5') }}
+    </div>
+</div>
     @endif
 
     <div class="mt-6 text-center">
