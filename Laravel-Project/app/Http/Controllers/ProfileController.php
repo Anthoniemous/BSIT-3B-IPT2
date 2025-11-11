@@ -10,11 +10,13 @@ use App\Models\User;
 
 class ProfileController extends Controller
 {
+    // Edit profile page
     public function edit(Request $request)
     {
         return view('profile.edit', ['user' => $request->user()]);
     }
 
+    // Update profile info (name, email, etc.)
     public function update(Request $request)
     {
         $user = $request->user();
@@ -26,6 +28,7 @@ class ProfileController extends Controller
         return redirect()->route('profile.edit')->with('status', 'Profile updated');
     }
 
+    // Delete user account
     public function destroy(Request $request)
     {
         $user = $request->user();
@@ -35,6 +38,31 @@ class ProfileController extends Controller
         $this->syncUsersToLocal(); // ✅ Sync JSON + XML
 
         return redirect('/')->with('success', 'User deleted');
+    }
+
+    // Update profile photo
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        // Delete old photo if exists
+        if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+            Storage::disk('public')->delete($user->profile_photo);
+        }
+
+        // Store new photo
+        $path = $request->file('profile_photo')->store('profiles', 'public');
+        $user->profile_photo = $path;
+        $user->save();
+
+        // Sync to JSON + XML
+        $this->syncUsersToLocal();
+
+        return back()->with('success', 'Profile photo updated!');
     }
 
     // 🔸 Private helper: sync JSON + XML
