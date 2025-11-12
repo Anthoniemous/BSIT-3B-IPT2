@@ -6,81 +6,132 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class OrderController extends Controller
 {
     public function adminIndex()
-{
-    $orders = Order::with(['items.product', 'user']) // para makita sad ang user name kung gusto nimo
-                   ->latest()
-                   ->get();
+    {
+        $orders = Order::with(['items.product', 'user'])->latest()->get();
+        return view('userorderlist', compact('orders'));
+    }
 
-    return view('orderlist', compact('orders'));
-}
- public function index()
-{
-    $orders = Order::with('items.product')
-                   ->where('user_id', Auth::id())
-                   ->orderBy('created_at', 'desc')
-                   ->paginate(5); // try 5 first to test pagination
+    public function index()
+    {
+        $orders = Order::with('items.product')
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
-    return view('orderlist', compact('orders'));
-}
+        return view('orderlist', compact('orders'));
+    }
 
-    // 🔹 Show specific cart item for ordering
     public function create($cart_id)
-    {   
-        // Retrieve specific cart item with product details
+    {
         $cart = Cart::with('product')->findOrFail($cart_id);
-
         return view('order', compact('cart'));
     }
 
-    // 🔹 Store new order
-    // 🔹 Store new order
-public function store(Request $request)
-{
-    // Validate user input
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'address' => 'required|string|max:500',
-        'contact' => 'required|string|max:20',
-        'payment_method' => 'required|string',
-    ]);
-
-    // Get the current logged-in user
-    $user = Auth::user();
-
-    // Create new order record
-    $order = new Order();
-    $order->user_id = $user->id;
-    $order->name = $request->name;
-    $order->address = $request->address;
-    $order->contact_number = $request->contact;
-    $order->status = 'pending';
-    $order->total_price = 0; // You can update this later if you have cart total logic
-    $order->save();
-
-    // Optional: If you want to move items from cart to order_items table
-    // (Uncomment if you already have order_items table and relationships)
-    
-    $cartItems = Cart::where('user_id', $user->id)->get();
-    foreach ($cartItems as $cart) {
-        $order->items()->create([
-            'product_id' => $cart->product_id,
-            'quantity' => $cart->quantity,
-            'price' => $cart->product->price,
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:500',
+            'contact' => 'required|string|max:20',
+            'payment_method' => 'required|string',
         ]);
-        $order->total_price += $cart->product->price * $cart->quantity;
+
+        $user = Auth::user();
+        $order = new Order();
+        $order->user_id = $user->id;
+        $order->name = $request->name;
+        $order->address = $request->address;
+        $order->contact_number = $request->contact;
+        $order->status = 'pending';
+        $order->total_price = 0;
+        $order->save();
+
+        $cartItems = Cart::where('user_id', $user->id)->get();
+        foreach ($cartItems as $cart) {
+            $order->items()->create([
+                'product_id' => $cart->product_id,
+                'quantity' => $cart->quantity,
+                'price' => $cart->product->price,
+            ]);
+            $order->total_price += $cart->product->price * $cart->quantity;
+        }
+
+        $order->save();
+        Cart::where('user_id', $user->id)->delete();
+
+        $this->syncOrdersToLocal(); // ✅ Sync JSON + XML
+
+        return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
     }
-    $order->save();
 
-    // Clear the user's cart after placing the order
-    Cart::where('user_id', $user->id)->delete();
+    // 🔸 Private helper: sync JSON + XML
+    private function syncOrdersToLocal()
+    {
+        $orders = Order::with(['items.product', 'user'])->get();
+        $jsonFolder = 'ORDERS';
+        $xmlFolder = 'ORDERS';
+        $userOrdersFolder = 'USERS-ORDER';
 
+        $this->ensureFolderExists(storage_path("app/apolinar_activity/$jsonFolder"));
+        $this->ensureFolderExists(storage_path("app/apolinar_activity/XML/$xmlFolder"));
+        $this->ensureFolderExists(storage_path("app/apolinar_activity/$userOrdersFolder"));
+        $this->ensureFolderExists(storage_path("app/apolinar_activity/XML/$userOrdersFolder"));
 
-    return redirect()->route('orders.index')
-        ->with('success', 'Order placed successfully!');
+        // Save JSON
+        Storage::disk('apolinar_activity')->put("$jsonFolder/orders.json", $orders->toJson(JSON_PRETTY_PRINT));
+
+        // Save XML
+        $xmlContent = $this->convertToXml($orders, 'orders', 'order');
+        Storage::disk('apolinar_activity')->put("XML/$xmlFolder/orders.xml", $xmlContent);
+
+        // Save each user's orders separately
+        foreach ($orders->groupBy('user_id') as $userId => $userOrders) {
+            Storage::disk('apolinar_activity')->put("$userOrdersFolder/user_$userId.json", $userOrders->toJson(JSON_PRETTY_PRINT));
+
+            $xmlUserContent = $this->convertToXml($userOrders, 'orders', 'order');
+            Storage::disk('apolinar_activity')->put("XML/$userOrdersFolder/user_$userId.xml", $xmlUserContent);
+        }
+    }
+
+    // 🔹 Convert collection to XML
+    private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
+{
+    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+
+    foreach ($data as $record) {
+        $item = $xml->addChild($itemElement);
+        $this->arrayToXml($record->toArray(), $item);
+    }
+
+    return $xml->asXML();
 }
 
+// Recursive function to handle nested arrays
+private function arrayToXml(array $data, \SimpleXMLElement &$xml)
+{
+    foreach ($data as $key => $value) {
+        if (is_array($value)) {
+            // Use numeric keys as 'item' by default
+            $childKey = is_numeric($key) ? 'item' : $key;
+            $subnode = $xml->addChild($childKey);
+            $this->arrayToXml($value, $subnode);
+        } else {
+            $xml->addChild($key, htmlspecialchars($value));
+        }
+    }
+}
+
+    // 🔹 Ensure folder exists
+    private function ensureFolderExists($folderPath)
+    {
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
+        }
+    }
 }

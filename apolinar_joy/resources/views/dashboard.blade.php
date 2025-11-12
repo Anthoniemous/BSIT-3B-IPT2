@@ -4,6 +4,7 @@
             <link rel="stylesheet" href="{{ asset('css/admindashboard.css') }}">
             <span class="header-title">💖 Glamour Makeup Store – Admin Dashboard</span>
             <a href="{{ route('products.create') }}" class="btn add-btn">+ Add Product</a>
+             <a href="{{ route('admin.orders') }}" class="btn">View All Orders</a>
         </h2>
     </x-slot>
 

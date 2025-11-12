@@ -56,6 +56,21 @@ return [
             'throw' => false,
         ],
 
+         // 👉 Custom disk for your activity files
+    'apolinar_activity' => [
+        'driver' => 'local',
+        'root' => 'D:/apolinar_js_xml',
+        'visibility' => 'private',
+        'throw' => false,
+    ],
+
+    'xml_activity' => [
+        'driver' => 'local',
+        'root' => 'D:/apolinar_js_xml/XML',
+        'visibility' => 'private',
+        'throw' => false,
+    ],
+
     ],
 
     /*
