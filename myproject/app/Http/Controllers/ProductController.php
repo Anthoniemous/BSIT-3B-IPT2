@@ -8,8 +8,28 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    private $xmlPath = 'products.xml';
+
+    private function updateXML()
+    {
+        $products = Product::all();
+
+        $xml = new \SimpleXMLElement('<products></products>');
+
+        foreach ($products as $product) {
+            $p = $xml->addChild('product');
+            $p->addChild('id', $product->id);
+            $p->addChild('name', htmlspecialchars($product->name));
+            $p->addChild('price', $product->price);
+            $p->addChild('description', htmlspecialchars($product->description ?? ''));
+            $p->addChild('image', $product->image ?? '');
+        }
+
+        Storage::put($this->xmlPath, $xml->asXML());
+    }
+
     public function index()
-    {   
+    {
         $products = Product::all();
         return view('admin.dashboard', compact('products'));
     }
@@ -30,13 +50,14 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time().'_'.$file->getClientOriginalName();
-          $file->storeAs('products', $filename, 'public');
-
- // Save to storage/app/public/products
-            $product->image = $filename; // Save only filename
+            $file->storeAs('products', $filename, 'public');
+            $product->image = $filename;
         }
 
         $product->save();
+
+        // 👉 Update XML file after saving
+        $this->updateXML();
 
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
@@ -51,7 +72,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|max:10240',
         ]);
 
         $product->name = $request->name;
@@ -64,12 +85,14 @@ class ProductController extends Controller
             }
             $file = $request->file('image');
             $filename = time().'_'.$file->getClientOriginalName();
-          $file->storeAs('products', $filename, 'public');
-
+            $file->storeAs('products', $filename, 'public');
             $product->image = $filename;
         }
 
         $product->save();
+
+        // 👉 Update XML file after editing
+        $this->updateXML();
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
@@ -84,27 +107,29 @@ class ProductController extends Controller
 
         $product->delete();
 
+        // 👉 Update XML file after deleting
+        $this->updateXML();
+
         return redirect()->back()->with('success', 'Product deleted successfully!');
     }
-    // View-only admin dashboard
-public function mainDashboard()
-{
-    $products = Product::all();
-    return view('admin.main-dashboard', compact('products'));
-}
 
-//searchbar filter
-public function customerDashboard(Request $request)
-{
-    $query = Product::query();
-
-    if ($request->has('search') && $request->search != '') {
-        $query->where('name', 'like', '%'.$request->search.'%')
-              ->orWhere('description', 'like', '%'.$request->search.'%');
+    public function mainDashboard()
+    {
+        $products = Product::all();
+        return view('admin.main-dashboard', compact('products'));
     }
 
-    $products = $query->get();
+    public function customerDashboard(Request $request)
+    {
+        $query = Product::query();
 
-    return view('customer.dashboard', compact('products'));
-}
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('description', 'like', '%'.$request->search.'%');
+        }
+
+        $products = $query->get();
+
+        return view('customer.dashboard', compact('products'));
+    }
 }

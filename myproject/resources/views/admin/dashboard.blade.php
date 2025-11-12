@@ -39,33 +39,8 @@
     <button type="button" class="btn-custom" onclick="openModal()">Add Product</button>
   </div>
 
-  <div class="product-grid">
-    @if(isset($products) && count($products) > 0)
-      @foreach($products as $product)
-        <div class="product-card">
-          {{-- ✅ Use custom storage path --}}
-          <img src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}"> 
-            
-     
-          <div class="product-card-body">
-            <h5 class="product-card-title">{{ $product->name }}</h5>
-            <p class="product-card-price">₱ {{ number_format($product->price, 2) }}</p>
-            <p>{{ $product->description }}</p>
-          </div>
-
-          <div class="product-card-footer">
-            <a href="{{ route('products.edit', $product->id) }}" class="btn-outline-custom">Edit</a>
-            <form action="{{ route('products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this product?')" style="display:inline-block;">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn-outline-danger">Delete</button>
-            </form>
-          </div>
-        </div>
-      @endforeach
-    @else
-      <p class="no-products">No products yet.</p>
-    @endif
+  <div class="product-grid" id="productGrid">
+    <!-- Product cards will be rendered dynamically -->
   </div>
 </div>
 
@@ -111,6 +86,85 @@ window.onclick = function(e) {
     closeModal();
   }
 }
+
+// 🌸 Pass Laravel routes dynamically
+const routes = {
+    edit: "{{ route('products.edit', ':id') }}",
+    destroy: "{{ route('products.destroy', ':id') }}"
+};
+
+// 🌸 Fetch XML and render products dynamically
+document.addEventListener("DOMContentLoaded", () => {
+    const productGrid = document.getElementById("productGrid");
+
+    function renderProduct(product) {
+        const div = document.createElement("div");
+        div.classList.add("product-card");
+
+        const editURL = routes.edit.replace(':id', product.id);
+        const deleteURL = routes.destroy.replace(':id', product.id);
+
+        div.innerHTML = `
+            <img src="/storage/products/${product.image}" alt="${product.name}">
+            <div class="product-card-body">
+                <h5 class="product-card-title">${product.name}</h5>
+                <p class="product-card-price">₱ ${parseFloat(product.price).toFixed(2)}</p>
+                <p>${product.description}</p>
+            </div>
+            <div class="product-card-footer">
+                <a href="${editURL}" class="btn-outline-custom">Edit</a>
+                <form action="${deleteURL}" method="POST" onsubmit="return confirm('Delete this product?')" style="display:inline-block;">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn-outline-danger">Delete</button>
+                </form>
+            </div>
+        `;
+        productGrid.appendChild(div);
+    }
+
+    // Load XML from server
+    fetch("{{ asset('storage/products.xml') }}")
+    .then(res => res.text())
+    .then(xmlStr => {
+        localStorage.setItem('productsXML', xmlStr);
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(xmlStr, "application/xml");
+
+        productGrid.innerHTML = "";
+
+        xml.querySelectorAll("product").forEach(p => {
+            const product = {
+                id: p.querySelector("id")?.textContent,
+                name: p.querySelector("name")?.textContent,
+                price: p.querySelector("price")?.textContent,
+                description: p.querySelector("description")?.textContent,
+                image: p.querySelector("image")?.textContent
+            };
+            renderProduct(product);
+        });
+    })
+    .catch(err => {
+        console.log("Failed to load XML:", err);
+
+        const xmlStr = localStorage.getItem('productsXML');
+        if(xmlStr){
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(xmlStr, "application/xml");
+            productGrid.innerHTML = "";
+            xml.querySelectorAll("product").forEach(p => {
+                const product = {
+                    id: p.querySelector("id")?.textContent,
+                    name: p.querySelector("name")?.textContent,
+                    price: p.querySelector("price")?.textContent,
+                    description: p.querySelector("description")?.textContent,
+                    image: p.querySelector("image")?.textContent
+                };
+                renderProduct(product);
+            });
+        }
+    });
+});
 </script>
 
 </body>

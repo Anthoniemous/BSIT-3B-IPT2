@@ -65,11 +65,9 @@
         <button type="submit" class="btn btn-login">Login</button>
 
          <!-- Google Login -->
-      <div class="text-center" style="margin-bottom: 15px; margin-top: 10px; margin-right: 20px; margin-left: 10px; ">
-        <a href="{{ url('auth/google') }}" class="btn btn-google-login">
-          <i class="fab fa-google"></i> Continue with Google
-        </a>
-      </div>
+          
+     
+      
       </form>
 
     </div>
