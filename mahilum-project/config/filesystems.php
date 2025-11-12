@@ -56,6 +56,16 @@ return [
             'throw' => false,
         ],
 
+          'james_activity' => [
+        'driver' => 'local',
+        'root' => 'D:/Mahilum_ACT',
+    ],
+
+    'xml_activity' => [
+        'driver' => 'local',
+        'root' => 'D:/Mahilum_ACT/XML',
+    ],
+
     ],
 
     /*
