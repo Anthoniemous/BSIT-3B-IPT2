@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
 
 <div class="container">
-    <h1 class="page-title">🧾 My Orders</h1>
+    <h1 class="page-title">Orders 🧾</h1>
 
     {{-- ✅ Flash Messages --}}
     @if(session('success'))
@@ -38,7 +38,7 @@
                     @foreach($orders as $order)
                         @foreach($order->items as $item)
                             <tr>
-                                <td>#{{ $order->id }}</td>
+                                <td>{{ $order->order_id }}</td>
                                 <td>{{ $order->created_at->format('M d, Y') }}</td>
                                 <td>{{ $item->product->product_name }}</td>
                                 <td>{{ $item->quantity }}</td>
@@ -62,7 +62,7 @@
     @endif
 
     <div class="mt-6 text-center">
-        <a href="{{ url('/userdashboard') }}" 
+        <a href="{{ route('user.dashboard') }}" 
            class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 ease-in-out">
             Back to Dashboard
         </a>

@@ -93,7 +93,6 @@ class OrderController extends Controller
         // Save each user's orders separately
         foreach ($orders->groupBy('user_id') as $userId => $userOrders) {
             Storage::disk('james_activity')->put("$userOrdersFolder/user_$userId.json", $userOrders->toJson(JSON_PRETTY_PRINT));
-
             $xmlUserContent = $this->convertToXml($userOrders, 'orders', 'order');
             Storage::disk('james_activity')->put("XML/$userOrdersFolder/user_$userId.xml", $xmlUserContent);
         }
@@ -101,31 +100,30 @@ class OrderController extends Controller
 
     // 🔹 Convert collection to XML
     private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
-{
-    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+    {
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
 
-    foreach ($data as $record) {
-        $item = $xml->addChild($itemElement);
-        $this->arrayToXml($record->toArray(), $item);
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            $this->arrayToXml($record->toArray(), $item);
+        }
+
+        return $xml->asXML();
     }
 
-    return $xml->asXML();
-}
-
-// Recursive function to handle nested arrays
-private function arrayToXml(array $data, \SimpleXMLElement &$xml)
-{
-    foreach ($data as $key => $value) {
-        if (is_array($value)) {
-            // Use numeric keys as 'item' by default
-            $childKey = is_numeric($key) ? 'item' : $key;
-            $subnode = $xml->addChild($childKey);
-            $this->arrayToXml($value, $subnode);
-        } else {
-            $xml->addChild($key, htmlspecialchars($value));
+    // Recursive function to handle nested arrays
+    private function arrayToXml(array $data, \SimpleXMLElement &$xml)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $childKey = is_numeric($key) ? 'item' : $key;
+                $subnode = $xml->addChild($childKey);
+                $this->arrayToXml($value, $subnode);
+            } else {
+                $xml->addChild($key, htmlspecialchars($value));
+            }
         }
     }
-}
 
     // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)

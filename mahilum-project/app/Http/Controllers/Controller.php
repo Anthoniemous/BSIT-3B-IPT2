@@ -140,44 +140,44 @@ class Controller extends BaseController
         }
     }
 
-    // 🔸 Private helper for JSON sync
+    // 🔸 Private helper for JSON & XML sync
     private function syncUsersToLocal()
-{
-    $users = User::all();
+    {
+        $users = User::all();
 
-    $jsonFolder = 'USERS';
-    $xmlFolder = 'USERS';
+        $jsonFolder = 'USERS';
+        $xmlFolder = 'USERS';
 
-    // Ensure folders exist
-    $this->ensureFolderExists(storage_path("app/james_activity/$jsonFolder"));
-    $this->ensureFolderExists(storage_path("app/james_activity/XML/$xmlFolder"));
+        // Ensure folders exist
+        $this->ensureFolderExists(storage_path("app/james_activity/$jsonFolder"));
+        $this->ensureFolderExists(storage_path("app/james_activity/XML/$xmlFolder"));
 
-    // JSON
-    Storage::disk('james_activity')->put("$jsonFolder/users.json", $users->toJson(JSON_PRETTY_PRINT));
+        // JSON
+        Storage::disk('james_activity')->put("$jsonFolder/users.json", $users->toJson(JSON_PRETTY_PRINT));
 
-    // XML
-    $xmlContent = $this->convertToXml($users, 'users', 'user');
-    Storage::disk('james_activity')->put("XML/$xmlFolder/users.xml", $xmlContent);
-}
+        // XML
+        $xmlContent = $this->convertToXml($users, 'users', 'user');
+        Storage::disk('james_activity')->put("XML/$xmlFolder/users.xml", $xmlContent);
+    }
 
-// 🔹 Convert collection to XML
-private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
-{
-    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
-    foreach ($data as $record) {
-        $item = $xml->addChild($itemElement);
-        foreach ($record->toArray() as $key => $value) {
-            $item->addChild($key, htmlspecialchars($value));
+    // 🔹 Convert collection to XML
+    private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
+    {
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            foreach ($record->toArray() as $key => $value) {
+                $item->addChild($key, htmlspecialchars($value));
+            }
+        }
+        return $xml->asXML();
+    }
+
+    // 🔹 Ensure folder exists
+    private function ensureFolderExists($folderPath)
+    {
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
         }
     }
-    return $xml->asXML();
-}
-
-// 🔹 Ensure folder exists
-private function ensureFolderExists($folderPath)
-{
-    if (!File::exists($folderPath)) {
-        File::makeDirectory($folderPath, 0755, true);
-    }
-}
 }

@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
 
 <div class="container">
-    <h1 class="page-title"> Customer Orders  🧾</h1>
+    <h1 class="page-title">Customer Orders 🧾</h1>
 
     {{-- ✅ Flash Messages --}}
     @if(session('success'))
@@ -44,7 +44,7 @@
                                 <td>{{ $order->order_id }}</td>
                                 <td>{{ $order->name }}</td>
                                 <td>{{ $order->address }}</td>
-                                 <td>{{ $order->contact_number }}</td>
+                                <td>{{ $order->contact_number }}</td>
                                 <td>{{ $order->created_at->format('M d, Y') }}</td>
                                 <td>{{ $item->product->product_name }}</td>
                                 <td>{{ $item->quantity }}</td>
@@ -62,7 +62,6 @@
         </div>
     @endif
 
-   
     <div class="mt-4">
         <a href="{{ route('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
     </div>
