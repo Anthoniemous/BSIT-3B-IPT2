@@ -1,17 +1,13 @@
-/* 🌈 Background Gradient */
+/* ---------- Body & Background ---------- */
 body {
   font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: url('/css/img/background.jpg') no-repeat center center fixed;
-  background-size: 100% auto; /* 🔹 this acts like "background width" */
-  background-color: #fff;
+  background: url('../css/img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #222;
-  line-height: 1.45;
 }
 
-/* 🧾 Checkout Layout */
+/* ---------- Checkout Container ---------- */
 .checkout-container {
     max-width: 700px;
     margin: 70px auto;
@@ -20,29 +16,28 @@ body {
 }
 
 .checkout-title {
-    color: #ff6a00;
+    color: #b30000;
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 25px;
 }
 
-/* 📦 Checkout Card */
 .checkout-card {
     background: #fff;
     padding: 40px;
     border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     text-align: left;
 }
 
 .section-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #ff6a00;
+    color: #b30000;
     margin-bottom: 20px;
 }
 
-/* 🧍 Form Inputs */
+/* ---------- Form Inputs ---------- */
 .form-group {
     margin-bottom: 20px;
 }
@@ -61,78 +56,29 @@ body {
     padding: 10px 14px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: 15px;
-    color: #333;
-    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: #ff9a3c;
-    box-shadow: 0 0 0 3px rgba(255, 154, 60, 0.2);
-    outline: none;
-}
-
-/* ⚙️ Buttons */
+/* ---------- Buttons ---------- */
 .form-actions {
-    text-align: right;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-top: 25px;
 }
 
 .btn {
-    display: inline-block;
     padding: 10px 18px;
-    font-weight: 600;
     border-radius: 8px;
+    font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.3s;
-    text-decoration: none;
-    font-size: 15px;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn.cancel {
-    background: #e63946;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
-}
-
-.btn.cancel:hover {
-    background: #cc2f3c;
 }
 
 .btn.submit {
-    background: linear-gradient(90deg, #ff9a3c, #ff6a00);
+    background: linear-gradient(90deg, #1f0000, #b30000);
     color: #fff;
-    box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
 }
 
-.btn.submit:hover {
-    box-shadow: 0 5px 18px rgba(255, 106, 0, 0.5);
-}
-
-/* 📱 Responsive */
-@media (max-width: 640px) {
-    .checkout-card {
-        padding: 25px;
-    }
-
-    .form-actions {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-
-    .btn {
-        width: 100%;
-        text-align: center;
-    }
+.btn.cancel {
+    background: #b30000;
+    color: #fff;
 }

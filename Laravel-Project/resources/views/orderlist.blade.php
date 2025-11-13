@@ -1,77 +1,103 @@
-<x-app-layout>
-
-<link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders 🧾</title>
+    <link rel="stylesheet" href="css/orderlist.css">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 <div class="container">
     <h1 class="page-title">Orders 🧾</h1>
 
-    {{-- ✅ Flash Messages --}}
+    <!-- ✅ Flash Messages -->
     @if(session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert" id="success-message">
             {{ session('success') }}
         </div>
-    @endif
-    
-    @if(session('error'))
-        <div class="alert alert-danger">
+    @elseif(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" id="error-message">
             {{ session('error') }}
         </div>
     @endif
 
-    {{-- ✅ Check if user has any orders --}}
-    @if($orders->count() === 0)
-        <p class="no-orders">You have no orders yet.</p>
-    @else
-        <div class="order-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Date</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($orders as $order)
-                        @foreach($order->items as $item)
-                            <tr>
-                                <td>{{ $order->order_id }}</td>
-                                <td>{{ $order->created_at->format('M d, Y') }}</td>
-                                <td>{{ $item->product->product_name }}</td>
-                                <td>{{ $item->quantity }}</td>
-                                <td>${{ number_format($item->product->price * $item->quantity, 2) }}</td>
-                                <td>
-                                    <span class="status {{ strtolower($order->status) }}">
-                                        {{ ucfirst($order->status) }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @endforeach
+    <!-- Orders Table -->
+    <div class="order-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($orders as $order)
+                    @foreach($order->items as $item)
+                        <tr>
+                            <td>{{ $order->order_id }}</td>
+                            <td>{{ $order->created_at->format('M d, Y') }}</td>
+                            <td>{{ $item->product->product_name }}</td>
+                            <td>{{ $item->quantity }}</td>
+                            <td>${{ number_format($item->product->price * $item->quantity, 2) }}</td>
+                            <td>
+                                <span class="status {{ strtolower($order->status) }}">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </td>
+                        </tr>
                     @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        {{-- ✅ Pagination --}}
-        <div class="pagination-container">
-    <div class="pagination-info">
-        <p>Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of {{ $orders->total() }} results</p>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-    <div class="pagination-links">
-        {{ $orders->links('pagination::bootstrap-5') }}
-    </div>
-</div>
-    @endif
 
+    <!-- Pagination -->
+    <div class="pagination-container text-center">
+        <p class="pagination-info mb-2">Showing 1 to 2 of 2 results</p>
+        <nav class="pagination-links d-inline-block">
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Back to Dashboard -->
     <div class="mt-6 text-center">
         <a href="{{ route('user.dashboard') }}" 
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 ease-in-out">
+        class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 ease-in-out">
             Back to Dashboard
         </a>
     </div>
-
 </div>
-</x-app-layout>
+
+<!-- ✅ Auto-hide flash message -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const success = document.getElementById("success-message");
+        const error = document.getElementById("error-message");
+
+        if (success) {
+            setTimeout(() => {
+                success.classList.add("fade");
+                setTimeout(() => success.style.display = "none", 600);
+            }, 4000);
+        }
+
+        if (error) {
+            setTimeout(() => {
+                error.classList.add("fade");
+                setTimeout(() => error.style.display = "none", 600);
+            }, 4000);
+        }
+    });
+</script>
+</body>
+</html>

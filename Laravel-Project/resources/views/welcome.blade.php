@@ -89,8 +89,8 @@
     <div class="arrow-emoji">▼</div>  
 </h2>
     
-    <div class="product-list">
-        @foreach($products as $product)
+   <div class="product-list">
+    @foreach($products as $product)
         <div class="product-item">
             <div class="product-img">
                 <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->product_name }}">
@@ -102,16 +102,27 @@
                 <p class="price">${{ number_format($product->price, 2) }}</p>
 
                 <div class="actions">
-              <form act ion="{{ route('cart.index') }}" method="GET">
-                  <button type="submit" class="btn add-cart">Add to Cart</button>
-              </form>
-              <button class="btn outline">View Details</button>
-          </div>
+                    @guest
+                        <!-- Kung wala pa naka-login -->
+                        <form action="{{ route('login') }}" method="GET">
+                            <button type="submit" class="btn add-cart">Add to Cart</button>
+                        </form>
+                    @endguest
 
+                    @auth
+                        <!-- Kung naka-login na -->
+                        <form action="{{ route('cart.index') }}" method="GET">
+                            <button type="submit" class="btn add-cart">Add to Cart</button>
+                        </form>
+                    @endauth
+
+                    <button class="btn outline">View Details</button>
+                </div>
             </div>
         </div>
-        @endforeach
-    </div>
+    @endforeach
+</div>
+
 </section>
 
   <section class="features container">

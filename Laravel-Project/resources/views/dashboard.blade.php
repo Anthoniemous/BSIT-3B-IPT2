@@ -1,13 +1,42 @@
-<x-app-layout>
-    <x-slot name="header">
-        <link rel="stylesheet" href="{{ asset('css/admindashboard.css') }}">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            <a href="{{ route('products.create') }}" class="btn">Add Product</a>
-        <a href="{{ route('admin.orders') }}" class="btn">View All Orders</a>
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ asset('css/admindashboard.css') }}">
+    
+</head>
+<body>
 
-    <div class="table-container">
+    <!-- 🔶 Header Section -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            
+            <!-- 🧡 Left: Title -->
+            <div class="header-left">
+                <h1>Admin Dashboard</h1>
+            </div>
+
+            <!-- 💛 Center: Buttons -->
+            <div class="header-buttons">
+                <a href="{{ route('products.create') }}" class="btn btn-primary">Add Product</a>
+                <a href="{{ route('admin.orders') }}" class="btn btn-primary">View All Orders</a>
+            </div>
+
+            <!-- ❤️ Right: Logout -->
+            <div class="header-right">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-logout">Logout</button>
+                </form>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- 📋 Table Section -->
+    <main class="table-container">
         <table>
             <thead>
                 <tr>
@@ -30,12 +59,14 @@
                         <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
-</x-app-layout>
+    </main>
+
+</body>
+</html>

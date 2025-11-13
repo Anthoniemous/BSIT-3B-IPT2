@@ -8,6 +8,7 @@ html, body {
 
 .site-footer {
   margin-top: auto;
+  
  
 }
 body {
@@ -100,7 +101,7 @@ body {
 
 /* Primary CTA style (orange) */
 .btn.cta, .btn.small {
-  background: linear-gradient(90deg, #ff8a00, #ff6a00);
+  background: linear-gradient(90deg,  #1f0000, #b30000);
   color: #fff;
 }
 .btn.small { padding: 8px 12px; border-radius: 20px; font-size: .85rem; }
@@ -262,10 +263,10 @@ body {
 }
 
 .card-body h3 { margin: 4px 0 8px; font-size: 1.05rem; color: #222; font-weight:700; }
-.price { color: #f57c00; font-weight:800; margin-bottom:12px; }
+.price { color:  #1f0000, #b30000; font-weight:800; margin-bottom:12px; }
 
 .add-cart {
-  background: linear-gradient(90deg, #ff8a00, #ff6a00);
+  background: linear-gradient(90deg,  #1f0000, #b30000);
   color: #fff;
   padding: 10px 20px;
   border-radius: 999px;
@@ -286,7 +287,7 @@ body {
 .site-footer .container { display:flex; justify-content:space-between; align-items:center; gap: 12px; flex-wrap:wrap; }
 .footer-logo { width:40px; margin-right:10px; }
 .site-footer nav a { margin-left: 14px; color: #666; text-decoration:none; font-weight:600; }
-.site-footer nav a:hover { color: #f57c00; }
+.site-footer nav a:hover { color:  #1f0000, #b30000 }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 920px) {
@@ -536,7 +537,7 @@ float-animate {
 
 /* Button */
 .btn-submit {
-  background: linear-gradient(90deg, #ff8a00, #ff6a00);
+  background: linear-gradient(90deg,  #1f0000, #b30000);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -547,7 +548,7 @@ float-animate {
   transition: all 0.3s ease;
 }
 .btn-submit:hover {
-  background: linear-gradient(90deg, #ff6a00, #ff3c00);
+  background: linear-gradient(90deg,  #1f0000, #b30000);
   box-shadow: 0 4px 12px rgba(255,106,0,0.4);
 }
 

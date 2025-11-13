@@ -1,15 +1,19 @@
-<x-app-layout>
-<link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout 🧾</title>
+    <link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 <div class="checkout-container">
     <h1 class="checkout-title">🧾 Checkout</h1>
 
     <div class="checkout-card">
         <h3 class="section-title">Order Information</h3>
-
-        <form method="POST" action="{{ route('orders.store') }}">
+        <form action="{{ route('orders.store') }}" method="POST">
             @csrf
-
             <div class="form-group">
                 <label for="name">Full Name</label>
                 <input type="text" id="name" name="name" placeholder="Enter your full name" required>
@@ -41,4 +45,5 @@
         </form>
     </div>
 </div>
-</x-app-layout>
+</body>
+</html>

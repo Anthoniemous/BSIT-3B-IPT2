@@ -1,87 +1,158 @@
-/* Background gradient for dashboard */
+/* 🧱 Body & Background */
 body {
   font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   background: url('/css/img/background.jpg') no-repeat center center fixed;
-  background-size: 100% auto; /* 🔹 this acts like "background width" */
+  background-size: cover;
   background-color: #fff;
   color: #222;
   line-height: 1.45;
 }
 
-/* Header buttons */
-h2 {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 15px;
+/* 🔴 Header Section (Dark Red Gradient) */
+.dashboard-header {
+  background: linear-gradient(90deg, #1f0000, #b30000);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 15px 30px;
 }
 
+/* 🧭 Header Layout */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* 🧡 Left Side */
+.header-left h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* ❤️ Center Buttons (Perfectly Centered) */
+.header-buttons {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+}
+
+/* 🤍 Right Side (Logout) */
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* 🎨 Button Styles */
 .btn {
-    background-color: #ff7a00;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
+  background: #fff;
+  color: #8b0000;
+  font-weight: 600;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .btn:hover {
-    background-color: #e86a00;
+  background: #8b0000;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(139, 0, 0, 0.4);
 }
 
-/* Table styling */
+/* 🔴 Logout Button */
+.btn-logout {
+  background: #cc0000;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 2px 5px rgba(139, 0, 0, 0.3);
+}
+
+.btn-logout:hover {
+  background: #990000;
+  box-shadow: 0 4px 10px rgba(139, 0, 0, 0.4);
+}
+
+/* 📊 Table Container */
 .table-container {
-    margin: 30px auto;
-    width: 90%;
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin: 50px auto;
+  width: 92%;
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
 }
 
+/* 🧾 Table Styling */
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 th {
-    background-color: #ff7a00;
-    color: white;
-    padding: 12px;
-    text-align: left;
+  background: linear-gradient(90deg, #1f0000, #b30000);
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-size: 15px;
+  letter-spacing: 0.3px;
 }
 
 td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 td img {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    object-fit: cover;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid #8b0000;
 }
 
+/* 🟡 Edit/Delete Buttons */
 .btn-warning {
-    background-color: #ffc107;
-    color: #000;
-}
-
-.btn-danger {
-    background-color: #dc3545;
+  background-color: #e6b800;
+  color: #000;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
 }
 
 .btn-warning:hover {
-    background-color: #e0a800;
+  background-color: #cc9a00;
+}
+
+.btn-danger {
+  background-color: #b30000;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
 }
 
 .btn-danger:hover {
-    background-color: #c82333;
+  background-color: #8b0000;
+}
+
+/* 💎 Smooth Animation */
+button, a.btn {
+  transition: all 0.25s ease;
 }
