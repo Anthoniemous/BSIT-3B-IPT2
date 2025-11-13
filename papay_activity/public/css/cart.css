@@ -1,0 +1,122 @@
+/* ☕ Coffee-Themed Cart Page */
+
+/* 🔥 Background Gradient */
+body {
+  font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('../css/img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #3a2e27;
+  line-height: 1.45;
+}
+
+/* 🌟 Container */
+.container {
+    max-width: 1000px;
+    margin: 60px auto;
+    background: #fdf8f3;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    color: #3e2c20;
+    text-align: center;
+}
+
+/* 🛒 Title */
+.page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #8b5e34;
+    margin-bottom: 20px;
+}
+
+/* 📋 Table */
+.order-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fffaf5;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.order-table th {
+    background: linear-gradient(90deg, #8b5e34, #a47148);
+    color: #fff;
+    text-align: left;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.order-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    color: #4a3728;
+}
+
+.order-table tr:hover {
+    background-color: #f3e6da;
+    transition: 0.3s;
+}
+
+/* ⚙️ Action Buttons */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.btn.primary {
+    background: linear-gradient(90deg, #a47148, #8b5e34);
+    color: #fff;
+}
+
+.btn.danger {
+    background: #b24c3e;
+    color: #fff;
+}
+
+/* 🧡 No Items */
+.no-orders {
+    font-size: 18px;
+    color: #8b5e34;
+    margin: 30px 0;
+    font-weight: 600;
+}
+
+/* 🔙 Navigation Buttons */
+.nav-btn {
+    display: inline-block;
+    background: linear-gradient(90deg, #a47148, #8b5e34);
+    color: white;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(139, 94, 52, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(139, 94, 52, 0.6);
+}

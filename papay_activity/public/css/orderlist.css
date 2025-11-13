@@ -1,0 +1,172 @@
+/* ---------- ☕ Coffee-Themed Layout ---------- */
+body {
+  font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('../css/img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #3a2e27;
+  line-height: 1.45;
+}
+
+/* ---------- Main Container ---------- */
+.container {
+  width: 94%;
+  max-width: 1100px;
+  margin: 40px auto;
+  background: #fffaf5;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(74, 44, 42, 0.1);
+  padding: 30px;
+}
+
+/* ---------- Title ---------- */
+.page-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #8b5e34;
+  margin-bottom: 24px;
+  text-shadow: 1px 1px 2px rgba(139, 94, 52, 0.1);
+}
+
+/* ---------- Alerts ---------- */
+.alert {
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.alert-success {
+  background: rgba(126, 217, 87, 0.1);
+  border: 1px solid #6da34d;
+  color: #4e8238;
+}
+
+.alert-danger {
+  background: rgba(205, 92, 92, 0.1);
+  border: 1px solid #cd5c5c;
+  color: #a33c3c;
+}
+
+/* ---------- Empty State ---------- */
+.no-orders {
+  text-align: center;
+  font-size: 1.05rem;
+  color: #6f4e37;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* ---------- Orders Table ---------- */
+.order-table {
+  overflow-x: auto;
+}
+
+.order-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.order-table th,
+.order-table td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.order-table th {
+  background: linear-gradient(90deg, #a47148, #8b5e34);
+  color: #fffaf0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-table tr:hover {
+  background-color: rgba(164, 113, 72, 0.1);
+}
+
+/* ---------- Status Badges ---------- */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.status.pending { background: rgba(255, 193, 94, 0.15); color: #c47f39; }
+.status.completed { background: rgba(155, 201, 113, 0.15); color: #5c7f2d; }
+.status.cancelled { background: rgba(205, 92, 92, 0.15); color: #a33c3c; }
+
+/* ---------- Back Button ---------- */
+.mt-6 {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.mt-6 a {
+  background: linear-gradient(90deg, #a47148, #8b5e34);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 26px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 16px rgba(139, 94, 52, 0.2);
+}
+
+.mt-6 a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(139, 94, 52, 0.35);
+}
+
+/* ---------- Pagination ---------- */
+.pagination-container {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.pagination {
+  display: inline-flex;
+  gap: 8px;
+  list-style: none;
+}
+
+.pagination li a,
+.pagination li span {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1bfa7;
+  color: #4a2c2a;
+  text-decoration: none;
+  background: #fffaf5;
+  transition: background 0.3s, color 0.3s;
+}
+
+.pagination li.active span {
+  background-color: #a47148;
+  color: #fff;
+  border-color: #8b5e34;
+}
+
+.pagination li a:hover {
+  background-color: #f3e9dc;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .page-title { font-size: 1.6rem; }
+  .order-table th, .order-table td { font-size: 0.9rem; padding: 10px; }
+  .container { padding: 20px; }
+}

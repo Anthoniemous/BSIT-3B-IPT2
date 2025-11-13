@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "James",
+        "email": "mahilum@gmail.com",
+        "role": "user",
+        "email_verified_at": "2025-10-24T11:50:44.000000Z",
+        "profile_photo": "profiles\/vIkXa5VnHzaBXpYAKM2eKwaNXqbJiNEVA2nhvsxy.jpg",
+        "created_at": "2025-10-24T11:50:39.000000Z",
+        "updated_at": "2025-10-24T12:17:23.000000Z"
+    },
+    {
+        "id": 2,
+        "name": "James Kevin Mahilum",
+        "email": "mahilumjameskevin@gmail.com",
+        "role": "user",
+        "email_verified_at": "2025-11-05T14:34:50.000000Z",
+        "profile_photo": "profiles\/efkjvv5d6aqhHElabAKbxiRsdGW3KlwkFQ58BFaB.jpg",
+        "created_at": "2025-11-05T14:27:27.000000Z",
+        "updated_at": "2025-11-05T14:49:15.000000Z"
+    },
+    {
+        "id": 3,
+        "name": "Maryjoy Apolinar",
+        "email": "maryjoyapolinar18@gmail.com",
+        "role": "user",
+        "email_verified_at": "2025-11-12T11:39:54.000000Z",
+        "profile_photo": "profiles\/fiRv2xHJqjqWz68wAS0041GeuIrPsg4tdfGOoqxz.jpg",
+        "created_at": "2025-11-12T11:38:17.000000Z",
+        "updated_at": "2025-11-12T11:44:00.000000Z"
+    }
+]

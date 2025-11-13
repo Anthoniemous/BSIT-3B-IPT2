@@ -1,0 +1,95 @@
+/* ☕ Coffee-Themed Dashboard */
+
+/* Background gradient for dashboard */
+body {
+    background:
+        radial-gradient(circle at top left, #c2956b, transparent 60%),
+        radial-gradient(circle at bottom right, #6b4226, transparent 60%);
+    background-color: #fdf6f0; /* cream base */
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    color: #3e2c20;
+}
+
+/* Header buttons and title */
+h2 {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px;
+    color: #8b5e34; /* mocha brown */
+}
+
+/* Buttons */
+.btn {
+    background-color: #a47148; /* latte brown */
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: #8b5e34; /* darker roast on hover */
+    transform: scale(1.05);
+}
+
+/* Table styling */
+.table-container {
+    margin: 30px auto;
+    width: 90%;
+    background: #fffaf5; /* creamy white */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: linear-gradient(90deg, #8b5e34, #a47148); /* coffee gradient */
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #e6d9c9;
+    color: #4a3728;
+}
+
+td img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #d4bfa5;
+}
+
+/* Button variants */
+.btn-warning {
+    background-color: #d7b26c; /* caramel */
+    color: #3e2c20;
+}
+
+.btn-warning:hover {
+    background-color: #c49a58;
+}
+
+.btn-danger {
+    background-color: #b24c3e; /* muted red bean */
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #963c31;
+}
