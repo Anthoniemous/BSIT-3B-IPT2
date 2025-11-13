@@ -14,7 +14,7 @@ class OrderController extends Controller
     public function adminIndex()
     {
         $orders = Order::with(['items.product', 'user'])->latest()->get();
-        return view('userorderlist', compact('orders'));
+        return view('Dashboard.userorderlist', compact('orders'));
     }
 
     public function index()
@@ -24,13 +24,13 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
-        return view('orderlist', compact('orders'));
+        return view('Order.orderlist', compact('orders'));
     }
 
     public function create($cart_id)
     {
         $cart = Cart::with('product')->findOrFail($cart_id);
-        return view('order', compact('cart'));
+        return view('Order.order', compact('cart'));
     }
 
     public function store(Request $request)
@@ -65,12 +65,11 @@ class OrderController extends Controller
         $order->save();
         Cart::where('user_id', $user->id)->delete();
 
-        $this->syncOrdersToLocal(); // ✅ Sync JSON + XML
+        $this->syncOrdersToLocal();
 
         return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
     }
 
-    // 🔸 Private helper: sync JSON + XML
     private function syncOrdersToLocal()
     {
         $orders = Order::with(['items.product', 'user'])->get();
@@ -83,14 +82,11 @@ class OrderController extends Controller
         $this->ensureFolderExists(storage_path("app/local_activity/$userOrdersFolder"));
         $this->ensureFolderExists(storage_path("app/local_activity/XML/$userOrdersFolder"));
 
-        // Save JSON
         Storage::disk('local_activity')->put("$jsonFolder/orders.json", $orders->toJson(JSON_PRETTY_PRINT));
 
-        // Save XML
         $xmlContent = $this->convertToXml($orders, 'orders', 'order');
         Storage::disk('local_activity')->put("XML/$xmlFolder/orders.xml", $xmlContent);
 
-        // Save each user's orders separately
         foreach ($orders->groupBy('user_id') as $userId => $userOrders) {
             Storage::disk('local_activity')->put("$userOrdersFolder/user_$userId.json", $userOrders->toJson(JSON_PRETTY_PRINT));
 
@@ -99,35 +95,31 @@ class OrderController extends Controller
         }
     }
 
-    // 🔹 Convert collection to XML
     private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
-{
-    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+    {
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
 
-    foreach ($data as $record) {
-        $item = $xml->addChild($itemElement);
-        $this->arrayToXml($record->toArray(), $item);
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            $this->arrayToXml($record->toArray(), $item);
+        }
+
+        return $xml->asXML();
     }
 
-    return $xml->asXML();
-}
-
-// Recursive function to handle nested arrays
-private function arrayToXml(array $data, \SimpleXMLElement &$xml)
-{
-    foreach ($data as $key => $value) {
-        if (is_array($value)) {
-            // Use numeric keys as 'item' by default
-            $childKey = is_numeric($key) ? 'item' : $key;
-            $subnode = $xml->addChild($childKey);
-            $this->arrayToXml($value, $subnode);
-        } else {
-            $xml->addChild($key, htmlspecialchars($value));
+    private function arrayToXml(array $data, \SimpleXMLElement &$xml)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $childKey = is_numeric($key) ? 'item' : $key;
+                $subnode = $xml->addChild($childKey);
+                $this->arrayToXml($value, $subnode);
+            } else {
+                $xml->addChild($key, htmlspecialchars($value));
+            }
         }
     }
-}
 
-    // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)
     {
         if (!File::exists($folderPath)) {

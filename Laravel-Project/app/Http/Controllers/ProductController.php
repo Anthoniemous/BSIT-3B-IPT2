@@ -13,20 +13,20 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
-        return view('dashboard', compact('products')); // admin dashboard
+        return view('Dashboard.dashboard', compact('products')); // admin dashboard
     }
 
     // User dashboard (view products)
     public function userDashboard()
     {
         $products = Product::all();
-        return view('userdashboard', compact('products'));
+        return view('Dashboard.userdashboard', compact('products'));
     }
 
     // Show create product form
     public function create()
     {
-        return view('create');
+        return view('Addtocart.create');
     }
 
     // Store new product
@@ -51,14 +51,14 @@ class ProductController extends Controller
             'image' => $imagePath,
         ]);
 
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal(); 
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
 
     // Edit product
     public function edit(Product $product)
     {
-        return view('edit', compact('product'));
+        return view('Addtocart.edit', compact('product'));
     }
 
     // Update product
@@ -82,7 +82,7 @@ class ProductController extends Controller
         }
 
         $product->update($data);
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal(); 
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
@@ -90,7 +90,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal(); 
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
@@ -101,39 +101,32 @@ class ProductController extends Controller
         $jsonFolder = 'ADMIN-PRODUCTS';
         $xmlFolder = 'ADMIN-PRODUCTS';
 
-        // Ensure folders exist
         $this->ensureFolderExists(storage_path("app/local_activity/$jsonFolder"));
         $this->ensureFolderExists(storage_path("app/local_activity/XML/$xmlFolder"));
 
-        // Save JSON
         Storage::disk('local_activity')->put("$jsonFolder/products.json", $products->toJson(JSON_PRETTY_PRINT));
 
-        // Save XML
         $xmlContent = $this->convertToXml($products, 'products', 'product');
         Storage::disk('local_activity')->put("XML/$xmlFolder/products.xml", $xmlContent);
     }
 
-    // 🔹 Convert collection to XML
     private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
-{
-    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+    {
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
 
-    foreach ($data as $record) {
-        $item = $xml->addChild($itemElement);
-        foreach ($record->toArray() as $key => $value) {
-            // Optional: rename 'product_id' to 'id'
-            if ($key === 'product_id') {
-                $key = 'id';
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            foreach ($record->toArray() as $key => $value) {
+                if ($key === 'product_id') {
+                    $key = 'id';
+                }
+                $item->addChild($key, htmlspecialchars($value));
             }
-            $item->addChild($key, htmlspecialchars($value));
         }
+
+        return $xml->asXML();
     }
 
-    return $xml->asXML();
-}
-
-
-    // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)
     {
         if (!File::exists($folderPath)) {

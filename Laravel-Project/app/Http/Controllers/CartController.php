@@ -9,17 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // Show cart
     public function index()
     {
         $cartItems = Cart::with('product')
                         ->where('user_id', Auth::id())
                         ->get();
 
-        return view('cart', compact('cartItems'));
+        return view('Addtocart.cart', compact('cartItems'));
     }
 
-    // Add product to cart (DB + optional localStorage frontend)
     public function add(Product $product)
     {
         $userId = Auth::id();
@@ -45,7 +43,6 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
 
-    // Remove item from cart
     public function remove($id)
     {
         $cartItem = Cart::find($id);
@@ -59,7 +56,6 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Item removed from cart successfully!');
     }
 
-    // Checkout (clear cart)
     public function checkout()
     {
         Cart::where('user_id', Auth::id())->delete();
