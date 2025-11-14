@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product; // Make sure this model exists
 
 class HomeController extends Controller
 {
@@ -11,14 +12,19 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth'); // Protect home page
+        // Remove auth middleware if you want guests to see homepage
+        // $this->middleware('auth'); 
     }
 
-    /**
+    /** 
      * Show the Gym homepage.
      */
     public function index()
     {
-        return view('home'); // this will load resources/views/home.blade.php
+        // Fetch all products from the database
+        $dynamicProducts = Product::all(); // or add ->latest() if you want newest first
+
+        // Pass products to the home view
+        return view('home', compact('dynamicProducts'));
     }
 }
