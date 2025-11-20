@@ -208,3 +208,30 @@ body {
 }
 .dropdown-menu button:hover { background: #145218; }
 .alert-success { color: green; margin-top: 5px; font-size: 13px; }
+
+.sort-container {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.styled-select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.styled-select:hover {
+    border-color: #28a745; /* green */
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+.styled-select:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 4px rgba(40,167,69,0.2);
+}

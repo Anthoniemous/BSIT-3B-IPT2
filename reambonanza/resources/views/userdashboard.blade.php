@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{ asset('css/userdashboard.css') }}">
-  
 </head>
 
 <body>
@@ -20,15 +19,13 @@
       </div>
 
       <nav class="main-nav">
-        <ul>
-        
-        </ul>
+        <ul></ul>
       </nav>
 
       <div class="user-option">
         @auth
-      <a href="{{ route('orders.index') }}" class="btn small">Purchase History</a>
-      <a href="{{ route('cart.index') }}" class="btn small">Your Shampoo Picks</a>
+          <a href="{{ route('orders.index') }}" class="btn small">Purchase History</a>
+          <a href="{{ route('cart.index') }}" class="btn small">Your Shampoo Picks</a>
 
           <!-- 🌸 Profile Dropdown -->
           <div class="profile-container">
@@ -69,17 +66,32 @@
       <p class="section-sub">Nourish, shine, and glow — discover your next favorite shampoo.</p>
     </header>
 
+
+    <!-- ⭐ SORTING DROPDOWN -->
+    <div class="sort-container mb-4">
+  <form method="GET" action="{{ route('user.dashboard') }}">
+    <select name="sort" class="styled-select" onchange="this.form.submit()">
+      <option value="">Sort By</option>
+      <option value="name_asc" {{ request('sort')=='name_asc'?'selected':'' }}>Name: A–Z</option>
+      <option value="name_desc" {{ request('sort')=='name_desc'?'selected':'' }}>Name: Z–A</option>
+      <option value="price_low_high" {{ request('sort')=='price_low_high'?'selected':'' }}>Price: Low → High</option>
+      <option value="price_high_low" {{ request('sort')=='price_high_low'?'selected':'' }}>Price: High → Low</option>
+    </select>
+  </form>
+</div>
+
+
     <div class="product-cards">
       @foreach($products as $product)
         <div class="product-card">
           <div class="card-media">
             <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->product_name }}">
           </div>
+
           <div class="card-body">
             <h3>{{ $product->product_name }}</h3>
-            <h4>
-              {{ $product->description }}
-            </h4>
+
+            <h4>{{ $product->description }}</h4>
 
             <p class="price">${{ number_format($product->price, 2) }}</p>
 
@@ -91,6 +103,7 @@
         </div>
       @endforeach
     </div>
+
   </main>
 
   <script>
@@ -108,5 +121,6 @@
       }
     });
   </script>
+
 </body>
 </html>

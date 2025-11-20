@@ -67,6 +67,9 @@ Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
 Route::middleware(['auth:admin'])->group(function () {
     Route::resource('admin/products', ProductController::class);
 });
+Route::get('/user-dashboard', [ProductController::class, 'userDashboard'])
+    ->name('user.dashboard');
+
 
 // ====================== CART ======================
 Route::middleware('auth')->group(function () {

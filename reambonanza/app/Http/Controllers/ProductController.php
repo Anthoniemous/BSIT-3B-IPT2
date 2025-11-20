@@ -9,17 +9,63 @@ use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
-    // Admin: list all products
-    public function index()
-    {
-        $products = Product::all();
-        return view('dashboard', compact('products')); // admin dashboard
+    // ADMIN: list all products with sorting
+public function index(Request $request)
+{
+    $sort = $request->input('sort');
+
+    $query = Product::query();
+
+    switch ($sort) {
+        case 'name_asc':
+            $query->orderBy('product_name', 'asc');
+            break;
+
+        case 'name_desc':
+            $query->orderBy('product_name', 'desc');
+            break;
+
+        case 'price_low_high':
+            $query->orderBy('price', 'asc');
+            break;
+
+        case 'price_high_low':
+            $query->orderBy('price', 'desc');
+            break;
     }
 
-    // User dashboard (view products)
-    public function userDashboard()
+    $products = $query->get();
+
+    return view('dashboard', compact('products', 'sort'));
+}
+
+    // ⭐ USER MODULE – SORTED PRODUCTS
+    public function userDashboard(Request $request)
     {
-        $products = Product::all();
+        $sort = $request->input('sort');
+
+        $query = Product::query();
+
+        switch ($sort) {
+            case 'name_asc':
+                $query->orderBy('product_name', 'asc');
+                break;
+
+            case 'name_desc':
+                $query->orderBy('product_name', 'desc');
+                break;
+
+            case 'price_low_high':
+                $query->orderBy('price', 'asc');
+                break;
+
+            case 'price_high_low':
+                $query->orderBy('price', 'desc');
+                break;
+        }
+
+        $products = $query->get();
+
         return view('userdashboard', compact('products'));
     }
 
@@ -47,11 +93,11 @@ class ProductController extends Controller
         Product::create([
             'product_name' => $request->product_name,
             'description' => $request->description,
-            'price' => (float) $request->price,
+            'price' => (float)$request->price,
             'image' => $imagePath,
         ]);
 
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal();
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
 
@@ -74,7 +120,7 @@ class ProductController extends Controller
         $data = [
             'product_name' => $request->product_name,
             'description' => $request->description,
-            'price' => (float) $request->price,
+            'price' => (float)$request->price,
         ];
 
         if ($request->hasFile('image')) {
@@ -82,7 +128,7 @@ class ProductController extends Controller
         }
 
         $product->update($data);
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal();
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
@@ -90,50 +136,42 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
-    // 🔸 Private helper: sync JSON + XML
+    // Sync JSON + XML
     private function syncProductsToLocal()
     {
         $products = Product::all();
         $jsonFolder = 'PRODUCTS';
         $xmlFolder = 'PRODUCTS';
 
-        // Ensure folders exist
         $this->ensureFolderExists(storage_path("app/ream_activity/$jsonFolder"));
         $this->ensureFolderExists(storage_path("app/ream_activity/XML/$xmlFolder"));
 
-        // Save JSON
         Storage::disk('ream_activity')->put("$jsonFolder/products.json", $products->toJson(JSON_PRETTY_PRINT));
 
-        // Save XML
         $xmlContent = $this->convertToXml($products, 'products', 'product');
         Storage::disk('ream_activity')->put("XML/$xmlFolder/products.xml", $xmlContent);
     }
 
-    // 🔹 Convert collection to XML
     private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
-{
-    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+    {
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
 
-    foreach ($data as $record) {
-        $item = $xml->addChild($itemElement);
-        foreach ($record->toArray() as $key => $value) {
-            // Optional: rename 'product_id' to 'id'
-            if ($key === 'product_id') {
-                $key = 'id';
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            foreach ($record->toArray() as $key => $value) {
+                if ($key === 'product_id') {
+                    $key = 'id';
+                }
+                $item->addChild($key, htmlspecialchars($value));
             }
-            $item->addChild($key, htmlspecialchars($value));
         }
+        return $xml->asXML();
     }
 
-    return $xml->asXML();
-}
-
-
-    // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)
     {
         if (!File::exists($folderPath)) {
