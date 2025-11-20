@@ -14,11 +14,27 @@
                     <input type="text" id="searchInput" class="form-control rounded-pill px-3" placeholder="Search product name..." required>
                     <button type="submit" class="btn btn-primary rounded-pill ms-2">Search</button>
                 </form>
+
+                 <!-- Sorting Dropdown -->
+                <div>
+                    <select id="sortSelect" class="form-select rounded-pill px-3" style="width: 180px;">
+                        <option value="" selected disabled>Sort By</option>
+                         <option value="newest">Newest</option>
+                        <option value="featured">Featured</option>
+                        <option value="name_asc">Name (A → Z)</option>
+                        <option value="name_desc">Name (Z → A)</option>
+                        <option value="price_low_high">Price (Low → High)</option>
+                        <option value="price_high_low">Price (High → Low)</option>
+                    </select>
+                </div>
             </div>
 
             <div class="row g-4">
                 @foreach($products as $product)
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s"
+                         data-name="{{ $product->name }}"
+                         data-price="{{ $product->price }}"
+                         data-featured="{{ $product->featured ?? 0 }}">
                         <div class="store-item position-relative text-center">
                             <img class="img-fluid"
                                 src="{{ asset('img/store-product-1.jpg') }}"
@@ -136,6 +152,67 @@
                 });
 
                 if (!found) alert("No product found with that name.");
+            });
+        });
+       document.addEventListener('DOMContentLoaded', function () {
+            const sortSelect = document.getElementById('sortSelect');
+            if (!sortSelect) return;
+
+            const container = document.querySelector('.row.g-4');
+            if (!container) return;
+
+            function getCards() {
+                return Array.from(container.querySelectorAll('.col-lg-4.col-md-6[data-name]'));
+            }
+
+            // Save original order
+            getCards().forEach((card, idx) => {
+                if (!card.hasAttribute('data-original-index')) {
+                    card.setAttribute('data-original-index', idx);
+                }
+            });
+
+            function parsePrice(val) {
+                if (!val) return 0;
+                const cleaned = String(val).replace(/[^0-9.]/g, '');
+                return parseFloat(cleaned) || 0;
+            }
+
+            sortSelect.addEventListener('change', function () {
+                const sortType = this.value;
+                const cards = getCards();
+
+                cards.sort((a, b) => {
+                    const nameA = a.dataset.name.toLowerCase();
+                    const nameB = b.dataset.name.toLowerCase();
+                    const priceA = parsePrice(a.dataset.price);
+                    const priceB = parsePrice(b.dataset.price);
+                    const idA = parseInt(a.dataset.id);
+                    const idB = parseInt(b.dataset.id);
+                    const featA = parseInt(a.dataset.featured);
+                    const featB = parseInt(b.dataset.featured);
+
+                    switch (sortType) {
+                        case 'name_asc':
+                            return nameA.localeCompare(nameB);
+                        case 'name_desc':
+                            return nameB.localeCompare(nameA);
+                        case 'price_low_high':
+                            return priceA - priceB;
+                        case 'price_high_low':
+                            return priceB - priceA;
+                        case 'newest':
+                            return idB - idA; // larger ID = newer
+                        case 'featured':
+                            return featB - featA; // 1 = featured, sort to top
+                        default:
+                            return parseInt(a.dataset.originalIndex) - parseInt(b.dataset.originalIndex);
+                    }
+                });
+
+                const frag = document.createDocumentFragment();
+                cards.forEach(c => frag.appendChild(c));
+                container.appendChild(frag);
             });
         });
     </script>

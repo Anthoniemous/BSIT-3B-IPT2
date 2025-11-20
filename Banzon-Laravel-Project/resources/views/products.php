@@ -8,7 +8,7 @@
                     <img class="w-100" src="img/carousel-1.jpg" alt="Image">
                     <div class="carousel-caption">
                         <div class="container">
-                            <div class="row justify-content-center">
+                            <div class="row justify-content-center">                      
                                 <div class="col-lg-7 text-center">
                                     <p class="fs-4 text-white animated zoomIn">Welcome to <strong class="text-dark">TEA House</strong></p>
                                     <h1 class="display-1 text-dark mb-4 animated zoomIn">Organic & Quality Tea Production</h1>

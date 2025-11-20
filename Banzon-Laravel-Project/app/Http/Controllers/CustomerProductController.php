@@ -137,6 +137,6 @@ class CustomerProductController extends Controller
             ->whereNotIn('product_id', $productIds)
             ->delete();
 }
-
+    
 
 }
