@@ -30,7 +30,6 @@
           <a href="{{ route('orders.index') }}" class="btn small"> ORDERS</a>
           <a href="{{ route('cart.index') }}" class="btn small"> CART </a>
 
-          <!-- 🌸 Profile Dropdown -->
           <div class="profile-container">
             <img 
               src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
@@ -64,24 +63,64 @@
   </header>
 
   <main class="container" style="padding-top: 30px;">
+
     <header class="section-header" style="margin-top: 40px;">
       <h2>All Products</h2>
       <p class="section-sub">Browse and shop your favorites</p>
     </header>
 
+    <form id="filterForm" action="{{ route('user.search') }}" method="GET" class="filter-bar">
+
+    <div class="search-container">
+        <input 
+            type="text" 
+            name="search" 
+            class="search-input" 
+            placeholder="Search products..." 
+            value="{{ request('search') }}"
+            oninput="document.getElementById('filterForm').submit();"
+        >
+    </div>
+
+    <div class="filters">
+        <select name="category" class="category-select" onchange="this.form.submit()">
+            <option value="all">All Categories</option>
+            <option value="Basketball Shoes" {{ request('category')=='Basketball Shoes' ? 'selected':'' }}>Basketball Shoes</option>
+            <option value="Running Shoes" {{ request('category')=='Running Shoes' ? 'selected':'' }}>Running Shoes</option>
+            <option value="Lifestyle" {{ request('category')=='Lifestyle' ? 'selected':'' }}>Lifestyle</option>
+            <option value="Jerseys" {{ request('category')=='Jerseys' ? 'selected':'' }}>Jerseys</option>
+            <option value="Accessories" {{ request('category')=='Accessories' ? 'selected':'' }}>Accessories</option>
+        </select>
+
+        <input type="number" name="min_price" class="price-input" placeholder="Min ₱" value="{{ request('min_price') }}" oninput="this.form.submit()">
+        <input type="number" name="max_price" class="price-input" placeholder="Max ₱" value="{{ request('max_price') }}" oninput="this.form.submit()">
+
+        <select name="sort" class="styled-select" onchange="this.form.submit()">
+    <!-- Default placeholder option -->
+    <option value="" disabled {{ request('sort') ? '' : 'selected' }}>Sort By</option>
+
+    <!-- Actual options -->
+    <option value="featured" {{ request('sort')=='featured' ? 'selected':'' }}>Featured</option>
+    <option value="newest" {{ request('sort')=='newest' ? 'selected':'' }}>Newest</option>
+    <option value="price_high_low" {{ request('sort')=='price_high_low' ? 'selected':'' }}>Price: High-Low</option>
+    <option value="price_low_high" {{ request('sort')=='price_low_high' ? 'selected':'' }}>Price: Low-High</option>
+</select>
+    </div>
+</form>
+
+
+    <!-- ⭐ PRODUCT LIST -->
     <div class="product-cards">
-      @foreach($products as $product)
+      @forelse($products as $product)
         <div class="product-card">
           <div class="card-media">
             <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->product_name }}">
           </div>
           <div class="card-body">
             <h3>{{ $product->product_name }}</h3>
-            <h4>
-              {{ $product->description }}
-            </h4>
-
-            <p class="price">${{ number_format($product->price, 2) }}</p>
+            <p>{{ $product->category }}</p>
+            <h4>{{ $product->description }}</h4>
+            <p class="price">₱{{ number_format($product->price, 2) }}</p>
 
             <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
               @csrf
@@ -89,17 +128,23 @@
             </form>
           </div>
         </div>
-      @endforeach
+      @empty
+        <p style="margin-top:20px;">No products found matching your search/filter.</p>
+      @endforelse
     </div>
+
+    <!-- ⭐ PAGINATION -->
+    <div style="margin-top:20px;">
+      {{ $products->appends(request()->query())->links() }}
+    </div>
+
   </main>
 
   <script>
-    // 🌸 Dropdown Toggle Script
     document.getElementById('profileDropdownToggle').addEventListener('click', function() {
       document.getElementById('profileDropdownMenu').classList.toggle('active');
     });
 
-    // Close dropdown if clicked outside
     window.addEventListener('click', function(e) {
       const menu = document.getElementById('profileDropdownMenu');
       const toggle = document.getElementById('profileDropdownToggle');

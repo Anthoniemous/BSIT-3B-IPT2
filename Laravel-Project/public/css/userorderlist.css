@@ -170,3 +170,104 @@ body {
         text-align: left;
     }
 }
+
+/* ---------- Header ---------- */
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(4px);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 0;
+}
+
+/* Logo */
+.logo {
+  display:flex;
+  align-items:center;
+  gap: 12px;
+}
+.logo img {
+  width:44px;
+  height:auto;
+  display:block;
+}
+.brand {
+  font-weight: 800;
+  letter-spacing: .6px;
+  color: #232323;
+}
+
+/* Nav */
+.main-nav ul {
+  list-style:none;
+  display:flex;
+  gap: 26px;
+  margin:0;
+  padding:0;
+}
+.main-nav a {
+  text-decoration:none;
+  color: #333;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 6px;
+  border-radius: 6px;
+}
+.main-nav a:hover { 
+  background: rgba(255,153,51,0.08); 
+  color: #f57c00; 
+}
+
+/* User buttons */
+.user-option { 
+  display:flex; 
+  gap:10px; 
+  align-items:center; 
+}
+
+.btn {
+  display:inline-block;
+  padding:10px 16px;
+  border-radius: 32px;
+  border: none;
+  cursor:pointer;
+  text-decoration:none;
+  font-weight:700;
+  font-size:0.95rem;
+  box-shadow: 0 6px 18px rgba(245,124,0,0.12);
+}
+
+/* Primary CTA style */
+.btn.cta, 
+.btn.small {
+  background: linear-gradient(90deg, #1f0000, #b30000);
+  color: #fff;
+}
+
+.btn.small { 
+  padding: 8px 12px; 
+  border-radius: 20px; 
+  font-size: .85rem; 
+}
+
+/* Outline button */
+.btn.outline {
+  background: transparent;
+  color: #f57c00;
+  border: 1px solid rgba(245,124,0,0.15);
+  box-shadow: none;
+}
+
+/* Responsive - hide nav on mobile */
+@media (max-width: 920px) {
+  .main-nav { display:none; }
+}

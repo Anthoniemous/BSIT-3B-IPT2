@@ -19,7 +19,6 @@ Route::get('/', function () {
     return view('welcome', compact('products'));
 })->name('welcome');
 
-
 // ====================== AUTHENTICATION ======================
 Route::get('/login', [Controller::class, 'showLogin'])->name('login');
 Route::post('/login', [Controller::class, 'login'])->name('login.post');
@@ -32,7 +31,6 @@ Route::get('/forgotpassword', [PasswordController::class, 'showForgotForm'])->na
 Route::post('/forgotpassword', [PasswordController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [PasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordController::class, 'reset'])->name('password.update');
-
 
 // ====================== ORDERS ======================
 Route::middleware('auth')->group(function () {
@@ -51,8 +49,12 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
 });
 
-
 // ====================== DASHBOARDS ======================
+// User: view single order
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+// User: cancel an order
+Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
 // Admin Dashboard
 Route::get('/dashboard', function () {
@@ -60,16 +62,23 @@ Route::get('/dashboard', function () {
     return view('Dashboard.dashboard', compact('products'));
 })->middleware(['auth:admin'])->name('dashboard');
 
+// Admin: products
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::resource('admin/products', ProductController::class);
+});
+Route::get('/user/orders', [OrderController::class, 'userOrders'])->name('user.orders');
+
+
+
 // User Dashboard
 Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
     ->middleware(['auth', 'verified'])
     ->name('user.dashboard');
 
-
-// ====================== PRODUCTS ======================
-Route::middleware(['auth:admin'])->group(function () {
-    Route::resource('admin/products', ProductController::class);
-});
+    Route::get('/userdashboard/search', [ProductController::class, 'userDashboard'])
+    ->name('user.search')
+    ->middleware('auth');
 
 
 // ====================== CART ======================
@@ -80,13 +89,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 });
 
-
 // ====================== EMAIL VERIFICATION ======================
 Route::get('/email/verify', function () {
-    return view('LoginForm.verify-email');
+    return view('auth.verify-email');  // Correct path
 })->middleware('auth')->name('verification.notice');
 
-// ✅ Guest-safe version (no need to log in first)
+
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
     $user = User::findOrFail($id);
 
@@ -110,7 +118,6 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-
 // ====================== LOGOUT & PROFILE ======================
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [Controller::class, 'logout'])->name('logout');
@@ -118,10 +125,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // 👉 ADD THIS
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
 });
-
 
 // ====================== GOOGLE AUTH ======================
 Route::get('auth/google', [Controller::class, 'redirectToGoogle'])->name('google.login');

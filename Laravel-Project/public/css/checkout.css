@@ -82,3 +82,155 @@ body {
     background: #b30000;
     color: #fff;
 }
+
+/* ---------- Header ---------- */
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+/* Centered + width-limited header content */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 0;
+
+  max-width: 1100px;     /* <-- keeps header boxed like your sample */
+  margin: 0 auto;        /* <-- centers the entire header */
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo img {
+  width: 44px;
+  height: auto;
+  display: block;
+}
+.brand {
+  font-weight: 800;
+  letter-spacing: .6px;
+  color: #232323;
+}
+
+/* Nav */
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 26px;
+  margin: 0;
+  padding: 0;
+}
+.main-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 6px;
+  border-radius: 6px;
+}
+.main-nav a:hover { 
+  background: rgba(179, 0, 0, 0.08); 
+  color: #b30000; 
+}
+
+/* User Options (Orders, Cart, Profile) */
+.user-option { 
+  display: flex; 
+  gap: 10px; 
+  align-items: center; 
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 32px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 6px 18px rgba(179, 0, 0, 0.15);
+}
+
+/* Primary CTA style (deep red) */
+.btn.cta, 
+.btn.small {
+  background: linear-gradient(90deg, #1f0000, #b30000);
+  color: #fff;
+}
+.btn.small { 
+  padding: 8px 12px; 
+  border-radius: 20px; 
+  font-size: .85rem; 
+}
+
+/* Outline Style */
+.btn.outline {
+  background: transparent;
+  color: #b30000;
+  border: 1px solid rgba(179,0,0,0.3);
+  box-shadow: none;
+}
+
+/* Profile Container */
+.profile-container {
+  position: relative;
+}
+
+.profile-pic {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  border: 2px solid #b30000;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 56px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 200px;
+  z-index: 50;
+}
+
+.profile-container:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu h4 {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.dropdown-menu form {
+  margin-bottom: 8px;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}

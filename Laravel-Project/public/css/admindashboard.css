@@ -156,3 +156,48 @@ td img {
 button, a.btn {
   transition: all 0.25s ease;
 }
+/* 🔥 Filter Container */
+.filter-container {
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 20px;     /* ✔ ibaba gamay */
+    display: flex;
+    justify-content: center;
+}
+
+/* 🎨 Design sa Filter Form */
+.filter-form {
+    display: flex;
+    gap: 15px;
+    background: #ffffffcc;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    backdrop-filter: blur(5px);
+    align-items: center;
+}
+
+/* ✏ Input & Select Styling */
+.filter-form input,
+.filter-form select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: 0.2s ease-in-out;
+}
+
+/* Hover & Focus Effects */
+.filter-form input:focus,
+.filter-form select:focus {
+    border-color: #b30000;
+    box-shadow: 0 0 5px rgba(179, 0, 0, 0.4);
+}
+
+/* Para di mag compress kung gamay screen */
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        width: 100%;
+    }
+}

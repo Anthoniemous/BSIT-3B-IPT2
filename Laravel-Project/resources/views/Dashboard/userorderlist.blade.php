@@ -2,165 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Customer Orders</title>
-    <style>
-        /* Background Image */
-        body {
-            font-family: Arial, sans-serif;
-            background: url('/css/img/background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            padding: 20px;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            background: rgba(255, 255, 255, 0.95); /* Slight transparency to see bg */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .page-title {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        /* Flash messages */
-        .alert {
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-        .alert-success { background-color: #d4edda; color: #155724; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; }
-
-        /* Table styling */
-        .order-table {
-            overflow-x: auto;
-        }
-
-        .order-table table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
-
-        .order-table th, .order-table td {
-            border: 1px solid #ddd;
-            padding: 12px 10px;
-            text-align: left;
-        }
-
-        .order-table th {
-            background-color: #220101ff;
-            color: #fff;
-            position: sticky;
-            top: 0;
-        }
-
-        .order-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .order-table tr:hover {
-            background-color: #e9f5ff;
-        }
-
-        /* Status badges */
-        .status {
-            padding: 4px 10px;
-            border-radius: 4px;
-            color: #fff;
-            font-weight: bold;
-            display: inline-block;
-        }
-        .status.pending { background-color: orange; }
-        .status.completed { background-color: green; }
-
-        /* Buttons */
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
-            background-color: #007bff;
-            transition: background 0.3s;
-        }
-
-        .btn:hover { background-color: #0056b3; }
-        .btn-secondary { background-color: #6c757d; }
-        .btn-secondary:hover { background-color: #545b62; }
-
-        .mt-4 { margin-top: 20px; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .order-table table, .order-table th, .order-table td {
-                font-size: 0.85rem;
-            }
-            
-        }
-        .pagination-container {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.pagination-info {
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.pagination {
-  display: inline-flex;
-  justify-content: center;
-}
-
-.pagination .page-link {
-  color: #b30000;
-  border: 1px solid #b30000;
-}
-
-.pagination .page-item.active .page-link {
-  background-color: #b30000;
-  border-color: #b30000;
-  color: #fff;
-}
-
-        
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders 🧾</title>
+    <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="container">
-    <h1 class="page-title">Customer Orders 🧾</h1>
+<!-- Header Start -->
+<header class="site-header">
+    <div class="header-inner">
+        <div class="logo">
+            <img src="{{ asset('css/img/logo.jpg') }}" alt="NBA Logo">
+            <span class="brand">NBA Fan Store</span>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url('/') }}">Home</a></li>
+            </ul>
+        </nav>
+
+        <div class="user-option">
+            @auth
+                <a href="{{ route('orders.index') }}" class="btn small"> ORDERS</a>
+                <a href="{{ route('cart.index') }}" class="btn small"> CART </a>
+
+                <div class="profile-container">
+                    <img 
+                        src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
+                        alt="Profile" 
+                        class="profile-pic" 
+                        id="profileDropdownToggle"
+                    >
+
+                    <div class="dropdown-menu" id="profileDropdownMenu">
+                        <h4>Welcome, {{ Auth::user()->name }}!</h4>
+
+                        <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="file" name="profile_photo" required>
+                            <button type="submit">Update Photo</button>
+                        </form>
+
+                        @if(session('success'))
+                            <div class="alert-success">{{ session('success') }}</div>
+                        @endif
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" style="margin-top: 10px; background: #dc3545;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            @endauth
+        </div>
+    </div>
+</header>
+
+<div class="container mt-4">
+    <h1 class="page-title text-center mb-4">Your Orders 🧾</h1>
 
     <!-- Flash Messages -->
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+    @if(session('success'))
+        <div class="alert alert-success text-center">{{ session('success') }}</div>
+    @elseif(session('error'))
+        <div class="alert alert-danger text-center">{{ session('error') }}</div>
+    @endif
 
     <!-- Orders Table -->
-    <div class="order-table">
-        <table>
-            <thead>
+    <div class="order-table table-responsive">
+        <table class="table table-bordered text-center align-middle">
+            <thead class="table-light text-white">
                 <tr>
                     <th>Order ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Contact</th>
                     <th>Date</th>
                     <th>Product</th>
                     <th>Quantity</th>
@@ -169,17 +84,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($orders as $order)
+                @forelse($orders as $order)
                     @foreach($order->items as $item)
                         <tr>
                             <td>{{ $order->order_id }}</td>
-                            <td>{{ $order->name }}</td>
-                            <td>{{ $order->address }}</td>
-                            <td>{{ $order->contact_number }}</td>
                             <td>{{ $order->created_at->format('M d, Y') }}</td>
                             <td>{{ $item->product->product_name }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>${{ number_format($item->product->price * $item->quantity, 2) }}</td>
+                            <td>₱{{ number_format($item->product->price * $item->quantity, 2) }}</td>
                             <td>
                                 <span class="status {{ strtolower($order->status) }}">
                                     {{ ucfirst($order->status) }}
@@ -187,27 +99,38 @@
                             </td>
                         </tr>
                     @endforeach
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center">No orders found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 
-     <!-- Pagination -->
-    <div class="pagination-container text-center">
-        <p class="pagination-info mb-2">Showing 1 to 2 of 2 results</p>
-        <nav class="pagination-links d-inline-block">
-            <ul class="pagination justify-content-center mb-0">
-                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
+    <!-- Pagination -->
+    <div class="pagination-container text-center mt-3">
+        {{ $orders->links('pagination::bootstrap-5') }}
     </div>
 
-   <div class="mt-4">
-        <a href="{{ route('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+    <!-- Back to Dashboard -->
+    <div class="mt-4 text-center">
+        <a href="{{ route('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+
     </div>
 </div>
 
+<!-- Auto-hide flash messages -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.classList.add("fade");
+                setTimeout(() => alert.style.display = "none", 600);
+            }, 4000);
+        });
+    });
+</script>
 </body>
 </html>

@@ -9,27 +9,111 @@ use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
-    // Admin: list all products
-    public function index()
+    // 🔹 Admin: list all products with search, category filter, sort
+    public function index(Request $request)
     {
-        $products = Product::all();
-        return view('Dashboard.dashboard', compact('products')); // admin dashboard
+        $query = Product::query();
+
+        // ⭐ SEARCH
+        if ($request->has('search') && $request->search != '') {
+            $query->where('product_name', 'like', '%' . $request->search . '%');
+        }
+
+        // ⭐ CATEGORY FILTER
+        if ($request->has('category') && $request->category != 'all') {
+            $query->where('category', $request->category);
+        }
+
+        // ⭐ SORTING
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'az':
+                    $query->orderBy('product_name', 'asc');
+                    break;
+                case 'za':
+                    $query->orderBy('product_name', 'desc');
+                    break;
+                case 'price_low_high':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_high_low':
+                    $query->orderBy('price', 'desc');
+                    break;
+            }
+        }
+
+        $products = $query->paginate(10);
+
+        return view('Dashboard.dashboard', [
+            'products' => $products,
+            'search' => $request->search,
+            'category' => $request->category,
+            'sort' => $request->sort,
+        ]);
     }
 
-    // User dashboard (view products)
-    public function userDashboard()
-    {
-        $products = Product::all();
-        return view('Dashboard.userdashboard', compact('products'));
+   public function userDashboard(Request $request)
+{
+    $query = Product::query();
+
+    // 🔍 Search
+    if ($request->filled('search')) {
+        $query->where('product_name', 'LIKE', '%' . $request->search . '%');
     }
 
-    // Show create product form
+    // 🏷 Category
+    if ($request->filled('category') && $request->category != 'all') {
+        $query->where('category', $request->category);
+    }
+
+    // 💰 MIN PRICE
+    if ($request->filled('min_price')) {
+        $query->where('price', '>=', $request->min_price);
+    }
+
+    // 💰 MAX PRICE
+    if ($request->filled('max_price')) {
+        $query->where('price', '<=', $request->max_price);
+    }
+
+    // ↕ SORTING
+    switch ($request->sort) {
+        case 'newest':
+            $query->orderBy('created_at', 'desc');
+            break;
+
+        case 'price_high_low':
+            $query->orderBy('price', 'desc');
+            break;
+
+        case 'price_low_high':
+            $query->orderBy('price', 'asc');
+            break;
+
+        case 'featured':
+        default:
+            $query->orderBy('product_id', 'asc'); // default Featured order
+            break;
+    }
+
+    $products = $query->paginate(6);
+
+    return view('Dashboard.userdashboard', [
+        'products'  => $products,
+        'search'    => $request->search,
+        'category'  => $request->category,
+        'sort'      => $request->sort,
+    ]);
+}
+
+
+    // 🔹 Show create product form
     public function create()
     {
         return view('Addtocart.create');
     }
 
-    // Store new product
+    // 🔹 Store new product
     public function store(Request $request)
     {
         $request->validate([
@@ -37,6 +121,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric',
             'image' => 'nullable|image|max:10240',
+            'category' => 'required|string',
         ]);
 
         $imagePath = null;
@@ -49,19 +134,20 @@ class ProductController extends Controller
             'description' => $request->description,
             'price' => (float) $request->price,
             'image' => $imagePath,
+            'category' => $request->category,
         ]);
 
         $this->syncProductsToLocal(); 
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
 
-    // Edit product
+    // 🔹 Edit product
     public function edit(Product $product)
     {
         return view('Addtocart.edit', compact('product'));
     }
 
-    // Update product
+    // 🔹 Update product
     public function update(Request $request, Product $product)
     {
         $request->validate([
@@ -69,12 +155,14 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'category' => 'required|string',
         ]);
 
         $data = [
             'product_name' => $request->product_name,
             'description' => $request->description,
             'price' => (float) $request->price,
+            'category' => $request->category,
         ];
 
         if ($request->hasFile('image')) {
@@ -86,7 +174,7 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
-    // Delete product
+    // 🔹 Delete product
     public function destroy(Product $product)
     {
         $product->delete();
@@ -94,7 +182,7 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
-    // 🔸 Private helper: sync JSON + XML
+    // 🔹 Private helper: sync JSON + XML
     private function syncProductsToLocal()
     {
         $products = Product::all();
