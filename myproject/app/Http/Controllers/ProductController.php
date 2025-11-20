@@ -55,8 +55,6 @@ class ProductController extends Controller
         }
 
         $product->save();
-
-        // 👉 Update XML file after saving
         $this->updateXML();
 
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
@@ -90,8 +88,6 @@ class ProductController extends Controller
         }
 
         $product->save();
-
-        // 👉 Update XML file after editing
         $this->updateXML();
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
@@ -106,30 +102,78 @@ class ProductController extends Controller
         }
 
         $product->delete();
-
-        // 👉 Update XML file after deleting
         $this->updateXML();
 
         return redirect()->back()->with('success', 'Product deleted successfully!');
     }
 
-    public function mainDashboard()
-    {
-        $products = Product::all();
-        return view('admin.main-dashboard', compact('products'));
-    }
-
-    public function customerDashboard(Request $request)
+    public function mainDashboard(Request $request)
     {
         $query = Product::query();
 
-        if ($request->has('search') && $request->search != '') {
-            $query->where('name', 'like', '%'.$request->search.'%')
-                ->orWhere('description', 'like', '%'.$request->search.'%');
+        // SORT FEATURED
+        if ($request->sort == 'featured') {
+            $query->where('featured', 1);
+        }
+
+        // SORT NEWEST
+        if ($request->sort == 'newest') {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // SORT PRICE HIGH → LOW
+        if ($request->sort == 'price_high') {
+            $query->orderBy('price', 'desc');
+        }
+
+        // SORT PRICE LOW → HIGH
+        if ($request->sort == 'price_low') {
+            $query->orderBy('price', 'asc');
         }
 
         $products = $query->get();
 
-        return view('customer.dashboard', compact('products'));
+        // ⚠️ Fallback: kung featured pero walay results, show all products
+        if ($request->sort == 'featured' && $products->isEmpty()) {
+            $products = Product::all();
+        }
+
+        return view('admin.main-dashboard', compact('products'));
+    } 
+
+
+    
+public function customerDashboard(Request $request)
+{
+    $query = Product::query();
+
+    switch ($request->sort) {
+        case 'featured':
+            $query->where('featured', 1);
+            break;
+        case 'newest':
+            $query->orderBy('created_at', 'desc');
+            break;
+        case 'price_high':
+            $query->orderBy('price', 'desc');
+            break;
+        case 'price_low':
+            $query->orderBy('price', 'asc');
+            break;
+        default:
+            $query->orderBy('name', 'asc'); // default alphabetical
+            break;
     }
+
+    $products = $query->get();
+
+    // ✅ Fallback: kung Featured ug walay products, ipakita tanan
+    if ($request->sort == 'featured' && $products->isEmpty()) {
+        $products = Product::all()->sortBy('name'); // default alphabetical
+    }
+
+    return view('customer.dashboard', compact('products'));
+}
+
+
 }

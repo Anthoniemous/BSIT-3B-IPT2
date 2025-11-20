@@ -11,6 +11,17 @@
   top: 0;
   z-index: 1000;
 }
+.sort-form {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-form select {
+  padding: 5px 10px;
+  font-size: 14px;
+}
 
 .navbar-logo {
   font-family: 'Merriweather', serif;

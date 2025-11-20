@@ -47,17 +47,24 @@
   <div class="header-bar">
     <h1>Welcome, {{ Auth::user()->name }}!</h1>
 
-    <form method="GET" action="{{ route('customer.dashboard') }}" class="search-bar">
-      <label for="search-input">Search:</label>
-      <input type="text" id="search-input" name="search" placeholder="Type product..." value="{{ request('search') }}">
-      <button type="submit">Enter</button>
-    </form>
+    
   </div>
-
+    
   @if(session('success'))
     <div class="alert-success">{{ session('success') }}</div>
   @endif
+<form method="GET" action="{{ route('customer.dashboard') }}" class="sort-form">
+  <label for="sort">Sort By:</label>
+  <select name="sort" id="sort" onchange="this.form.submit()">
+    <option value="">-- Select --</option>
+    <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
+    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
+    <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High-Low</option>
+    <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low-High</option>
+  </select>
+</form>
 
+</form>
   <!-- === PRODUCT LIST === -->
   <div class="main-content">
     @if(isset($products) && $products->count() > 0)

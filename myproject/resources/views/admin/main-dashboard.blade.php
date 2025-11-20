@@ -42,6 +42,18 @@
       <a href="{{ route('products.index') }}" class="btn-custom">Go to Product Management</a>
     </div>
 
+    <!-- Sort By Form -->
+    <form method="GET" action="{{ route('admin.dashboard') }}" class="sort-container">
+      <label>Sort By:</label>
+      <select name="sort" onchange="this.form.submit()">
+        <option value="">Default</option>
+        <option value="featured" {{ request('sort')=='featured' ? 'selected' : '' }}>Featured</option>
+        <option value="newest" {{ request('sort')=='newest' ? 'selected' : '' }}>Newest</option>
+        <option value="price_high" {{ request('sort')=='price_high' ? 'selected' : '' }}>Price: High-Low</option>
+        <option value="price_low" {{ request('sort')=='price_low' ? 'selected' : '' }}>Price: Low-High</option>
+      </select>
+    </form>
+
     <!-- Product Grid -->
     <div class="product-grid">
       @if(isset($products) && count($products) > 0)
@@ -52,6 +64,9 @@
               <h5 class="product-card-title">{{ $product->name }}</h5>
               <p class="product-card-price">₱ {{ number_format($product->price, 2) }}</p>
               <p class="product-card-category">Category: {{ $product->category ?? '-' }}</p>
+              <p class="product-card-featured">
+                Featured: {{ $product->featured ? 'Yes' : 'No' }}
+              </p>
             </div>
           </div>
         @endforeach

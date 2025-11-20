@@ -51,17 +51,14 @@ Route::get('/email/verify', [VerificationController::class, 'notice'])
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
     $user = User::findOrFail($id);
 
-    // Check if hash is valid
     if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
         abort(403, 'Invalid verification link.');
     }
 
-    // Mark email as verified if not already
     if (! $user->hasVerifiedEmail()) {
         $user->markEmailAsVerified();
     }
 
-    // Login user automatically
     Auth::login($user);
     $request->session()->regenerate();
 
@@ -80,8 +77,8 @@ Route::post('/email/resend', [VerificationController::class, 'resend'])
 |--------------------------------------------------------------------------|
 */
 
-// ✅ Customer Dashboard (verified users only)
-Route::get('/customer/dashboard', [AuthController::class, 'dashboard'])
+// ✅ Customer Dashboard with sorting (verified users only)
+Route::get('/customer/dashboard', [ProductController::class, 'customerDashboard'])
     ->middleware(['auth', 'verified'])
     ->name('customer.dashboard');
 
@@ -89,8 +86,6 @@ Route::get('/customer/dashboard', [AuthController::class, 'dashboard'])
 Route::get('/admin/dashboard', [ProductController::class, 'mainDashboard'])
     ->name('admin.dashboard');
 
-
-    
 /*
 |--------------------------------------------------------------------------|
 | ADMIN PRODUCT MANAGEMENT ROUTES
@@ -102,8 +97,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-   
-
 });
 
 /*
@@ -123,50 +116,38 @@ Route::get('/test-mail', function () {
     Mail::raw('Test email from Coffee Shop system.', function ($message) {
         $message->to('test@example.com')->subject('Test Email');
     });
-
     return '✅ Test email sent successfully!';
 });
 
-// routes/web.php
 // Add to Cart
-Route::post('/cart/add/{id}', [CartController::class, 'add'])
-    ->middleware(['auth']) // optional: only logged-in users
-    ->name('cart.add');
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->middleware(['auth'])->name('cart.add');
 
 // View Cart
-Route::get('/cart', [CartController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('cart.index');
+Route::get('/cart', [CartController::class, 'index'])->middleware(['auth'])->name('cart.index');
 
 // Update quantity
-Route::post('/cart/update/{id}', [CartController::class, 'update'])
-    ->middleware(['auth'])
-    ->name('cart.update');
+Route::post('/cart/update/{id}', [CartController::class, 'update'])->middleware(['auth'])->name('cart.update');
 
 // Remove from cart
-Route::post('/cart/remove/{id}', [CartController::class, 'remove'])
-    ->middleware(['auth'])
-    ->name('cart.remove');
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->middleware(['auth'])->name('cart.remove');
 
-    Route::get('/profile', function () {
+// PROFILE CUSTOMER
+Route::get('/profile', function () {
     return view('customer.profile');
 })->name('customer.profile')->middleware('auth');
 
-//PROFILE CUSTOMER
-// ✅ View Profile Page
 Route::get('/profile', [CustomerController::class, 'showProfile'])
     ->name('customer.profile')
     ->middleware('auth');
 
-// ✅ Update Profile
 Route::put('/profile/update', [CustomerController::class, 'updateProfile'])
-    ->name('profile.update') // 👈 this now matches your Blade form
+    ->name('profile.update')
     ->middleware('auth');
- Route::post('/profile/store', [ProfileController::class, 'store'])->name('profile.store');
 
+Route::post('/profile/store', [ProfileController::class, 'store'])->name('profile.store');
 
+// Auth middleware group for customer profile & home
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [CustomerController::class, 'index'])->name('customer.dashboard');
+    Route::get('/dashboard', [CustomerController::class, 'index'])->name('customer.home');
     Route::post('/save-profile', [CustomerController::class, 'saveProfile'])->name('customer.profile.save');
 });
- 
