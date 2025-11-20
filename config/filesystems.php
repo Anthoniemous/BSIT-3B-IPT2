@@ -56,6 +56,16 @@ return [
             'throw' => false,
         ],
 
+         'quibo_activity' => [ 
+    'driver' => 'local',
+    'root' => 'D:/BAPA/Quibo/public/assets',
+],
+
+'xml_activity' => [
+    'driver' => 'local',
+    'root' => 'D:/BAPA/Quibo/public/assets/XML',
+],
+
     ],
 
     /*

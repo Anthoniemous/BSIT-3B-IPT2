@@ -46,6 +46,10 @@ Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogl
 | Public Pages
 |--------------------------------------------------------------------------
 */
+// USER PRODUCT LIST
+Route::get('/products', [ProductController::class, 'index'])->name('user.products');
+Route::get('/products', [PageController::class, 'products'])->name('products');
+
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/products', [PageController::class, 'products'])->name('products');
 Route::get('/single-product/{id?}', [PageController::class, 'singleProduct'])->name('single-product');

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Product; // ✅ Import Product model
+use App\Models\Product;
 
 class PageController extends Controller
 {
@@ -17,21 +17,6 @@ class PageController extends Controller
         return view('about');
     }
 
-    public function products()
-    {
-        // ✅ Fetch all products from database (latest first)
-        $products = Product::latest()->get();
-
-        return view('products', compact('products'));
-    }
-
-    public function singleProduct($id = null)
-    {
-        $product = \App\Models\Product::find($id);
-        return view('single-product', compact('product'));
-    }
-
-
     public function contact()
     {
         return view('contact');
@@ -39,7 +24,35 @@ class PageController extends Controller
 
     public function sendContact(Request $request)
     {
-        // For demo purposes
-        return back()->with('success', 'Your message has been sent!');
+        // your contact form logic here
+    }
+
+    // ⭐ PUBLIC PRODUCTS PAGE (USER SIDE)
+    public function products(Request $request)
+    {
+        $sort = $request->query('sort');
+
+        $query = Product::query();
+
+        // ⭐ Sorting Options
+        if ($sort === 'name_asc') {
+            $query->orderBy('name', 'asc');
+        } elseif ($sort === 'name_desc') {
+            $query->orderBy('name', 'desc');
+        } elseif ($sort === 'price_low_high') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort === 'price_high_low') {
+            $query->orderBy('price', 'desc');
+        }
+
+        $products = $query->get();
+
+        return view('products', compact('products'));
+    }
+
+    public function singleProduct($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('single-product', compact('product'));
     }
 }

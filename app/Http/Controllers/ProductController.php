@@ -15,6 +15,28 @@ class ProductController extends Controller
         return view('admin.products', compact('products'));
     }
 
+    // ⭐ USER PRODUCT LIST WITH SORTING
+    public function userProducts(Request $request)
+    {
+        $sort = $request->get('sort');
+
+        $products = Product::query();
+
+        if ($sort === 'name_asc') {
+            $products->orderBy('name', 'asc');
+        } elseif ($sort === 'name_desc') {
+            $products->orderBy('name', 'desc');
+        } elseif ($sort === 'price_low_high') {
+            $products->orderBy('price', 'asc');
+        } elseif ($sort === 'price_high_low') {
+            $products->orderBy('price', 'desc');
+        }
+
+        $products = $products->get();
+
+        return view('products', compact('products', 'sort'));
+    }
+
     // Store a new product
     public function store(Request $request)
     {
@@ -28,6 +50,7 @@ class ProductController extends Controller
         ]);
 
         $imagePath = null;
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
@@ -41,10 +64,12 @@ class ProductController extends Controller
             'image' => $imagePath,
         ]);
 
+        $this->syncProducts();
+
         return redirect()->route('admin.index')->with('success', 'Product added successfully.');
     }
 
-    // Edit product (fetch data for modal)
+    // Edit product
     public function edit($id)
     {
         $product = Product::findOrFail($id);
@@ -65,13 +90,13 @@ class ProductController extends Controller
 
         $product = Product::findOrFail($id);
 
-        // If image is changed
+        // If image is updated
         if ($request->hasFile('image')) {
-            // Delete old image
+
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
-            // Store new image
+
             $product->image = $request->file('image')->store('products', 'public');
         }
 
@@ -84,6 +109,8 @@ class ProductController extends Controller
             'image' => $product->image,
         ]);
 
+        $this->syncProducts();
+
         return redirect()->route('admin.index')->with('success', 'Product updated successfully.');
     }
 
@@ -92,12 +119,47 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Delete image from storage
+        // Delete old image
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
 
         $product->delete();
+
+        $this->syncProducts();
+
         return redirect()->route('admin.index')->with('success', 'Product deleted successfully.');
+    }
+
+    // 🔥 Sync Products to JSON + XML
+    private function syncProducts()
+    {
+        $products = Product::all();
+
+        // Save JSON
+        Storage::disk('quibo_activity')->put(
+            'products.json',
+            $products->toJson(JSON_PRETTY_PRINT)
+        );
+
+        // Save XML
+        $xmlContent = $this->convertToXml($products, 'products', 'product');
+        Storage::disk('xml_activity')->put('products.xml', $xmlContent);
+    }
+
+    // Convert data to XML format
+    private function convertToXml($data, $rootElement, $itemElement)
+    {
+        $xml = new \SimpleXMLElement("<{$rootElement}></{$rootElement}>");
+
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+
+            foreach ($record->toArray() as $key => $value) {
+                $item->addChild($key, htmlspecialchars($value));
+            }
+        }
+
+        return $xml->asXML();
     }
 }
