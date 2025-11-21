@@ -62,6 +62,8 @@ Route::get('/dashboard', function () {
 Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
     ->middleware(['auth', 'verified'])
     ->name('user.dashboard');
+Route::get('/user/dashboard', [ProductController::class, 'userDashboard'])->name('user.dashboard');
+
 
 // ====================== PRODUCTS ======================
 Route::middleware(['auth:admin'])->group(function () {

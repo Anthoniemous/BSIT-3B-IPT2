@@ -13,14 +13,42 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
-        return view('dashboard', compact('products')); // admin dashboard
+        return view('dashboard', compact('products'));
     }
 
-    // User dashboard (view products)
-    public function userDashboard()
+    // User dashboard (with sorting)
+    public function userDashboard(Request $request)
     {
-        $products = Product::all();
-        return view('userdashboard', compact('products'));
+        $sort = $request->get('sort');
+
+        $products = Product::query();
+     
+    switch ($sort) {
+        
+    case 'newest':
+        $products->orderBy('created_at', 'desc');
+        break;
+
+    case 'featured':
+        $products->orderBy('price', 'desc'); // you can change logic here later
+        break;
+            case 'price_low_high':
+                $products->orderBy('price', 'asc');
+                break;
+
+            case 'price_high_low':
+                $products->orderBy('price', 'desc');
+                break;
+
+            default:
+                $products->orderBy('product_name', 'asc');
+                break;
+        }
+
+        return view('userdashboard', [
+            'products' => $products->get(),
+            'sort' => $sort
+        ]);
     }
 
     // Show create product form
@@ -51,7 +79,7 @@ class ProductController extends Controller
             'image' => $imagePath,
         ]);
 
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal();
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
 
@@ -82,7 +110,7 @@ class ProductController extends Controller
         }
 
         $product->update($data);
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal();
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
@@ -90,50 +118,43 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        $this->syncProductsToLocal(); // ✅ Sync JSON + XML
+        $this->syncProductsToLocal();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
-    // 🔸 Private helper: sync JSON + XML
+    // 🔸 Sync JSON + XML
     private function syncProductsToLocal()
     {
         $products = Product::all();
         $jsonFolder = 'PRODUCTS';
         $xmlFolder = 'PRODUCTS';
 
-        // Ensure folders exist
         $this->ensureFolderExists(storage_path("app/apolinar_activity/$jsonFolder"));
         $this->ensureFolderExists(storage_path("app/apolinar_activity/XML/$xmlFolder"));
 
-        // Save JSON
         Storage::disk('apolinar_activity')->put("$jsonFolder/products.json", $products->toJson(JSON_PRETTY_PRINT));
 
-        // Save XML
         $xmlContent = $this->convertToXml($products, 'products', 'product');
         Storage::disk('apolinar_activity')->put("XML/$xmlFolder/products.xml", $xmlContent);
     }
 
-    // 🔹 Convert collection to XML
     private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
-{
-    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+    {
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
 
-    foreach ($data as $record) {
-        $item = $xml->addChild($itemElement);
-        foreach ($record->toArray() as $key => $value) {
-            // Optional: rename 'product_id' to 'id'
-            if ($key === 'product_id') {
-                $key = 'id';
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            foreach ($record->toArray() as $key => $value) {
+                if ($key === 'product_id') {
+                    $key = 'id';
+                }
+                $item->addChild($key, htmlspecialchars($value));
             }
-            $item->addChild($key, htmlspecialchars($value));
         }
+
+        return $xml->asXML();
     }
 
-    return $xml->asXML();
-}
-
-
-    // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)
     {
         if (!File::exists($folderPath)) {

@@ -1,9 +1,15 @@
-body {
-    font-family: 'Dancing Script', cursive;
-    margin: 0;
-    background-color: #fff0f5;
+   body {
+  font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('../css/img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #3a2e27;
+  line-height: 1.45;
 }
-
 /* Header */
 .site-header {
     background-color: #ff66a3;
@@ -65,7 +71,6 @@ body {
 .hero {
     text-align: center;
     padding: 80px 20px;
-    background: linear-gradient(to right, #ff99c8, #ff66a3);
     color: white;
     border-radius: 0 0 50% 50% / 0 0 20% 20%;
 }
@@ -79,6 +84,12 @@ body {
 .hero-media img {
     width: 300px;
     margin-top: 20px;
+}
+#hero-img {
+  border-radius: 50%; /* himuon siyang perfect circle */
+  width: 300px; /* optional: adjust size as needed */
+  height: 300px; /* optional: keep aspect ratio */
+  object-fit: cover; /* para dili ma-distort ang image */
 }
 
 /* Features */

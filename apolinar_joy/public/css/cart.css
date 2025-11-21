@@ -2,13 +2,18 @@
 
 /* 🌸 Background Gradient */
 body {
-    background: radial-gradient(circle at top left, #ffd6ec, transparent 60%),
-                radial-gradient(circle at bottom right, #ffe0f0, transparent 60%),
-                #fff6fb; /* soft rose fallback */
-    background-attachment: fixed;
-    color: #555;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+        url('../css/img/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #3a2e27;
+    line-height: 1.45;
 }
+
 
 /* 💎 Container */
 .container {

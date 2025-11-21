@@ -8,9 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{ asset('css/userdashboard.css') }}">
-  <style>
-   
-  </style>
 </head>
 
 <body>
@@ -32,7 +29,6 @@
           <a href="{{ route('orders.index') }}" class="btn small">Orders</a>
           <a href="{{ route('cart.index') }}" class="btn small">Add to Cart 🛒</a>
 
-          <!-- Profile Dropdown -->
           <div class="profile-container">
             <img 
               src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
@@ -47,14 +43,10 @@
 
               <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <label for="profile_photo" class="upload-label">Update Profile Photo</label>
+                <label for="profile_photo">Update Profile Photo</label>
                 <input type="file" name="profile_photo" id="profile_photo" required>
                 <button type="submit" class="btn small">Upload</button>
               </form>
-
-              @if(session('success'))
-                <div class="alert-success">{{ session('success') }}</div>
-              @endif
 
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -73,12 +65,28 @@
       <p class="section-sub">Indulge in your favorite beauty essentials ✨</p>
     </header>
 
+  <div class="sort-container">
+    <form method="GET" action="{{ route('user.dashboard') }}">
+        <select name="sort" class="sort-select" onchange="this.form.submit()">
+            <option value="">Sort By</option>
+            <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest</option>
+            <option value="featured" {{ $sort == 'featured' ? 'selected' : '' }}>Featured</option>
+            <option value="price_low_high" {{ $sort == 'price_low_high' ? 'selected' : '' }}>Price: Low to High</option>
+            <option value="price_high_low" {{ $sort == 'price_high_low' ? 'selected' : '' }}>Price: High to Low</option>
+        </select>
+    </form>
+</div>
+
+
+    <!-- ⭐ PRODUCT GRID ⭐ -->
     <div class="product-cards">
       @foreach($products as $product)
         <div class="product-card">
+          
           <div class="card-media">
             <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->product_name }}">
           </div>
+
           <div class="card-body">
             <h3>{{ $product->product_name }}</h3>
             <p class="price">₱{{ number_format($product->price, 2) }}</p>
@@ -88,18 +96,18 @@
               <button type="submit" class="btn add-cart">Add to Basket</button>
             </form>
           </div>
-        </div>
+
+        </div> <!-- END product-card -->
       @endforeach
-    </div>
+    </div> <!-- END product-cards -->
+
   </main>
 
   <script>
-    // Profile dropdown toggle
     document.getElementById('profileDropdownToggle').addEventListener('click', function() {
       document.getElementById('profileDropdownMenu').classList.toggle('active');
     });
 
-    // Close dropdown if clicked outside
     window.addEventListener('click', function(e) {
       const menu = document.getElementById('profileDropdownMenu');
       const toggle = document.getElementById('profileDropdownToggle');
@@ -108,5 +116,6 @@
       }
     });
   </script>
+
 </body>
 </html>

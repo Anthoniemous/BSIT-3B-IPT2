@@ -52,7 +52,6 @@
         </p>
         <div class="hero-ctas">
           <a href="{{ route('user.dashboard') }}" class="btn cta">Shop Now</a>
-          <a href="#featured" class="text-link">Explore Collections</a>
         </div>
       </div>
       <div class="hero-media">
@@ -62,40 +61,10 @@
   </section>
 
 
-  <section class="features container">
-    <div class="feature-card">
-      <i class="fa fa-truck"></i>
-      <div class="feature-copy"><strong>Free Delivery</strong><span>On all beauty products</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-refresh"></i>
-      <div class="feature-copy"><strong>Easy Returns</strong><span>30-day money back</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-headphones"></i>
-      <div class="feature-copy"><strong>24/7 Support</strong><span>We’re always here for you</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-credit-card"></i>
-      <div class="feature-copy"><strong>Secure Payment</strong><span>Trusted and safe checkout</span></div>
-    </div>
-  </section>
 
 
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-left">
-        <p>© {{ date('Y') }} Glamour Makeup Store — All Rights Reserved.</p>
-      </div>
-      <div class="footer-right">
-        <nav>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Contact</a>
-        </nav>
-      </div>
-    </div>
-  </footer>
+
+
 
 
   
