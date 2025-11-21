@@ -63,11 +63,25 @@
     </div>
   </header>
 
+    
+
   <main class="container" style="padding-top: 30px;">
     <header class="section-header" style="margin-top: 40px;">
       <h2>Our Signature Coffee Blends</h2>
       <p class="section-sub">Sip, savor, and smile — discover your next favorite brew.</p>
     </header>
+
+    <div class="sort-container">
+    <form method="GET" action="{{ route('user.dashboard') }}">
+        <select name="sort" class="sort-select" onchange="this.form.submit()">
+            <option value="">Sort By</option>
+            <option value="newest" {{ $sort == 'newest' ? 'selected' : '' }}>Newest</option>
+            <option value="featured" {{ $sort == 'featured' ? 'selected' : '' }}>Featured</option>
+            <option value="price_low_high" {{ $sort == 'price_low_high' ? 'selected' : '' }}>Price: Low to High</option>
+            <option value="price_high_low" {{ $sort == 'price_high_low' ? 'selected' : '' }}>Price: High to Low</option>
+        </select>
+    </form>
+</div>
 
     <div class="product-cards">
       @foreach($products as $product)

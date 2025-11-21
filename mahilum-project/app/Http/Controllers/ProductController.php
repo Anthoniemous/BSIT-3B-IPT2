@@ -17,10 +17,38 @@ class ProductController extends Controller
     }
 
     // User dashboard (view products)
-    public function userDashboard()
+    public function userDashboard(Request $request)
     {
-        $products = Product::all();
-        return view('userdashboard', compact('products'));
+        $sort = $request->get('sort');
+
+        $products = Product::query();
+     
+    switch ($sort) {
+        
+    case 'newest':
+        $products->orderBy('created_at', 'desc');
+        break;
+
+    case 'featured':
+        $products->orderBy('price', 'desc'); // you can change logic here later
+        break;
+            case 'price_low_high':
+                $products->orderBy('price', 'asc');
+                break;
+
+            case 'price_high_low':
+                $products->orderBy('price', 'desc');
+                break;
+
+            default:
+                $products->orderBy('product_name', 'asc');
+                break;
+        }
+
+        return view('userdashboard', [
+            'products' => $products->get(),
+            'sort' => $sort
+        ]);
     }
 
     // Show create product form
