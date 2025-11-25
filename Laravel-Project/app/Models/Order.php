@@ -9,7 +9,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'order_id';
+    protected $primaryKey = 'order_id'; // custom primary key
 
     protected $fillable = [
         'user_id',
@@ -20,13 +20,19 @@ class Order extends Model
         'total_price',
     ];
 
-    // 🔹 Order has many order items
+    // Route model binding uses this key
+    public function getRouteKeyName()
+    {
+        return 'order_id';
+    }
+
+    // Order has many items
     public function items()
     {
         return $this->hasMany(OrderItem::class, 'order_id', 'order_id');
     }
 
-    // 🔹 Order belongs to a user
+    // Order belongs to user
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

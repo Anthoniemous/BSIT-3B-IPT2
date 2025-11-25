@@ -36,4 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         return asset('images/default-avatar.png');
     }
+    public function wishlists()
+{
+    return $this->hasMany(Wishlist::class);
+}
 }

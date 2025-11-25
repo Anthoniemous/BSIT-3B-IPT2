@@ -8,24 +8,25 @@
 </head>
 <body>
       <body>
-  <!-- Header Start -->
- <header class="site-header">
-  <div class="header-inner">
+  <header class="site-header">
+    <div class="container header-inner">
       <div class="logo">
         <img src="{{ asset('css/img/logo.jpg') }}" alt="NBA Logo">
         <span class="brand">NBA Fan Store</span>
       </div>
 
-      <nav class="main-nav">
-        <ul>
-          <li><a href="{{ url('/') }}">Home</a></li>
-        </ul>
-      </nav>
+         <nav class="main-nav">
+      <ul>
+        <li><a href="{{ url('/') }}" style="font-weight: bold;">Home</a></li>
+        <li><a href="{{ url('/userdashboard') }}">Shop</a></li>
+        <li><a href="{{ route('orders.index') }}" style="font-weight: bold;">Orders</a></li>
+        <li><a href="{{ route('cart.index') }}" style="font-weight: bold;">Cart</a></li>
+        <li><a href="{{ route('wishlist.index') }}" style="font-weight: bold;">Wishlist</a></li>
+    </ul>
+</nav>
 
       <div class="user-option">
         @auth
-          <a href="{{ route('orders.index') }}" class="btn small"> ORDERS</a>
-          <a href="{{ route('cart.index') }}" class="btn small"> CART </a>
 
           <div class="profile-container">
             <img 

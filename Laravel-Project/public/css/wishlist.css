@@ -52,33 +52,26 @@ body {
   background-color: rgba(179,0,0,0.1);
 }
 
-/* ---------- Quantity Control ---------- */
-.quantity-control {
+/* ---------- Product Image + Text Alignment ---------- */
+.product-cell {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
 }
 
-.quantity-input {
-  width: 50px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 2px 5px;
+img.product-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-/* ---------- Item Total ---------- */
-.item-total {
-  min-width: 80px;
+span.product-name {
+  font-weight: 600;
+  color: #222;
 }
 
 /* ---------- Buttons ---------- */
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
 .btn {
   padding: 8px 14px;
   border-radius: 8px;
@@ -98,32 +91,20 @@ body {
   color: #fff;
 }
 
-.btn-warning {
-  background: #ffc107;
+.btn-secondary {
+  background: #6c757d;
   color: #fff;
 }
 
-/* ---------- No Items Message ---------- */
-.no-orders {
-  color: #b30000;
-  font-weight: 600;
-  margin: 30px 0;
+.btn-success {
+  background: #28a745;
+  color: #fff;
 }
 
 /* ---------- Responsive Table ---------- */
 @media (max-width: 768px) {
-  .quantity-control {
-      flex-direction: column;
-      gap: 2px;
-  }
-
-  .quantity-input {
-      width: 40px;
-  }
-
-  .actions {
-      flex-direction: column;
-      gap: 5px;
+  .product-cell {
+    flex-direction: column;
   }
 }
 
@@ -138,20 +119,16 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
 
-/* Centered + width-limited header content */
 .header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 18px 0;
+  padding: 18px 20px;
   max-width: 1100px;
   margin: 0 auto;
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
-/* Logo */
 .logo {
   display: flex;
   align-items: center;
@@ -159,8 +136,8 @@ body {
 }
 .logo img {
   width: 44px;
-  height: auto;
-  display: block;
+  height: 44px;
+  object-fit: cover;
 }
 .brand {
   font-weight: 800;
@@ -168,7 +145,6 @@ body {
   color: #232323;
 }
 
-/* Nav */
 .main-nav ul {
   list-style: none;
   display: flex;
@@ -189,47 +165,12 @@ body {
   color: #b30000; 
 }
 
-/* User Options (Orders, Cart, Profile) */
 .user-option { 
   display: flex; 
   gap: 10px; 
   align-items: center; 
 }
 
-/* Buttons */
-.btn {
-  display: inline-block;
-  padding: 10px 16px;
-  border-radius: 32px;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.95rem;
-  box-shadow: 0 6px 18px rgba(179, 0, 0, 0.15);
-}
-
-/* Primary CTA style (deep red) */
-.btn.cta, 
-.btn.small {
-  background: linear-gradient(90deg, #1f0000, #b30000);
-  color: #fff;
-}
-.btn.small { 
-  padding: 8px 12px; 
-  border-radius: 20px; 
-  font-size: .85rem; 
-}
-
-/* Outline Style */
-.btn.outline {
-  background: transparent;
-  color: #b30000;
-  border: 1px solid rgba(179,0,0,0.3);
-  box-shadow: none;
-}
-
-/* Profile Container */
 .profile-container {
   position: relative;
 }
@@ -243,7 +184,6 @@ body {
   border: 2px solid #b30000;
 }
 
-/* Dropdown Menu */
 .dropdown-menu {
   display: none;
   position: absolute;

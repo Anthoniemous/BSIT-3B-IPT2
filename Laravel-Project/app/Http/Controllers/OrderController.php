@@ -18,17 +18,14 @@ class OrderController extends Controller
     {
         $query = Order::with(['items.product', 'user'])->latest();
 
-        // Search by order ID
         if ($request->filled('search')) {
-            $query->where('id', 'LIKE', '%' . $request->search . '%');
+            $query->where('order_id', 'LIKE', '%' . $request->search . '%');
         }
 
-        // Status filter
         if ($request->filled('status') && $request->status != 'all') {
             $query->where('status', $request->status);
         }
 
-        // Sorting
         switch ($request->sort) {
             case 'date_new_old':
                 $query->orderBy('created_at', 'desc');
@@ -55,6 +52,7 @@ class OrderController extends Controller
             'sort' => $request->sort,
         ]);
     }
+        
 
     /**
      * User orders list (simple view)
@@ -70,23 +68,20 @@ class OrderController extends Controller
     }
 
     /**
-     * User orders with filters for user dashboard
+     * User orders with filters for dashboard
      */
     public function userOrders(Request $request)
     {
         $query = Order::where('user_id', Auth::id());
 
-        // Search
         if ($request->filled('search')) {
-            $query->where('id', 'LIKE', '%' . $request->search . '%');
+            $query->where('order_id', 'LIKE', '%' . $request->search . '%');
         }
 
-        // Status filter
         if ($request->filled('status') && $request->status != 'all') {
             $query->where('status', $request->status);
         }
 
-        // Sorting
         switch ($request->sort) {
             case 'date_new_old':
                 $query->orderBy('created_at', 'desc');
@@ -149,9 +144,11 @@ class OrderController extends Controller
         foreach ($cartItems as $cart) {
             $order->items()->create([
                 'product_id' => $cart->product_id,
-                'quantity' => $cart->quantity,
-                'price' => $cart->product->price,
+                'quantity'  => $cart->quantity,
+                'price'     => $cart->product->price,
+                'size'      => $cart->size,   // ⭐ SIZE SAVED HERE
             ]);
+
             $order->total_price += $cart->product->price * $cart->quantity;
         }
 
@@ -221,11 +218,9 @@ class OrderController extends Controller
 
     /**
      * Show order details
-     * Admin can see all orders, users only their own
      */
     public function show(Order $order)
     {
-        // Check access
         if (!auth()->user()->is_admin && $order->user_id !== auth()->id()) {
             abort(403);
         }
@@ -245,7 +240,6 @@ class OrderController extends Controller
 
         $order->status = 'cancelled';
         $order->save();
-
         $this->syncOrdersToLocal();
 
         return redirect()->back()->with('success', 'Order cancelled successfully.');
@@ -262,9 +256,30 @@ class OrderController extends Controller
 
         $order->status = 'completed';
         $order->save();
-
         $this->syncOrdersToLocal();
 
         return redirect()->back()->with('success', 'Order marked as completed.');
     }
+
+     // Update order status (admin)
+    public function adminUpdateStatus(Request $request, Order $order)
+{
+    $validStatuses = ['pending', 'processing', 'completed', 'cancelled'];
+    $status = $request->status;
+
+    if (!in_array($status, $validStatuses)) {
+        return back()->with('error', 'Invalid status.');
+    }
+
+    $order->status = $status;
+    $order->save();
+
+    return back()->with('success', 'Order status updated.');
+}
+  // OrderController.php
+public function adminRemove(Order $order)
+{
+    $order->delete();
+    return redirect()->back()->with('success', 'Order removed successfully.');
+}
 }

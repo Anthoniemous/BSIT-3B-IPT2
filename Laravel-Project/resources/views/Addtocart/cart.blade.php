@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart 🛒</title>
+    <title>Cart </title>
     <link rel="stylesheet" href="css/cart.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -18,16 +18,19 @@
         <span class="brand">NBA Fan Store</span>
       </div>
 
-      <nav class="main-nav">
-        <ul>
-          <li><a href="{{ url('/') }}">Home</a></li>
-        </ul>
-      </nav>
+           <nav class="main-nav">
+      <ul>
+        <li><a href="{{ url('/') }}" style="font-weight: bold;">Home</a></li>
+        <li><a href="{{ url('/userdashboard') }}">Shop</a></li>
+        <li><a href="{{ route('orders.index') }}" style="font-weight: bold;">Orders</a></li>
+        <li><a href="{{ route('cart.index') }}" style="font-weight: bold;">Cart</a></li>
+        <li><a href="{{ route('wishlist.index') }}" style="font-weight: bold;">Wishlist</a></li>
+    </ul>
+</nav>
+
 
       <div class="user-option">
         @auth
-          <a href="{{ route('orders.index') }}" class="btn small"> ORDERS</a>
-          <a href="{{ route('cart.index') }}" class="btn small"> CART </a>
 
           <div class="profile-container">
             <img 
@@ -86,9 +89,11 @@
     <div id="cart-section">
         <div class="order-table table-responsive">
             <table class="table table-bordered align-middle text-center">
-                <thead class="table-light">
+                <thead class="table-dark">
                     <tr>
                         <th>Product</th>
+                        <th>Size</th>         <!-- New column -->
+                        <th>Brand</th>        <!-- New column -->
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Action</th>
@@ -98,6 +103,25 @@
                     @forelse($cartItems as $item)
                         <tr data-cart-id="{{ $item->cart_id }}" data-price="{{ $item->product->price }}">
                             <td>{{ $item->product->product_name ?? 'Unknown Product' }}</td>
+                            <td>
+                            @if($item->size == 'N/A' || $item->size == null)
+                                <form action="{{ route('cart.updateSize', $item->cart_id) }}" method="POST">
+                                    @csrf
+                                    <select name="size" class="form-select form-select-sm" onchange="this.form.submit()">
+                                        <option value="">Select Size</option>
+                                        <option value="36">36</option>
+                                        <option value="37">37</option>
+                                        <option value="38">38</option>
+                                        <option value="39">39</option>
+                                        <option value="40">40</option>
+                                        <option value="41">41</option>
+                                    </select>
+                                </form>
+                            @else
+                                {{ $item->size }}
+                            @endif
+                        </td>
+                            <td>{{ $item->product->brand ?? 'Unknown Brand' }}</td> <!-- Assuming brand is a product property -->
                             <td>
                                 <div class="quantity-control">
                                     <button type="button" class="btn btn-sm btn-secondary" onclick="changeQuantity(this, -1)">-</button>
@@ -121,7 +145,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">No items in your cart.</td>
+                            <td colspan="6" class="text-center">No items in your cart.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -132,7 +156,6 @@
     <!-- Navigation Buttons -->
     <div class="mt-4 text-center">
         <a href="{{ route('user.dashboard') }}" class="btn btn-secondary me-2">Back to Dashboard</a>
-        <a href="{{ route('orders.index') }}" class="btn btn-success">Go to Orders</a>
     </div>
 </div>
 

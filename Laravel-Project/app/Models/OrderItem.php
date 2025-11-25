@@ -9,12 +9,13 @@ class OrderItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'order_id',
-        'product_id',
-        'quantity',
-        'price',
-    ];
+   protected $fillable = [
+    'order_id',
+    'product_id',
+    'quantity',
+    'price',
+    'size',  // ✅ add this
+];
 
     // 🔹 Relationship to Order
     public function order()

@@ -18,30 +18,37 @@ class CartController extends Controller
         return view('Addtocart.cart', compact('cartItems'));
     }
 
-    public function add(Product $product)
-    {
-        $userId = Auth::id();
-        if (!$userId) {
-            return redirect()->route('login')->with('error', 'Please log in to add to cart.');
-        }
-
-        $cartItem = Cart::where('user_id', $userId)
-                        ->where('product_id', $product->product_id)
-                        ->first();
-
-        if ($cartItem) {
-            $cartItem->quantity += 1;
-            $cartItem->save();
-        } else {
-            Cart::create([
-                'user_id' => $userId,
-                'product_id' => $product->product_id,
-                'quantity' => 1,
+            public function add(Request $request, Product $product)
+        {
+            $request->validate([
+                'size' => 'required'
             ]);
-        }
 
-        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
-    }
+            $userId = Auth::id();
+            if (!$userId) {
+                return redirect()->route('login')->with('error', 'Please log in to add to cart.');
+            }
+
+            // Check if same product with same size already exists
+            $cartItem = Cart::where('user_id', $userId)
+                            ->where('product_id', $product->product_id)
+                            ->where('size', $request->size)
+                            ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity += 1;
+                $cartItem->save();
+            } else {
+                Cart::create([
+                    'user_id' => $userId,
+                    'product_id' => $product->product_id,
+                    'quantity' => 1,
+                    'size' => $request->size,
+                ]);
+            }
+
+            return redirect()->route('cart.index')->with('success', 'Product added to cart!');
+        }
 
     public function remove($id)
     {
@@ -61,4 +68,18 @@ class CartController extends Controller
         Cart::where('user_id', Auth::id())->delete();
         return back()->with('success', 'Checkout complete!');
     }
+
+
+    public function updateSize(Request $request, $cartId)
+{
+    $request->validate([
+        'size' => 'required'
+    ]);
+
+    $cartItem = Cart::findOrFail($cartId);
+    $cartItem->size = $request->size;
+    $cartItem->save();
+
+    return back()->with('success', 'Size updated successfully!');
+}
 }

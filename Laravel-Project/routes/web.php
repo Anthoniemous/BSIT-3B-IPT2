@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\User;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Auth\Events\Verified;
 
 // ====================== HOME ======================
@@ -67,8 +68,24 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::resource('admin/products', ProductController::class);
 });
-Route::get('/user/orders', [OrderController::class, 'userOrders'])->name('user.orders');
 
+Route::patch('/admin/orders/{order}/status', [OrderController::class, 'adminUpdateStatus'])
+    ->name('admin.orders.updateStatus')
+      ->middleware(['auth:admin']); 
+
+      // web.php
+Route::delete('/admin/orders/{order}', [OrderController::class, 'adminRemove'])->name('admin.orders.remove')->middleware('auth:admin');
+
+
+
+Route::get('/user/orders', [OrderController::class, 'userOrders'])->name('user.orders');
+Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    
+});
 
 
 // User Dashboard
@@ -87,6 +104,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::post('/cart/update-size/{cart_id}', [CartController::class, 'updateSize'])->name('cart.updateSize');
+
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/add/{product}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+    Route::post('/wishlist/move-to-cart/{id}', [WishlistController::class, 'moveToCart'])->name('wishlist.moveToCart');
 });
 
 // ====================== EMAIL VERIFICATION ======================
@@ -131,3 +157,4 @@ Route::middleware('auth')->group(function () {
 // ====================== GOOGLE AUTH ======================
 Route::get('auth/google', [Controller::class, 'redirectToGoogle'])->name('google.login');
 Route::get('auth/google/callback', [Controller::class, 'handleGoogleCallback']);
+

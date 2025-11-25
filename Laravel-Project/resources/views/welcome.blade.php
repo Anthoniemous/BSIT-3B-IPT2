@@ -41,8 +41,11 @@
 
       <nav class="main-nav">
         <ul>
-          <li><a href="{{ url('/') }}">Home</a></li>
+          <li><a href="{{ url('/') }}" style="font-weight: bold;">Home</a></li>
           <li><a href="{{ url('/userdashboard') }}">Shop</a></li>
+          <li><a href="{{ route('orders.index') }}" style="font-weight: bold;">Orders</a></li>
+          <li><a href="{{ route('cart.index') }}" style="font-weight: bold;">Cart</a></li>
+          <li><a href="{{ route('wishlist.index') }}" style="font-weight: bold;">Wishlist</a></li>
           
         </ul>
       </nav>
@@ -125,24 +128,6 @@
 
 </section>
 
-  <section class="features container">
-    <div class="feature-card">
-      <i class="fa fa-truck"></i>
-      <div class="feature-copy"><strong>Free Delivery</strong><span>Free shipping on all orders</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-refresh"></i>
-      <div class="feature-copy"><strong>Return Policy</strong><span>30-day returns</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-headphones"></i>
-      <div class="feature-copy"><strong>24/7 Support</strong><span>We're here to help</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-credit-card"></i>
-      <div class="feature-copy"><strong>Secure Payment</strong><span>Encrypted & trusted</span></div>
-    </div>
-  </section>
 
   <footer class="site-footer">
     <div class="container">
