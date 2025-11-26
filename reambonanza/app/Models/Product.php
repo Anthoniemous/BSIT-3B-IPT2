@@ -11,8 +11,11 @@ class Product extends Model
 
     protected $primaryKey = 'product_id'; // if your migration used product_id
     public $incrementing = true;
+
     protected $fillable = [
         'product_name',
+        'brand',        // add brand
+        'category',     // add category
         'description',
         'price',
         'image',
@@ -20,7 +23,7 @@ class Product extends Model
     ];
 
     public function carts()
-{
-    return $this->hasMany(Cart::class);
-}
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

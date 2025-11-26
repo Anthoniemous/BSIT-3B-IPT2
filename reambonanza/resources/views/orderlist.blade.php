@@ -1,24 +1,80 @@
-<x-app-layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧾 Orders</title>
+    <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
+</head>
+<body>
 
-<link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="{{ asset('css/img/logo.png') }}" alt="Shampoo Logo">
+        <span class="brand">Green Glow Shampoo Shop</span>
+      </div>
+
+     <nav class="main-nav">
+        <ul>
+          <li><a href="{{ url('/') }}">Home</a></li>
+          <li><a href="{{ url('/userdashboard') }}">Products</a></li>
+        </ul>
+      </nav>
+
+      <div class="user-option">
+        @auth
+        <a href="{{ route('wishlist.index') }}" class="btn small wishlist-btn">
+      Wishlist
+      </a>
+          <a href="{{ route('orders.index') }}" class="btn small">Purchase History</a>
+          <a href="{{ route('cart.index') }}" class="btn small">Your Shampoo Picks</a>
+
+       
+          <div class="profile-container">
+            <img 
+              src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
+              alt="Profile" 
+              class="profile-pic" 
+              id="profileDropdownToggle"
+            >
+
+            <div class="dropdown-menu" id="profileDropdownMenu">
+              <h4>Welcome, {{ Auth::user()->name }}!</h4>
+
+              <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="profile_photo" required>
+                <button type="submit">Update Photo</button>
+              </form>
+
+              @if(session('success'))
+                <div class="alert-success">{{ session('success') }}</div>
+              @endif
+
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" style="margin-top: 10px; background: #dc3545;">Logout</button>
+              </form>
+            </div>
+          </div>
+        @endauth
+      </div>
+    </div>
+  </header>
 
 <div class="container">
     <h1 class="page-title">🧾 Orders</h1>
 
-    {{-- ✅ Flash Messages --}}
+    {{-- Flash Messages --}}
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    
     @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
+        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- ✅ Check if user has any orders --}}
+    {{-- Check if user has orders --}}
     @if($orders->count() === 0)
         <p class="no-orders">You have no orders yet.</p>
     @else
@@ -55,18 +111,19 @@
             </table>
         </div>
 
-        {{-- ✅ Pagination --}}
+        {{-- Pagination --}}
         <div class="pagination-container">
             {{ $orders->links('pagination::bootstrap-5') }}
         </div>
     @endif
 
     <div class="mt-6 text-center">
-        <a href="{{ url('/userdashboard') }}" 
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition duration-200 ease-in-out">
-            Back to Dashboard
+        <a href="{{ url('/userdashboard') }}" class="nav-btn">
+            ← Back to Dashboard
         </a>
     </div>
 
 </div>
-</x-app-layout>
+
+</body>
+</html>

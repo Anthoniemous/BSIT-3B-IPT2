@@ -18,16 +18,22 @@
         <span class="brand">Green Glow Shampoo Shop</span>
       </div>
 
-      <nav class="main-nav">
-        <ul></ul>
+     <nav class="main-nav">
+        <ul>
+          <li><a href="{{ url('/') }}">Home</a></li>
+          <li><a href="{{ url('/userdashboard') }}">Products</a></li>
+        </ul>
       </nav>
 
       <div class="user-option">
         @auth
+        <a href="{{ route('wishlist.index') }}" class="btn small wishlist-btn">
+      Wishlist
+      </a>
           <a href="{{ route('orders.index') }}" class="btn small">Purchase History</a>
           <a href="{{ route('cart.index') }}" class="btn small">Your Shampoo Picks</a>
 
-          <!-- 🌸 Profile Dropdown -->
+       
           <div class="profile-container">
             <img 
               src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
@@ -61,26 +67,49 @@
   </header>
 
   <main class="container" style="padding-top: 30px;">
-    <header class="section-header" style="margin-top: 40px;">
+
+    <!-- ⭐ FILTER BAR (Brand / Category / Wishlist) -->
+    <form method="GET" action="{{ route('user.dashboard') }}" class="filter-bar">
+      <input 
+          type="text" 
+          name="brand" 
+          placeholder="Search brand..." 
+          value="{{ request('brand') }}"
+          class="filter-input"
+      >
+
+      <select name="category" class="filter-select">
+          <option value="">All Categories</option>
+          @foreach($categories as $cat)
+            <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>
+              {{ $cat }}
+            </option>
+          @endforeach
+      </select>
+
+      <button type="submit" class="btn small">Filter</button>
+      
+    </form>
+
+    <!-- ⭐ SECTION HEADER -->
+    <header class="section-header">
       <h2>Our Signature Shampoos</h2>
       <p class="section-sub">Nourish, shine, and glow — discover your next favorite shampoo.</p>
     </header>
 
-
-    <!-- ⭐ SORTING DROPDOWN -->
+    <!-- ⭐ SORTING -->
     <div class="sort-container mb-4">
-  <form method="GET" action="{{ route('user.dashboard') }}">
-    <select name="sort" class="styled-select" onchange="this.form.submit()">
-      <option value="">Sort By</option>
-      <option value="name_asc" {{ request('sort')=='name_asc'?'selected':'' }}>Name: A–Z</option>
-      <option value="name_desc" {{ request('sort')=='name_desc'?'selected':'' }}>Name: Z–A</option>
-      <option value="price_low_high" {{ request('sort')=='price_low_high'?'selected':'' }}>Price: Low → High</option>
-      <option value="price_high_low" {{ request('sort')=='price_high_low'?'selected':'' }}>Price: High → Low</option>
-    </select>
-  </form>
-</div>
+      <form method="GET" action="{{ route('user.dashboard') }}">
+        <select name="sort" class="styled-select" onchange="this.form.submit()">
+          <option value="">Featured</option>
+          <option value="newest" {{ request('sort')=='newest'?'selected':'' }}>Newest</option>
+          <option value="price_low_high" {{ request('sort')=='price_low_high'?'selected':'' }}>Price: Low → High</option>
+          <option value="price_high_low" {{ request('sort')=='price_high_low'?'selected':'' }}>Price: High → Low</option>
+        </select>
+      </form>
+    </div>
 
-
+    <!-- ⭐ PRODUCT LIST -->
     <div class="product-cards">
       @foreach($products as $product)
         <div class="product-card">
@@ -90,11 +119,18 @@
 
           <div class="card-body">
             <h3>{{ $product->product_name }}</h3>
-
+            <p><strong>Brand:</strong> {{ $product->brand ?? 'N/A' }}</p>
+            <p><strong>Category:</strong> {{ $product->category ?? 'N/A' }}</p>
             <h4>{{ $product->description }}</h4>
-
             <p class="price">${{ number_format($product->price, 2) }}</p>
 
+            <!-- Add to Wishlist -->
+            <form method="POST" action="{{ route('wishlist.add', $product->product_id) }}">
+              @csrf
+              <button type="submit" class="btn wishlist-btn">Add to Wishlist</button>
+            </form>
+
+            <!-- Add to Cart -->
             <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
               @csrf
               <button type="submit" class="btn add-cart">Add to Basket</button>
@@ -112,7 +148,6 @@
       document.getElementById('profileDropdownMenu').classList.toggle('active');
     });
 
-    // Close dropdown if clicked outside
     window.addEventListener('click', function(e) {
       const menu = document.getElementById('profileDropdownMenu');
       const toggle = document.getElementById('profileDropdownToggle');
@@ -121,6 +156,5 @@
       }
     });
   </script>
-
 </body>
 </html>

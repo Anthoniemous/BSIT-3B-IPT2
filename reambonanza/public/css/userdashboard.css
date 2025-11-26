@@ -115,6 +115,7 @@ body {
 .section-header h2 { font-size: 1.9rem; margin:0; font-weight:800; color:#ffffff; }
 .section-sub { color: #ffffff; margin-top: 6px; }
 
+
 .product-cards {
   display:grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -134,9 +135,14 @@ body {
   box-shadow: 0 28px 60px rgba(20,20,20,0.08);
 }
 .card-media img {
-  width: 160px;
-  border-radius: 10px;
-  margin-bottom: 14px;
+    width: 160px;    /* fixed width */
+    height: 160px;   /* fixed height */
+    object-fit: cover; /* crop images to fit box */
+    border-radius: 10px;
+    margin-bottom: 14px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 .card-body h3 { color: #196b1e; }
 .price { color: #1b5c25; font-weight:800; margin-bottom:12px; }
@@ -235,3 +241,61 @@ body {
     border-color: #28a745;
     box-shadow: 0 0 0 4px rgba(40,167,69,0.2);
 }
+
+/* Filter Bar Container */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(27,92,37,0.15);
+}
+
+/* Input and Select */
+.filter-input, .filter-select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    flex: 1 1 180px;
+    min-width: 150px;
+    transition: 0.3s;
+}
+.filter-input:focus, .filter-select:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 4px rgba(40,167,69,0.15);
+}
+
+/* Buttons inside filter */
+.filter-bar .btn {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    border-radius: 999px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(27,92,37,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.filter-bar .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(27,92,37,0.25);
+}
+
+/* Wishlist button style */
+.wishlist-btn {
+    background: linear-gradient(90deg, #091dcf, #02a9d3);
+    color: #fff;
+}
+
+/* Section header spacing */
+.section-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+.section-header h2 { font-size: 1.9rem; margin:0; font-weight:800; color:#ffffff; }
+.section-sub { color: #ffffff; margin-top: 6px; font-size: 1rem; }

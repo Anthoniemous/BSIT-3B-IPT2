@@ -1,0 +1,99 @@
+/* 💚 Green Glow Shampoo Theme Background */
+    body {
+      background:
+        radial-gradient(circle at top left, #b2e5b7, transparent 60%),
+        radial-gradient(circle at bottom right, #5a9e6b, transparent 60%);
+      background-color: #f0fff5;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      color: #2f4a2f;
+    }
+
+    /* 🧴 Card Container */
+    .card {
+      max-width: 650px;
+      margin: 4rem auto;
+      background: #f7fff5;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+      padding: 2.5rem;
+    }
+
+    /* 🌿 Title */
+    .card h2 {
+      color: #3a6b3a;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    /* 📝 Form Labels */
+    .form-label {
+      font-weight: 600;
+      color: #2f4a2f;
+    }
+
+    /* 💚 Inputs */
+    .form-control {
+      border: 1px solid #a8d3a0;
+      border-radius: 8px;
+      padding: 10px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #3a6b3a;
+      box-shadow: 0 0 0 0.2rem rgba(58, 107, 58, 0.25);
+    }
+
+    /* 🌿 Buttons */
+    .btn-primary {
+      background: linear-gradient(90deg, #3a6b3a, #5a9e6b);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      min-width: 140px;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #5a9e6b, #3a6b3a);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(58, 107, 58, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: #a0d6a1;
+      border: none;
+      color: #2f4a2f;
+      font-weight: 600;
+      border-radius: 10px;
+      min-width: 140px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #87c587;
+      transform: translateY(-2px);
+    }
+
+    /* ✅ Alerts */
+    .alert {
+      margin-top: 1rem;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .alert-success {
+      background-color: #e0f6e3;
+      color: #276634;
+      border: 1px solid #a0d6a1;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+    }

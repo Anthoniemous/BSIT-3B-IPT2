@@ -11,12 +11,8 @@ body {
 }
 
 /* Header buttons and title */
-h2 {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 15px;
+header h1 {
+    font-size: 1.8rem;
     color: #3d7a3d; /* dark green */
 }
 
@@ -30,7 +26,10 @@ h2 {
     text-decoration: none;
     font-weight: 600;
     transition: 0.3s;
+margin-right: 25px;
+    
 }
+
 
 .btn:hover {
     background-color: #3d7a3d; /* darker green on hover */
@@ -40,7 +39,7 @@ h2 {
 /* Table container */
 .table-container {
     margin: 30px auto;
-    width: 90%;
+    width: 100%;
     background: #f0fff0; /* soft mint */
     padding: 20px;
     border-radius: 15px;
@@ -67,11 +66,12 @@ td {
     color: #2a3d2a;
 }
 
+/* Product images uniform size */
 td img {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     border-radius: 8px;
-    object-fit: cover;
+    object-fit: cover; /* cover ensures all images same size */
     border: 2px solid #a8d5a8;
 }
 

@@ -9,26 +9,52 @@ use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
-    // ADMIN: list all products with sorting
-public function index(Request $request)
+    // LIST PRODUCTS
+    public function index(Request $request)
+    {
+        $sort = $request->input('sort');
+        $query = Product::query();
+
+        switch ($sort) {
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'price_low_high':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high_low':
+                $query->orderBy('price', 'desc');
+                break;
+        }
+
+        $products = $query->get();
+        return view('dashboard', compact('products', 'sort'));
+    }
+
+    // USER DASHBOARD
+public function userDashboard(Request $request)
 {
     $sort = $request->input('sort');
+    $brand = $request->input('brand');
+    $category = $request->input('category');
 
     $query = Product::query();
 
+    if (!empty($brand)) {
+        $query->where('brand', 'LIKE', "%$brand%");
+    }
+
+    if (!empty($category)) {
+        $query->where('category', $category);
+    }
+
     switch ($sort) {
-        case 'name_asc':
-            $query->orderBy('product_name', 'asc');
+        case 'newest':
+            $query->orderBy('created_at', 'desc');
             break;
-
-        case 'name_desc':
-            $query->orderBy('product_name', 'desc');
-            break;
-
         case 'price_low_high':
             $query->orderBy('price', 'asc');
             break;
-
         case 'price_high_low':
             $query->orderBy('price', 'desc');
             break;
@@ -36,91 +62,69 @@ public function index(Request $request)
 
     $products = $query->get();
 
-    return view('dashboard', compact('products', 'sort'));
+    // 🔹 Get unique categories for the filter dropdown
+    $categories = Product::select('category')
+                        ->distinct()
+                        ->pluck('category');
+
+    return view('userdashboard', compact('products', 'sort', 'categories'));
 }
 
-    // ⭐ USER MODULE – SORTED PRODUCTS
-    public function userDashboard(Request $request)
-    {
-        $sort = $request->input('sort');
-
-        $query = Product::query();
-
-        switch ($sort) {
-            case 'name_asc':
-                $query->orderBy('product_name', 'asc');
-                break;
-
-            case 'name_desc':
-                $query->orderBy('product_name', 'desc');
-                break;
-
-            case 'price_low_high':
-                $query->orderBy('price', 'asc');
-                break;
-
-            case 'price_high_low':
-                $query->orderBy('price', 'desc');
-                break;
-        }
-
-        $products = $query->get();
-
-        return view('userdashboard', compact('products'));
-    }
-
-    // Show create product form
+    // CREATE FORM
     public function create()
     {
         return view('create');
     }
 
-    // Store new product
+    // STORE PRODUCT
     public function store(Request $request)
     {
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|max:10240',
+            'brand'        => 'required|string|max:255',
+            'category'     => 'required|string|max:255',
+            'description'  => 'nullable|string',
+            'price'        => 'required|numeric',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $imagePath = null;
+        $data = $request->all();
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
 
-        Product::create([
-            'product_name' => $request->product_name,
-            'description' => $request->description,
-            'price' => (float)$request->price,
-            'image' => $imagePath,
-        ]);
-
+        Product::create($data);
         $this->syncProductsToLocal();
-        return redirect()->route('products.index')->with('success', 'Product added successfully!');
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product added successfully!');
     }
 
-    // Edit product
+    // EDIT PRODUCT
     public function edit(Product $product)
     {
         return view('edit', compact('product'));
     }
 
-    // Update product
+    // UPDATE PRODUCT
     public function update(Request $request, Product $product)
     {
         $request->validate([
             'product_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'brand'        => 'required|string|max:255',
+            'category'     => 'required|string|max:255',
+            'description'  => 'nullable|string',
+            'price'        => 'required|numeric',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = [
             'product_name' => $request->product_name,
-            'description' => $request->description,
-            'price' => (float)$request->price,
+            'brand'        => $request->brand,
+            'category'     => $request->category,
+            'description'  => $request->description,
+            'price'        => (float)$request->price,
         ];
 
         if ($request->hasFile('image')) {
@@ -129,18 +133,22 @@ public function index(Request $request)
 
         $product->update($data);
         $this->syncProductsToLocal();
-        return redirect()->route('products.index')->with('success', 'Product updated successfully!');
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product updated successfully!');
     }
 
-    // Delete product
+    // DELETE PRODUCT
     public function destroy(Product $product)
     {
         $product->delete();
         $this->syncProductsToLocal();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Product deleted successfully!');
     }
 
-    // Sync JSON + XML
+    // JSON & XML SYNC
     private function syncProductsToLocal()
     {
         $products = Product::all();
@@ -163,12 +171,11 @@ public function index(Request $request)
         foreach ($data as $record) {
             $item = $xml->addChild($itemElement);
             foreach ($record->toArray() as $key => $value) {
-                if ($key === 'product_id') {
-                    $key = 'id';
-                }
+                if ($key === 'product_id') $key = 'id';
                 $item->addChild($key, htmlspecialchars($value));
             }
         }
+
         return $xml->asXML();
     }
 

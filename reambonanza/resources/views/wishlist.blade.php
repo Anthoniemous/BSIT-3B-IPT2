@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Shampoo Cart 🛍️</title>
-    <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+    <title>Your Wishlist </title>
+    <link rel="stylesheet" href="{{ asset('css/wishlist.css') }}">
 </head>
 <body>
- <header class="site-header">
+
+<header class="site-header">
     <div class="container header-inner">
       <div class="logo">
         <img src="{{ asset('css/img/logo.png') }}" alt="Shampoo Logo">
@@ -61,60 +62,53 @@
       </div>
     </div>
   </header>
+
 <div class="container">
-    <h1 class="page-title">🛍️ Your Shampoo Cart</h1>
+    <h2 class="page-title">Your Wishlist </h2>
 
-    {{-- Flash Messages --}}
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    @if($cartItems->isEmpty())
-        <p class="no-orders">🧴 Your cart is empty! Add some shampoos to get started.</p>
+    @if($wishlist->isEmpty())
+        <p class="no-orders">Your wishlist is empty 😢</p>
     @else
         <div class="order-table">
             <table>
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                        <th>Options</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($cartItems as $item)
-                        <tr>
-                            <td>{{ $item->product->product_name ?? 'Unknown Product' }}</td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>₱{{ number_format($item->product->price * $item->quantity, 2) }}</td>
-                            <td>
-                                <div class="actions">
-                                    <form method="POST" action="{{ route('cart.remove', $item->cart_id) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn danger">🗑️ Remove</button>
-                                    </form>
+                    @foreach($wishlist as $item)
+                    <tr>
+                        <td>
+                            <img src="{{ asset('storage/' . $item->product->image) }}" 
+                                 alt="{{ $item->product->product_name }}" 
+                                 style="width:80px; height:80px; object-fit:cover; border-radius:8px;">
+                        </td>
+                        <td>{{ $item->product->product_name }}</td>
+                        <td>${{ number_format($item->product->price, 2) }}</td>
+                        <td class="actions">
+                            <!-- Move to Cart -->
+                            <form method="POST" action="{{ route('wishlist.moveToCart', $item->product_id) }}">
+                                @csrf
+                                <button class="btn primary">Move to Cart</button>
+                            </form>
 
-                                    <form method="GET" action="{{ route('orders.order', ['cart_id' => $item->cart_id]) }}">
-                                        <button type="submit" class="btn primary">🧴 Checkout Now</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                            <!-- Remove -->
+                            <form method="POST" action="{{ route('wishlist.remove', $item->product_id) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     @endif
-
-    <div class="mt-6 text-center">
-        <a href="{{ route('user.dashboard') }}" class="nav-btn">← Back to Dashboard</a>
-        <a href="{{ route('orders.index') }}" class="nav-btn ml-3">View My Orders</a>
-    </div>
 </div>
 
 </body>

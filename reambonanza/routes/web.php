@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Auth\PasswordController;
 use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -32,6 +33,27 @@ Route::get('/forgotpassword', [\App\Http\Controllers\Auth\PasswordController::cl
 Route::post('/forgotpassword', [\App\Http\Controllers\Auth\PasswordController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [PasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordController::class, 'reset'])->name('password.update');
+
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // SHOW WISHLIST PAGE
+    Route::get('/wishlist', [WishlistController::class, 'index'])
+        ->name('wishlist.index');
+
+    // ADD TO WISHLIST
+    Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])
+        ->name('wishlist.add');
+
+    // REMOVE FROM WISHLIST
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])
+        ->name('wishlist.remove');
+
+    // MOVE TO CART
+    Route::post('/wishlist/move-to-cart/{id}', [WishlistController::class, 'moveToCart'])
+        ->name('wishlist.moveToCart');
+});
 
 // ====================== ORDERS ======================
 Route::middleware('auth')->group(function () {
@@ -64,12 +86,22 @@ Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
     ->name('user.dashboard');
 
 // ====================== PRODUCTS ======================
-Route::middleware(['auth:admin'])->group(function () {
-    Route::resource('admin/products', ProductController::class);
-});
-Route::get('/user-dashboard', [ProductController::class, 'userDashboard'])
-    ->name('user.dashboard');
+// Admin routes (CRUD)
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', function () {
+        $products = Product::all();
+        return view('dashboard', compact('products'));
+    })->name('dashboard');
 
+    // Resource controller for products
+    Route::resource('products', ProductController::class);
+});
+
+// User dashboard
+Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('user.dashboard');
 
 // ====================== CART ======================
 Route::middleware('auth')->group(function () {
