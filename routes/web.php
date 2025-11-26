@@ -6,12 +6,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Root & Auth Routes
 |--------------------------------------------------------------------------
 */
 
@@ -25,7 +26,7 @@ Auth::routes([
     'verify' => false,
 ]);
 
-// Home page (for regular logged-in users)
+// Home page (for logged-in users)
 Route::get('/home', [HomeController::class, 'index'])
     ->middleware(['auth'])
     ->name('home');
@@ -46,13 +47,15 @@ Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogl
 | Public Pages
 |--------------------------------------------------------------------------
 */
-// USER PRODUCT LIST
-Route::get('/products', [ProductController::class, 'index'])->name('user.products');
-Route::get('/products', [PageController::class, 'products'])->name('products');
 
-Route::get('/about', [PageController::class, 'about'])->name('about');
-Route::get('/products', [PageController::class, 'products'])->name('products');
+// User product list with filter and sort
+Route::get('/products', [ProductController::class, 'userProducts'])->name('products');
+
+// Single product
 Route::get('/single-product/{id?}', [PageController::class, 'singleProduct'])->name('single-product');
+
+// Other pages
+Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact/send', [PageController::class, 'sendContact'])->name('contact.send');
 
@@ -73,6 +76,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/products/destroy/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
+// Wishlist Routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::get('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+Route::get('/wishlist/move/{id}', [WishlistController::class, 'moveToCart'])->name('wishlist.move');
+
+
+    // Cart Routes
+    Route::post('/cart/add/{id}', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+    Route::put('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+});
 /*
 |--------------------------------------------------------------------------
 | Auth Extra Routes

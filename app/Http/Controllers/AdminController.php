@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -14,10 +13,10 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->get();
-        $categories = Category::all();
+        // ✅ Get all products (no relationship)
+        $products = Product::all();
 
-        return view('admin.products', compact('products', 'categories'));
+        return view('admin.products', compact('products'));
     }
 
     /**
@@ -31,7 +30,8 @@ class AdminController extends Controller
             'description' => 'required|string|max:1000',
             'stock'       => 'nullable|integer',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'category_id' => 'nullable|exists:categories,category_id',
+            'brand'       => 'required|string|max:255',
+            'category'    => 'required|string|max:255',
         ]);
 
         $imagePath = null;
@@ -40,12 +40,13 @@ class AdminController extends Controller
         }
 
         Product::create([
-            'category_id' => $request->category_id,
             'name'        => $request->name,
             'description' => $request->description,
             'price'       => $request->price,
             'stock'       => $request->stock ?? 0,
             'image'       => $imagePath,
+            'brand'       => $request->brand,
+            'category'    => $request->category,
         ]);
 
         // 🔥 SYNC TO JSON + XML
@@ -65,7 +66,8 @@ class AdminController extends Controller
             'description' => 'required|string|max:1000',
             'stock'       => 'nullable|integer',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'category_id' => 'nullable|exists:categories,category_id',
+            'brand'       => 'required|string|max:255',
+            'category'    => 'required|string|max:255',
         ]);
 
         $product = Product::findOrFail($id);
@@ -76,12 +78,13 @@ class AdminController extends Controller
         }
 
         $product->update([
-            'category_id' => $request->category_id,
             'name'        => $request->name,
             'description' => $request->description,
             'price'       => $request->price,
             'stock'       => $request->stock ?? 0,
             'image'       => $imagePath,
+            'brand'       => $request->brand,
+            'category'    => $request->category,
         ]);
 
         // 🔥 SYNC TO JSON + XML
@@ -97,6 +100,11 @@ class AdminController extends Controller
     {
         $product = Product::findOrFail($id);
 
+        // Delete image
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->delete();
 
         // 🔥 SYNC TO JSON + XML
@@ -104,7 +112,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.index')->with('success', '🗑️ Product deleted successfully!');
     }
-
 
     // --------------------------------------------------------------
     // 🔥 JSON + XML SYNC HANDLER

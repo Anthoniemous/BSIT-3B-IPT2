@@ -15,38 +15,55 @@ class ProductController extends Controller
         return view('admin.products', compact('products'));
     }
 
-    // ⭐ USER PRODUCT LIST WITH SORTING
     public function userProducts(Request $request)
-    {
-        $sort = $request->get('sort');
+{
+    $sort = $request->input('sort');
+    $brand = $request->input('brand');
+    $category = $request->input('category');
 
-        $products = Product::query();
+    $query = Product::query();
 
-        if ($sort === 'name_asc') {
-            $products->orderBy('name', 'asc');
-        } elseif ($sort === 'name_desc') {
-            $products->orderBy('name', 'desc');
-        } elseif ($sort === 'price_low_high') {
-            $products->orderBy('price', 'asc');
-        } elseif ($sort === 'price_high_low') {
-            $products->orderBy('price', 'desc');
-        }
-
-        $products = $products->get();
-
-        return view('products', compact('products', 'sort'));
+    if (!empty($brand)) {
+        $query->where('brand', 'LIKE', "%$brand%");
     }
+
+    if (!empty($category)) {
+        $query->where('category', $category);
+    }
+
+    switch ($sort) {
+        case 'newest':
+            $query->orderBy('created_at', 'desc');
+            break;
+        case 'price_low_high':
+            $query->orderBy('price', 'asc');
+            break;
+        case 'price_high_low':
+            $query->orderBy('price', 'desc');
+            break;
+    }
+
+    $products = $query->get();
+
+    // ✅ THIS IS WHERE YOU GET UNIQUE CATEGORIES & BRANDS
+    $categories = Product::select('category')->distinct()->pluck('category');
+    $brands = Product::select('brand')->distinct()->pluck('brand');
+
+    // ✅ PASS THEM TO THE VIEW
+    return view('products', compact('products', 'sort', 'categories', 'brands'));
+}
 
     // Store a new product
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|integer',
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:500',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image' => 'nullable|image|max:2048',
+            'brand' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
         ]);
 
         $imagePath = null;
@@ -56,12 +73,13 @@ class ProductController extends Controller
         }
 
         Product::create([
-            'category_id' => $request->category_id,
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
             'image' => $imagePath,
+            'brand' => $request->brand,
+            'category' => $request->category,
         ]);
 
         $this->syncProducts();
@@ -80,19 +98,18 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category_id' => 'required|integer',
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:500',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image' => 'nullable|image|max:2048',
+            'brand' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
         ]);
 
         $product = Product::findOrFail($id);
 
-        // If image is updated
         if ($request->hasFile('image')) {
-
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
@@ -101,12 +118,13 @@ class ProductController extends Controller
         }
 
         $product->update([
-            'category_id' => $request->category_id,
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
             'image' => $product->image,
+            'brand' => $request->brand,
+            'category' => $request->category,
         ]);
 
         $this->syncProducts();
@@ -119,7 +137,6 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Delete old image
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
@@ -136,18 +153,15 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
-        // Save JSON
         Storage::disk('quibo_activity')->put(
             'products.json',
             $products->toJson(JSON_PRETTY_PRINT)
         );
 
-        // Save XML
         $xmlContent = $this->convertToXml($products, 'products', 'product');
         Storage::disk('xml_activity')->put('products.xml', $xmlContent);
     }
 
-    // Convert data to XML format
     private function convertToXml($data, $rootElement, $itemElement)
     {
         $xml = new \SimpleXMLElement("<{$rootElement}></{$rootElement}>");
