@@ -29,9 +29,7 @@
   <h1 class="text-center">Welcome, {{ Auth::user()->name ?? 'Admin' }}!</h1>
 
   @if(session('success'))
-    <div class="alert">
-      {{ session('success') }}
-    </div>
+    <div class="alert">{{ session('success') }}</div>
   @endif
 
   <div class="product-header">
@@ -40,7 +38,7 @@
   </div>
 
   <div class="product-grid" id="productGrid">
-    <!-- Product cards will be rendered dynamically -->
+    <!-- Products Loaded via XML -->
   </div>
 </div>
 
@@ -53,9 +51,23 @@
         <h5>Add Product</h5>
         <span class="close" onclick="closeModal()">&times;</span>
       </div>
+
       <div class="modal-body">
+
         <label>Name</label>
         <input type="text" name="name" required>
+
+        <label>Brand</label>
+        <input type="text" name="brand" placeholder="Optional">
+
+        <label>Category</label>
+      <select name="category_id" required>
+    <option value="" disabled selected>Select Category</option>
+    @foreach($categories as $category)
+        <option value="{{ $category->id }}">{{ $category->name }}</option>
+    @endforeach
+</select>
+
 
         <label>Price</label>
         <input type="number" name="price" step="0.01" required>
@@ -65,7 +77,9 @@
 
         <label>Image</label>
         <input type="file" name="image">
+
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn-outline-custom" onclick="closeModal()">Cancel</button>
         <button type="submit" class="btn-custom">Add Product</button>
@@ -82,18 +96,16 @@ function closeModal() {
   document.getElementById('addProductModal').style.display = 'none';
 }
 window.onclick = function(e) {
-  if (e.target == document.getElementById('addProductModal')) {
-    closeModal();
-  }
+  if (e.target == document.getElementById('addProductModal')) closeModal();
 }
 
-// 🌸 Pass Laravel routes dynamically
+// Laravel Routes
 const routes = {
     edit: "{{ route('products.edit', ':id') }}",
     destroy: "{{ route('products.destroy', ':id') }}"
 };
 
-// 🌸 Fetch XML and render products dynamically
+// Render Products
 document.addEventListener("DOMContentLoaded", () => {
     const productGrid = document.getElementById("productGrid");
 
@@ -109,6 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="product-card-body">
                 <h5 class="product-card-title">${product.name}</h5>
                 <p class="product-card-price">₱ ${parseFloat(product.price).toFixed(2)}</p>
+                <p>Brand: ${product.brand ?? '-'}</p>
+                <p>Category: ${product.category_name ?? '-'}</p>
                 <p>${product.description}</p>
             </div>
             <div class="product-card-footer">
@@ -123,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
         productGrid.appendChild(div);
     }
 
-    // Load XML from server
     fetch("{{ asset('storage/products.xml') }}")
     .then(res => res.text())
     .then(xmlStr => {
@@ -134,35 +147,19 @@ document.addEventListener("DOMContentLoaded", () => {
         productGrid.innerHTML = "";
 
         xml.querySelectorAll("product").forEach(p => {
-            const product = {
+            renderProduct({
                 id: p.querySelector("id")?.textContent,
                 name: p.querySelector("name")?.textContent,
+                brand: p.querySelector("brand")?.textContent,
+                category_name: p.querySelector("category_name")?.textContent,
                 price: p.querySelector("price")?.textContent,
                 description: p.querySelector("description")?.textContent,
                 image: p.querySelector("image")?.textContent
-            };
-            renderProduct(product);
+            });
         });
     })
     .catch(err => {
         console.log("Failed to load XML:", err);
-
-        const xmlStr = localStorage.getItem('productsXML');
-        if(xmlStr){
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(xmlStr, "application/xml");
-            productGrid.innerHTML = "";
-            xml.querySelectorAll("product").forEach(p => {
-                const product = {
-                    id: p.querySelector("id")?.textContent,
-                    name: p.querySelector("name")?.textContent,
-                    price: p.querySelector("price")?.textContent,
-                    description: p.querySelector("description")?.textContent,
-                    image: p.querySelector("image")?.textContent
-                };
-                renderProduct(product);
-            });
-        }
     });
 });
 </script>

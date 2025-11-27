@@ -27,6 +27,14 @@
         @endif
       </a>
 
+      <!-- Wishlist Icon -->
+      <a href="{{ route('customer.wishlist') }}" class="icon wishlist">
+        💖
+        @if(isset($wishlistCount) && $wishlistCount > 0)
+          <span class="cart-badge">{{ $wishlistCount }}</span>
+        @endif
+      </a>
+
       <div class="profile-menu">
         <button class="profile-btn" style="font-size: 15px; margin-right: 20px;">
           👤 {{ Auth::user()->name }}
@@ -46,43 +54,54 @@
   <!-- === HEADER BAR === -->
   <div class="header-bar">
     <h1>Welcome, {{ Auth::user()->name }}!</h1>
-
-    
   </div>
     
   @if(session('success'))
     <div class="alert-success">{{ session('success') }}</div>
   @endif
-<form method="GET" action="{{ route('customer.dashboard') }}" class="sort-form">
-  <label for="sort">Sort By:</label>
-  <select name="sort" id="sort" onchange="this.form.submit()">
-    <option value="">-- Select --</option>
-    <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
-    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
-    <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High-Low</option>
-    <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low-High</option>
-  </select>
-</form>
 
-</form>
+  <!-- === SORT FORM === -->
+  <form method="GET" action="{{ route('customer.dashboard') }}" class="sort-form">
+    <label for="sort">Sort By:</label>
+    <select name="sort" id="sort" onchange="this.form.submit()">
+      <option value="">-- Select --</option>
+      <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
+      <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
+      <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High-Low</option>
+      <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low-High</option>
+    </select>
+  </form>
+
   <!-- === PRODUCT LIST === -->
   <div class="main-content">
     @if(isset($products) && $products->count() > 0)
       @foreach($products as $product)
-        <div class="product-card">
-          <img src="{{ $product->image ? asset('storage/products/'.$product->image) : 'https://via.placeholder.com/300x200.png?text=Coffee' }}" alt="{{ $product->name }}">
-          <div class="product-card-body">
-            <h5>{{ $product->name }}</h5>
-            <p class="product-card-price">₱ {{ number_format($product->price,2) }}</p>
-            <p>{{ $product->description }}</p>
-          </div>
-          <div class="product-card-footer">
-            <form action="{{ route('cart.add', $product->id) }}" method="POST">
-              @csrf
-              <button type="submit" class="btn-order">Add to Cart</button>
-            </form>
-          </div>
+      <div class="product-card">
+        <!-- Wishlist Heart -->
+        <div class="wishlist-heart">
+          <button class="wishlist-btn" data-id="{{ $product->id }}">
+            @if(isset($wishlistProductIds) && in_array($product->id, $wishlistProductIds))
+              💖
+            @else
+              ❤️
+            @endif
+          </button>
         </div>
+
+        <img src="{{ $product->image ? asset('storage/products/'.$product->image) : 'https://via.placeholder.com/300x200.png?text=Coffee' }}" alt="{{ $product->name }}">
+        <div class="product-card-body">
+          <h5>{{ $product->name }}</h5>
+          <p class="product-card-price">₱ {{ number_format($product->price,2) }}</p>
+          <p class="product-card-category">Category: {{ $product->category->name ?? '-' }}</p>
+          <p class="product-card-description">{{ $product->description ?? '-' }}</p>
+        </div>
+        <div class="product-card-footer">
+          <form action="{{ route('cart.add', $product->id) }}" method="POST">
+            @csrf
+            <button type="submit" class="btn-order">Add to Cart</button>
+          </form>
+        </div>
+      </div>
       @endforeach
     @else
       <p class="no-products">No products found.</p>
@@ -136,14 +155,6 @@
     </div>
   </div>
 
-  @if(session('success'))
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      alert("{{ session('success') }}");
-    });
-  </script>
-  @endif
-
   <script>
     // === IMAGE PREVIEW ===
     function previewFile() {
@@ -172,6 +183,51 @@
       editBtn.style.display = 'none';
       saveBtn.style.display = 'inline-block';
     });
+
+    // === Wishlist Toggle with Notification ===
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const productId = this.dataset.id;
+        fetch(`/wishlist/toggle/${productId}`, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+          },
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.status === 'added') {
+            this.textContent = '💖'; // filled heart
+            showNotification('Product added to wishlist!');
+          } else {
+            this.textContent = '❤️'; // empty heart
+            showNotification('Product removed from wishlist!');
+          }
+        });
+      });
+    });
+
+    // === Notification Function ===
+    function showNotification(message) {
+      let notif = document.createElement('div');
+      notif.className = 'wishlist-notification';
+      notif.textContent = message;
+      notif.style.position = 'fixed';
+      notif.style.top = '20px';
+      notif.style.right = '20px';
+      notif.style.backgroundColor = '#28a745';
+      notif.style.color = '#fff';
+      notif.style.padding = '10px 20px';
+      notif.style.borderRadius = '5px';
+      notif.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+      notif.style.zIndex = 9999;
+      document.body.appendChild(notif);
+
+      setTimeout(() => {
+        notif.remove();
+      }, 2000); // auto remove after 2 seconds
+    }
   </script>
 
 </body>

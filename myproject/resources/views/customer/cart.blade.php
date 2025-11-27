@@ -28,6 +28,12 @@
                     <span class="cart-badge">{{ count($cartItems) }}</span>
                 @endif
             </a>
+               <a href="{{ route('customer.wishlist') }}" class="icon wishlist">
+        💖
+        @if(isset($wishlistCount) && $wishlistCount > 0)
+          <span class="cart-badge">{{ $wishlistCount }}</span>
+        @endif
+      </a>
             <div class="dropdown">
                 <button class="dropbtn">
                     👤 {{ Auth::user()->name }}

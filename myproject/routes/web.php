@@ -151,3 +151,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [CustomerController::class, 'index'])->name('customer.home');
     Route::post('/save-profile', [CustomerController::class, 'saveProfile'])->name('customer.profile.save');
 });
+    Route::get('/wishlist', [CustomerController::class, 'wishlist'])
+        ->name('customer.wishlist');
+        
+    Route::post('/wishlist/toggle/{id}', [CustomerController::class, 'toggleWishlist'])
+        ->name('customer.wishlist.toggle');
+Route::post('/wishlist/remove/{id}', [CustomerController::class, 'removeFromWishlist'])->name('wishlist.remove');
+

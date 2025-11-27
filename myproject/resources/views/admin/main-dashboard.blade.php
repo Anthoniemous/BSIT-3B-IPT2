@@ -58,17 +58,19 @@
     <div class="product-grid">
       @if(isset($products) && count($products) > 0)
         @foreach($products as $product)
-          <div class="product-card">
-            <img src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}">
-            <div class="product-card-body">
-              <h5 class="product-card-title">{{ $product->name }}</h5>
-              <p class="product-card-price">₱ {{ number_format($product->price, 2) }}</p>
-              <p class="product-card-category">Category: {{ $product->category ?? '-' }}</p>
-              <p class="product-card-featured">
-                Featured: {{ $product->featured ? 'Yes' : 'No' }}
-              </p>
-            </div>
-          </div>
+         <div class="product-card">
+  <img src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}">
+  <div class="product-card-body">
+    <h5 class="product-card-title">{{ $product->name }}</h5>
+    <p class="product-card-price">₱ {{ number_format($product->price, 2) }}</p>
+    <p class="product-card-category">Category: {{ $product->category->name ?? '-' }}</p>
+    <p class="product-card-description">{{ $product->description ?? '-' }}</p>
+    <p class="product-card-featured">
+      Featured: {{ $product->featured ? 'Yes' : 'No' }}
+    </p>
+  </div>
+</div>
+
         @endforeach
       @else
         <p class="no-products">No products yet.</p>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +13,7 @@ class ProductController extends Controller
 
     private function updateXML()
     {
-        $products = Product::all();
+        $products = Product::with('category')->get();
 
         $xml = new \SimpleXMLElement('<products></products>');
 
@@ -20,6 +21,8 @@ class ProductController extends Controller
             $p = $xml->addChild('product');
             $p->addChild('id', $product->id);
             $p->addChild('name', htmlspecialchars($product->name));
+            $p->addChild('brand', htmlspecialchars($product->brand ?? ''));
+           $p->addChild('category_name', htmlspecialchars($product->category->name ?? ''));
             $p->addChild('price', $product->price);
             $p->addChild('description', htmlspecialchars($product->description ?? ''));
             $p->addChild('image', $product->image ?? '');
@@ -30,21 +33,27 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::all();
-        return view('admin.dashboard', compact('products'));
+        $products = Product::with('category')->get();
+        $categories = Category::all();
+
+        return view('admin.dashboard', compact('products', 'categories'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|max:10240',
+            'name'        => 'required',
+            'brand'       => 'nullable|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'price'       => 'required|numeric',
+            'image'       => 'nullable|image|max:10240',
         ]);
 
         $product = new Product();
-        $product->name = $request->name;
-        $product->price = $request->price;
+        $product->name        = $request->name;
+        $product->brand       = $request->brand;
+        $product->category_id = $request->category_id;
+        $product->price       = $request->price;
         $product->description = $request->description;
 
         if ($request->hasFile('image')) {
@@ -62,25 +71,32 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('admin.edit', compact('product'));
+        $categories = Category::all();
+        return view('admin.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|max:10240',
+            'name'        => 'required',
+            'brand'       => 'nullable|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'price'       => 'required|numeric',
+            'image'       => 'nullable|image|max:10240',
         ]);
 
-        $product->name = $request->name;
-        $product->price = $request->price;
+        $product->name        = $request->name;
+        $product->brand       = $request->brand;
+        $product->category_id = $request->category_id;
+        $product->price       = $request->price;
         $product->description = $request->description;
 
         if ($request->hasFile('image')) {
+            // delete old file if exists
             if ($product->image && Storage::disk('public')->exists('products/'.$product->image)) {
                 Storage::disk('public')->delete('products/'.$product->image);
             }
+
             $file = $request->file('image');
             $filename = time().'_'.$file->getClientOriginalName();
             $file->storeAs('products', $filename, 'public');
@@ -111,69 +127,58 @@ class ProductController extends Controller
     {
         $query = Product::query();
 
-        // SORT FEATURED
         if ($request->sort == 'featured') {
             $query->where('featured', 1);
         }
 
-        // SORT NEWEST
         if ($request->sort == 'newest') {
             $query->orderBy('created_at', 'desc');
         }
 
-        // SORT PRICE HIGH → LOW
         if ($request->sort == 'price_high') {
             $query->orderBy('price', 'desc');
         }
 
-        // SORT PRICE LOW → HIGH
         if ($request->sort == 'price_low') {
             $query->orderBy('price', 'asc');
         }
 
         $products = $query->get();
 
-        // ⚠️ Fallback: kung featured pero walay results, show all products
         if ($request->sort == 'featured' && $products->isEmpty()) {
             $products = Product::all();
         }
 
         return view('admin.main-dashboard', compact('products'));
-    } 
-
-
-    
-public function customerDashboard(Request $request)
-{
-    $query = Product::query();
-
-    switch ($request->sort) {
-        case 'featured':
-            $query->where('featured', 1);
-            break;
-        case 'newest':
-            $query->orderBy('created_at', 'desc');
-            break;
-        case 'price_high':
-            $query->orderBy('price', 'desc');
-            break;
-        case 'price_low':
-            $query->orderBy('price', 'asc');
-            break;
-        default:
-            $query->orderBy('name', 'asc'); // default alphabetical
-            break;
     }
 
-    $products = $query->get();
+    public function customerDashboard(Request $request)
+    {
+        $query = Product::query();
 
-    // ✅ Fallback: kung Featured ug walay products, ipakita tanan
-    if ($request->sort == 'featured' && $products->isEmpty()) {
-        $products = Product::all()->sortBy('name'); // default alphabetical
+        switch ($request->sort) {
+            case 'featured':
+                $query->where('featured', 1);
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            default:
+                $query->orderBy('name', 'asc');
+        }
+
+        $products = $query->get();
+
+        if ($request->sort == 'featured' && $products->isEmpty()) {
+            $products = Product::all()->sortBy('name');
+        }
+
+        return view('customer.dashboard', compact('products'));
     }
-
-    return view('customer.dashboard', compact('products'));
-}
-
-
 }
