@@ -5,141 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-    background: radial-gradient(circle at top left, #ffd6ec, transparent 60%),
-                radial-gradient(circle at bottom right, #ffe0f0, transparent 60%),
-                #fff6fb;
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-/* 💎 Card container */
-.card {
-    margin-left: 27%;
-    background-color: #ffffff;
-    padding: 40px 35px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(233, 99, 150, 0.15);
-    max-width: 600px;
-    width: 100%;
-    border: 1px solid rgba(255, 192, 203, 0.4);
-}
-
-/* 💋 Form title */
-.card h2 {
-    margin-bottom: 20px;
-    color: #e75480;
-    font-weight: 700;
-    font-size: 1.8rem;
-    text-align: center;
-    text-shadow: 0 1px 6px rgba(231, 84, 128, 0.1);
-}
-
-/* 🩰 Labels */
-.form-label {
-    font-weight: 600;
-    color: #8b5e83;
-}
-
-/* 🎀 Input fields */
-input[type="text"],
-input[type="number"],
-textarea,
-input[type="file"] {
-    width: 95%;
-    padding: 12px 10px;
-    border: 1px solid #f4b6c2;
-    border-radius: 10px;
-    font-size: 15px;
-    background-color: #fffafc;
-    color: #444;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-input:focus,
-textarea:focus,
-input[type="file"]:focus {
-    border-color: #ff9ebb;
-    box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.25);
-    outline: none;
-}
-
-/* 💫 Buttons */
-.btn-primary, .btn-secondary {
-    min-width: 120px;
-    font-weight: 600;
-    border-radius: 10px;
-    padding: 12px 20px;
-    transition: transform 0.2s, box-shadow 0.3s;
-}
-
-.btn-primary {
-    background: linear-gradient(90deg, #ffb6c1, #ff91af);
-    color: #ffffff;
-    border: none;
-    box-shadow: 0 4px 15px rgba(255, 145, 175, 0.3);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(255, 145, 175, 0.45);
-}
-
-.btn-secondary {
-    background-color: #ffe4ec;
-    color: #e75480;
-    border: 1px solid #f4b6c2;
-}
-
-.btn-secondary:hover {
-    background-color: #ffd6e6;
-    color: #d94170;
-}
-
-/* 🌷 Alert messages */
-.alert {
-    border-radius: 10px;
-    padding: 10px;
-    text-align: left;
-    font-weight: 500;
-}
-
-.alert-success {
-    background-color: #ffeaf3;
-    color: #a83f6d;
-    border: 1px solid #ffc1d9;
-}
-
-.alert-danger {
-    background-color: #ffe0e7;
-    color: #c42d4a;
-    border: 1px solid #f5a3b5;
-}
-
-/* 🌸 Form spacing */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* 📱 Responsive */
-@media (max-width: 640px) {
-    .card {
-        padding: 30px 25px;
-    }
-
-    .btn-primary, .btn-secondary {
-        width: 100%;
-        text-align: center;
-    }
-}
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/create.css') }}">
 </head>
 <body>
     <div class="container">
@@ -179,6 +45,28 @@ form {
                     <label for="price" class="form-label">Price</label>
                     <input type="number" name="price" id="price" step="0.01" class="form-control" required>
                 </div>
+
+                <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select name="category" id="category" class="form-control" required>
+                    <option value="" disabled selected>-- Select Category --</option>
+                    <option value="Cosmetics">Cosmetics</option>
+                    <option value="Makeup">Makeup</option>
+                    <option value="Skin Care">Skin Care</option>
+                    <option value="Package">Package</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="brand" class="form-label">Brand</label>
+                <select name="brand" id="brand" class="form-control" required>
+                    <option value="" disabled selected>-- Select Brand --</option>
+                    <option value="Mary">Mary</option>
+                    <option value="MakeupX">MakeupX</option>
+                    <option value="BeautyPlus">BeautyPlus</option>
+                    <option value="GlowUp">GlowUp</option>
+                </select>
+            </div>
 
                 <div class="mb-4">
                     <label for="image" class="form-label">Product Image</label>

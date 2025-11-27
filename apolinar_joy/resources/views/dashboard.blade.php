@@ -2,9 +2,9 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-pink-600 leading-tight">
             <link rel="stylesheet" href="{{ asset('css/admindashboard.css') }}">
-            <span class="header-title">💖 Glamour Makeup Store – Admin Dashboard</span>
+            <span class="header-title">Glamour Makeup Store – Admin Dashboard</span>
             <a href="{{ route('products.create') }}" class="btn add-btn">+ Add Product</a>
-             <a href="{{ route('admin.orders') }}" class="btn">View All Orders</a>
+            <a href="{{ route('admin.orders') }}" class="btn">View All Orders</a>
         </h2>
     </x-slot>
 
@@ -15,6 +15,11 @@
                     <th>Product Name</th>
                     <th>Description</th>
                     <th>Price</th>
+
+  
+                    <th>Category</th>
+                    <th>Brand</th>
+
                     <th>Image</th>
                     <th>Actions</th>
                 </tr>
@@ -25,6 +30,10 @@
                     <td>{{ $product->product_name }}</td>
                     <td>{{ $product->description }}</td>
                     <td>₱{{ number_format($product->price, 2) }}</td>
+
+                    <td>{{ $product->category }}</td>
+                    <td>{{ $product->brand }}</td>
+
                     <td>
                         <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->product_name }}">
                     </td>

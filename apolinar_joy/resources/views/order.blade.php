@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
 
 <div class="checkout-container">
-    <h1 class="checkout-title">🧾 PAYMENTS </h1>
+    <h1 class="checkout-title"> PAYMENTS </h1>
 
     <div class="checkout-card">
         <h3 class="section-title">Order Information</h3>

@@ -1,9 +1,15 @@
-<x-app-layout>
-
-<link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVENTORY</title>
+</head>
+<body>
+    <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
 
 <div class="container">
-    <h1 class="page-title">🧾INVENTORY OF ORDERS</h1>
+    <h1 class="page-title">INVENTORY OF ORDERS</h1>
 
     {{-- ✅ Flash Messages --}}
     @if(session('success'))
@@ -38,7 +44,7 @@
                     @foreach($orders as $order)
                         @foreach($order->items as $item)
                             <tr>
-                                <td>#{{ $order->id }}</td>
+                                <td>{{ $order->order_id }}</td>
                                 <td>{{ $order->created_at->format('M d, Y') }}</td>
                                 <td>{{ $item->product->product_name }}</td>
                                 <td>{{ $item->quantity }}</td>
@@ -69,4 +75,5 @@
     </div>
 
 </div>
-</x-app-layout>
+</body>
+</html>

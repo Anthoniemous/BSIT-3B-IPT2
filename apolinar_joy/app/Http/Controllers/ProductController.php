@@ -17,39 +17,47 @@ class ProductController extends Controller
     }
 
     // User dashboard (with sorting)
-    public function userDashboard(Request $request)
-    {
-        $sort = $request->get('sort');
+    // User dashboard with filter & sort
+public function userDashboard(Request $request)
+{
+    $sort = $request->get('sort');
+    $category = $request->get('category');
+    $brand = $request->get('brand');
+    $minPrice = $request->get('min_price');
+    $maxPrice = $request->get('max_price');
 
-        $products = Product::query();
-     
-    switch ($sort) {
-        
-    case 'newest':
-        $products->orderBy('created_at', 'desc');
-        break;
+    $products = Product::query();
 
-    case 'featured':
-        $products->orderBy('price', 'desc'); // you can change logic here later
-        break;
-            case 'price_low_high':
-                $products->orderBy('price', 'asc');
-                break;
+    // FILTERS
+    if($category) $products->where('category', $category);
+    if($brand) $products->where('brand', $brand);
+    if($minPrice) $products->where('price', '>=', $minPrice);
+    if($maxPrice) $products->where('price', '<=', $maxPrice);
 
-            case 'price_high_low':
-                $products->orderBy('price', 'desc');
-                break;
-
-            default:
-                $products->orderBy('product_name', 'asc');
-                break;
-        }
-
-        return view('userdashboard', [
-            'products' => $products->get(),
-            'sort' => $sort
-        ]);
+    // SORTING
+    switch($sort){
+        case 'newest': $products->orderBy('created_at', 'desc'); break;
+        case 'featured': $products->orderBy('price', 'desc'); break;
+        case 'price_low_high': $products->orderBy('price', 'asc'); break;
+        case 'price_high_low': $products->orderBy('price', 'desc'); break;
+        default: $products->orderBy('product_name', 'asc'); break;
     }
+
+    $categories = Product::select('category')->distinct()->pluck('category');
+    $brands = Product::select('brand')->distinct()->pluck('brand');
+
+    return view('userdashboard', [
+        'products' => $products->get(),
+        'sort' => $sort,
+        'categories' => $categories,
+        'brands' => $brands,
+        'selectedCategory' => $category,
+        'selectedBrand' => $brand,
+        'minPrice' => $minPrice,
+        'maxPrice' => $maxPrice,
+    ]);
+}
+
 
     // Show create product form
     public function create()
@@ -64,10 +72,13 @@ class ProductController extends Controller
             'product_name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
+            'category' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
             'image' => 'nullable|image|max:10240',
         ]);
 
         $imagePath = null;
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
@@ -76,10 +87,13 @@ class ProductController extends Controller
             'product_name' => $request->product_name,
             'description' => $request->description,
             'price' => (float) $request->price,
+            'category' => $request->category,
+            'brand' => $request->brand,
             'image' => $imagePath,
         ]);
 
         $this->syncProductsToLocal();
+
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
     }
 
@@ -96,6 +110,8 @@ class ProductController extends Controller
             'product_name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
+            'category' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -103,6 +119,8 @@ class ProductController extends Controller
             'product_name' => $request->product_name,
             'description' => $request->description,
             'price' => (float) $request->price,
+            'category' => $request->category,
+            'brand' => $request->brand,
         ];
 
         if ($request->hasFile('image')) {
@@ -110,7 +128,9 @@ class ProductController extends Controller
         }
 
         $product->update($data);
+
         $this->syncProductsToLocal();
+
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
@@ -118,7 +138,9 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
+
         $this->syncProductsToLocal();
+
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
@@ -132,8 +154,13 @@ class ProductController extends Controller
         $this->ensureFolderExists(storage_path("app/apolinar_activity/$jsonFolder"));
         $this->ensureFolderExists(storage_path("app/apolinar_activity/XML/$xmlFolder"));
 
-        Storage::disk('apolinar_activity')->put("$jsonFolder/products.json", $products->toJson(JSON_PRETTY_PRINT));
+        // Save JSON
+        Storage::disk('apolinar_activity')->put(
+            "$jsonFolder/products.json",
+            $products->toJson(JSON_PRETTY_PRINT)
+        );
 
+        // Save XML
         $xmlContent = $this->convertToXml($products, 'products', 'product');
         Storage::disk('apolinar_activity')->put("XML/$xmlFolder/products.xml", $xmlContent);
     }

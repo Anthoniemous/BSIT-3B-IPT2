@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
 
 <div class="container">
-    <h1 class="page-title"> Customer Orders  🧾</h1>
+    <h1 class="page-title"> Customer Orders  </h1>
 
     {{-- ✅ Flash Messages --}}
     @if(session('success'))
