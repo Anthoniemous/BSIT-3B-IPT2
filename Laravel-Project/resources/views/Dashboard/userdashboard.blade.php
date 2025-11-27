@@ -93,7 +93,24 @@
             <option value="Jerseys" {{ request('category')=='Jerseys' ? 'selected':'' }}>Jerseys</option>
             <option value="Accessories" {{ request('category')=='Accessories' ? 'selected':'' }}>Accessories</option>
         </select>
-
+        
+          <!-- PRICE FILTER -->
+        <input 
+          type="number" 
+          name="price_min" 
+          class="price-input" 
+          placeholder="Min Price" 
+          value="{{ request('price_min') }}"
+          oninput="this.form.submit()"
+        >
+        <input 
+          type="number" 
+          name="price_max" 
+          class="price-input" 
+          placeholder="Max Price" 
+          value="{{ request('price_max') }}"
+          oninput="this.form.submit()"
+        >
         <!-- 🆕 BRAND FILTER -->
         <input 
             type="text" 
