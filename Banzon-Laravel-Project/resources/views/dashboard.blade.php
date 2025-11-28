@@ -26,7 +26,7 @@
             <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form action="{{ route('product.store') }}" method="POST">
+                        <<form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
@@ -52,6 +52,10 @@
                                     <label for="stock_quantity" class="form-label">Stock Quantity</label>
                                     <input type="number" name="stock_quantity" id="stock_quantity" class="form-control" required>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">Product Image</label>
+                                    <input type="file" name="image" id="image" class="form-control">
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -66,7 +70,7 @@
             <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form id="editProductForm" method="POST">
+                        <form id="editProductForm" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="modal-header">
@@ -95,6 +99,13 @@
                                     <label for="edit_stock_quantity" class="form-label">Stock Quantity</label>
                                     <input type="number" name="stock_quantity" id="edit_stock_quantity" class="form-control" required>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="edit_image" class="form-label">Product Image</label>
+                                    <input type="file" name="image" id="edit_image" class="form-control">
+                                    @if(isset($product->image))
+                                        <img src="{{ asset('img/products/' . $product->image) }}" alt="Current Image" class="img-thumbnail mt-2" width="100">
+                                    @endif
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -109,9 +120,8 @@
                 @foreach($products as $product)
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                         <div class="store-item position-relative text-center">
-                            <img class="img-fluid" 
-                                src="{{ asset('img/store-product-1.jpg') }}" 
-                                alt="{{ $product->name }}">
+                            <img class="img-fluid" style="width: 407px; height: 416px;" src="{{ $product->image ? asset('img/products/' . $product->image) : 
+                            asset('img/store-product-1.jpg') }}" alt="{{ $product->name }}">
                             <div class="p-4">
                                 <div class="text-center mb-3">
                                     <small class="fa fa-star text-primary"></small>

@@ -23,8 +23,9 @@
                     <x-nav-link :href="route('checkout')" :active="request()->routeIs('checkout')">
                         {{ __('Checkout') }}
                     </x-nav-link>
-
-                   
+                  <x-nav-link :href="route('wishlist')" :active="request()->routeIs('wishlist')">
+                        {{ __('Wishlist') }}
+                    </x-nav-link>
                 </div>
             </div>
 

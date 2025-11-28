@@ -10,8 +10,8 @@
 
             <!-- Search Bar -->
             <div class="d-flex justify-content-center align-items-center mb-4 gap-2">
-                <form id="searchForm" class="d-flex" style="max-width: 400px;">
-                    <input type="text" id="searchInput" class="form-control rounded-pill px-3" placeholder="Search product name..." required>
+                <form id="searchForm" class="d-flex" style="width: 400px;">
+                    <input type="text" id="searchInput" class="form-control rounded-pill px-3 " placeholder="Search product name..." required>
                     <button type="submit" class="btn btn-primary rounded-pill ms-2">Search</button>
                 </form>
 
@@ -27,7 +27,23 @@
                         <option value="price_high_low">Price (High → Low)</option>
                     </select>
                 </div>
+
+                <div class="col-md-3">
+                    <select id="priceFilter" class="form-select rounded-pill w-40">
+                        <option value="">All Prices</option>
+                        <option value="0-50">₱0 – ₱50</option>
+                        <option value="50-100">₱50 – ₱100</option>
+                        <option value="100-500">₱100 – ₱500</option>
+                        <option value="500-1000">₱500 – ₱1,000</option>
+                        <option value="1000-up">₱1,000+</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <button id="resetFilters" class="btn btn-secondary rounded-pill w-20">Reset</button>
+                </div>
             </div>
+
 
             <div class="row g-4">
                 @foreach($products as $product)
@@ -36,9 +52,8 @@
                          data-price="{{ $product->price }}"
                          data-featured="{{ $product->featured ?? 0 }}">
                         <div class="store-item position-relative text-center">
-                            <img class="img-fluid"
-                                src="{{ asset('img/store-product-1.jpg') }}"
-                                alt="{{ $product->name }}">
+                            <img class="img-fluid" style="width: 407px; height: 416px;" src="{{ $product->image ? asset('img/products/' . $product->image) : 
+                            asset('img/store-product-1.jpg') }}" alt="{{ $product->name }}">
                             <div class="p-4">
                                 <div class="text-center mb-3">
                                     <small class="fa fa-star text-primary"></small>
@@ -61,6 +76,12 @@
                                         @csrf
                                         <button type="submit" class="btn btn-success rounded-pill py-2 px-4 m-2">
                                             <i class="fa fa-cart-plus me-1"></i> Add to Cart
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('wishlist.add', $product->product_id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-warning rounded-pill py-2 px-4 m-2">
+                                            <i class="fa fa-heart me-1"></i> Add to Wishlist
                                         </button>
                                     </form>
                                 @else
@@ -215,5 +236,41 @@
                 container.appendChild(frag);
             });
         });
+
+       // >>> ADDED CODE START (FILTER SCRIPT)
+const priceFilter = document.getElementById('priceFilter');
+const resetFilters = document.getElementById('resetFilters');
+const filterCards = document.querySelectorAll('.col-lg-4.col-md-6[data-name]');
+
+function applyFilters() {
+    const price = priceFilter.value;
+
+    filterCards.forEach(card => {
+        const cardPrice = parseFloat(card.dataset.price);
+        let show = true;
+
+        if (price) {
+            const [min, max] = price.split('-');
+            const minVal = parseFloat(min);
+            if (max === "up" && cardPrice < minVal) show = false;
+            else if (max !== "up") {
+                const maxVal = parseFloat(max);
+                if (cardPrice < minVal || cardPrice > maxVal) show = false;
+            }
+        }
+
+        card.style.display = show ? "block" : "none";
+    });
+}
+
+priceFilter.addEventListener('change', applyFilters);
+
+resetFilters.addEventListener('click', () => {
+    priceFilter.value = "";
+    filterCards.forEach(card => card.style.display = "block");
+});
+// >>> ADDED CODE END
+
+
     </script>
 </x-app-layout>

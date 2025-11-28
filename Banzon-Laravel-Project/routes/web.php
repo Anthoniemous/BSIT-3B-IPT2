@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerProductController;
 use App\Http\Controllers\CustomerProfileController;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\WishlistController;
 
 // ===================================================
 // Default landing → welcome page
@@ -107,3 +108,10 @@ Route::get('/admin/dashboard', [ProductController::class, 'index'])
 Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
 Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
 Route::put('/product/{id}/toggle-status', [ProductController::class, 'toggleStatus'])->name('product.toggleStatus');
+
+// Wishlist routes
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
+Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+Route::post('/wishlist/move-to-cart/{id}', [WishlistController::class, 'moveToCart'])->name('wishlist.moveToCart');
+

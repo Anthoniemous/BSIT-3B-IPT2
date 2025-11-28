@@ -10,13 +10,27 @@ use App\Models\CartItem;
 class CustomerProductController extends Controller
 {
     // Display active products
-    public function index()
+    public function index(Request $request)
     {
         if (session('role') !== 'customer') {
             return redirect('/login')->with('error', 'Please log in as a customer.');
         }
 
-        $products = Product::where('status', 'active')->get();
+        // ORIGINAL QUERY
+        $products = Product::where('status', 'active');
+
+        // ⭐ ADDED SORTING ⭐
+        if ($request->has('sort')) {
+            if ($request->sort === 'newest') {
+                $products = $products->orderBy('created_at', 'desc');
+            } elseif ($request->sort === 'featured') {
+                $products = $products->where('featured', 1);
+            }
+        }
+
+        // FINAL GET
+        $products = $products->get();
+
         return view('customer_dashboard', compact('products'));
     }
 
@@ -103,40 +117,38 @@ class CustomerProductController extends Controller
      * Sync cart session data to database and JSON file
      */
     private function syncCart($customerId, $cart)
-{
-    // 1️⃣ Save to JSON first
-    $jsonPath = storage_path('app/cart.json');
-    $cartData = [];
-    foreach ($cart as $item) {
-        $cartData[] = [
-            'product_id' => $item['product_id'],
-            'name' => $item['name'],
-            'price' => $item['price'],
-            'quantity' => $item['quantity'],
-            'customer_id' => $customerId,
-        ];
-    }
-    file_put_contents($jsonPath, json_encode($cartData, JSON_PRETTY_PRINT));
-
-    // 2️⃣ Sync DB based on JSON
-    foreach ($cartData as $item) {
-        CartItem::updateOrCreate(
-            [
+    {
+        // 1️⃣ Save to JSON first
+        $jsonPath = storage_path('app/cart.json');
+        $cartData = [];
+        foreach ($cart as $item) {
+            $cartData[] = [
                 'product_id' => $item['product_id'],
-                'customer_id' => $item['customer_id']
-            ],
-            [
-                'quantity' => $item['quantity']
-            ]
-        );
+                'name' => $item['name'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'customer_id' => $customerId,
+            ];
+        }
+        file_put_contents($jsonPath, json_encode($cartData, JSON_PRETTY_PRINT));
+
+        // 2️⃣ Sync DB based on JSON
+        foreach ($cartData as $item) {
+            CartItem::updateOrCreate(
+                [
+                    'product_id' => $item['product_id'],
+                    'customer_id' => $item['customer_id']
+                ],
+                [
+                    'quantity' => $item['quantity']
+                ]
+            );
+        }
+
+        // 3️⃣ Optional: remove DB entries not in JSON
+        $productIds = array_column($cartData, 'product_id');
+        CartItem::where('customer_id', $customerId)
+                ->whereNotIn('product_id', $productIds)
+                ->delete();
     }
-
-    // 3️⃣ Optional: remove DB entries not in JSON
-    $productIds = array_column($cartData, 'product_id');
-    CartItem::where('customer_id', $customerId)
-            ->whereNotIn('product_id', $productIds)
-            ->delete();
-}
-    
-
 }

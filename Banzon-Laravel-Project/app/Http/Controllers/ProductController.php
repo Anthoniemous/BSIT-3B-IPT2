@@ -8,56 +8,76 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|max:100',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
-        ]);
+  public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|max:100',
+        'description' => 'nullable|string',
+        'price' => 'required|numeric|min:0',
+        'stock_quantity' => 'required|integer|min:0',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // validate image
+    ]);
 
-        DB::table('product')->insert([
-            'name' => $request->name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'stock_quantity' => $request->stock_quantity,
-            'created_at' => now(),
-            'updated_by' => Auth::id(), // if admin login integrated
-        ]);
-
-        return redirect()->back()->with('success', 'Product added successfully!');
+    // Handle image upload
+    $imageName = null;
+    if ($request->hasFile('image')) {
+        $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+        $request->file('image')->move(public_path('img/products'), $imageName);
     }
+
+    DB::table('product')->insert([
+        'name' => $request->name,
+        'description' => $request->description,
+        'price' => $request->price,
+        'stock_quantity' => $request->stock_quantity,
+        'image' => $imageName, // save filename in DB
+        'created_at' => now(),
+        'updated_by' => Auth::id(),
+    ]);
+
+    return redirect()->back()->with('success', 'Product added successfully!');
+}
+
 
         public function index()
     {
         $products = DB::table('product')
-                 ->select('product_id as id', 'name', 'description', 'price', 'stock_quantity', 'status', 'created_at')
+                 ->select('product_id as id', 'name', 'description', 'price', 'stock_quantity', 'status','image', 'created_at')
         ->orderBy('created_at', 'desc')
         ->get();
 
         return view('dashboard', compact('products'));
     }
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'price' => 'required|numeric|min:0',
+        'stock_quantity' => 'required|integer|min:0',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        DB::table('product')
-            ->where('product_id', $id)
-            ->update([
-                'name' => $request->name,
-                'description' => $request->description,
-                'price' => $request->price,
-                'stock_quantity' => $request->stock_quantity,
-            ]);
+    $data = [
+        'name' => $request->name,
+        'description' => $request->description,
+        'price' => $request->price,
+        'stock_quantity' => $request->stock_quantity,
+    ];
 
-        return redirect()->back()->with('success', 'Product updated successfully!');
+    if ($request->hasFile('image')) {
+        $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+        $request->file('image')->move(public_path('img/products'), $imageName);
+        $data['image'] = $imageName;
     }
+
+    DB::table('product')
+        ->where('product_id', $id)
+        ->update($data);
+
+    return redirect()->back()->with('success', 'Product updated successfully!');
+}
+
 
         public function toggleStatus($id)
     {
