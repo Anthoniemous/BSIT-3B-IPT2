@@ -1,5 +1,12 @@
-<x-app-layout>
-<link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+     <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+</head>
+<body>
 
 <div class="container">
     <h1 class="page-title">🛍️ Your Coffee Cart</h1>
@@ -56,4 +63,5 @@
         <a href="{{ route('orders.index') }}" class="nav-btn ml-3">View My Orders</a>
     </div>
 </div>
-</x-app-layout>
+</body>
+</html>

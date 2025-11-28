@@ -17,6 +17,8 @@ class Product extends Model
         'price',
         'image',
         'quantity',
+        'category',  // ✅ added
+        'brand',   
     ];
 
     public function carts()

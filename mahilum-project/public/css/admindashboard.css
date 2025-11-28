@@ -1,95 +1,206 @@
-/* ☕ Coffee-Themed Dashboard */
-
-/* Background gradient for dashboard */
+/* 🧱 Body & Background */
 body {
-    background:
-        radial-gradient(circle at top left, #c2956b, transparent 60%),
-        radial-gradient(circle at bottom right, #6b4226, transparent 60%);
-    background-color: #fdf6f0; /* cream base */
-    min-height: 100vh;
-    font-family: 'Poppins', sans-serif;
-    color: #3e2c20;
+  font-family: 'Roboto', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('../css/img/1.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #3a2e27;
+  line-height: 1.45;
 }
 
-/* Header buttons and title */
-h2 {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 15px;
-    color: #8b5e34; /* mocha brown */
+/* 🔴 Header Section (Dark Red Gradient) */
+.dashboard-header {
+  background: linear-gradient(90deg, #1f0000, #6b4226);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 15px 30px;
 }
 
-/* Buttons */
+/* 🧭 Header Layout */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* 🧡 Left Side */
+.header-left h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* ❤️ Center Buttons (Perfectly Centered) */
+.header-buttons {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+}
+
+/* 🤍 Right Side (Logout) */
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* 🎨 Button Styles */
 .btn {
-    background-color: #a47148; /* latte brown */
-    color: #fff;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.3s;
+  background: #fff;
+  color: #8b0000;
+  font-weight: 600;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .btn:hover {
-    background-color: #8b5e34; /* darker roast on hover */
-    transform: scale(1.05);
+  background: #8b0000;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(139, 0, 0, 0.4);
 }
 
-/* Table styling */
+/* 🔴 Logout Button */
+.btn-logout {
+  background: #cc0000;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 2px 5px rgba(139, 0, 0, 0.3);
+}
+
+.btn-logout:hover {
+  background: #990000;
+  box-shadow: 0 4px 10px rgba(139, 0, 0, 0.4);
+}
+
+/* 📊 Table Container */
 .table-container {
-    margin: 30px auto;
-    width: 90%;
-    background: #fffaf5; /* creamy white */
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  margin: 50px auto;
+  width: 92%;
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
 }
 
+/* 🧾 Table Styling */
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 th {
-    background: linear-gradient(90deg, #8b5e34, #a47148); /* coffee gradient */
-    color: #fff;
-    padding: 12px;
-    text-align: left;
-    font-weight: 600;
+  background: linear-gradient(90deg, #1f0000, #6b4226);
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-size: 15px;
+  letter-spacing: 0.3px;
 }
 
 td {
-    padding: 10px;
-    border-bottom: 1px solid #e6d9c9;
-    color: #4a3728;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 td img {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 2px solid #d4bfa5;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid #8b0000;
 }
 
-/* Button variants */
+/* 🟡 Edit/Delete Buttons */
 .btn-warning {
-    background-color: #d7b26c; /* caramel */
-    color: #3e2c20;
+  background-color: #e6b800;
+  color: #000;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
 }
 
 .btn-warning:hover {
-    background-color: #c49a58;
+  background-color: #cc9a00;
 }
 
 .btn-danger {
-    background-color: #b24c3e; /* muted red bean */
-    color: #fff;
+  background-color: #b30000;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
 }
 
 .btn-danger:hover {
-    background-color: #963c31;
+  background-color: #8b0000;
+}
+
+/* 💎 Smooth Animation */
+button, a.btn {
+  transition: all 0.25s ease;
+}
+/* 🔥 Filter Container */
+.filter-container {
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 20px;     /* ✔ ibaba gamay */
+    display: flex;
+    justify-content: center;
+}
+
+/* 🎨 Design sa Filter Form */
+.filter-form {
+    display: flex;
+    gap: 15px;
+    background: #ffffffcc;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    backdrop-filter: blur(5px);
+    align-items: center;
+}
+
+/* ✏ Input & Select Styling */
+.filter-form input,
+.filter-form select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: 0.2s ease-in-out;
+}
+
+/* Hover & Focus Effects */
+.filter-form input:focus,
+.filter-form select:focus {
+    border-color: #b30000;
+    box-shadow: 0 0 5px rgba(179, 0, 0, 0.4);
+}
+
+/* Para di mag compress kung gamay screen */
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        width: 100%;
+    }
 }
