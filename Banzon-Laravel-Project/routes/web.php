@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerProductController;
 use App\Http\Controllers\CustomerProfileController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\WishlistController;
 
@@ -92,8 +93,10 @@ Route::middleware(['auth:customer', 'verified'])->group(function () {
     Route::post('/customer/cart/add/{id}', [CustomerProductController::class, 'addToCart'])->name('cart.add');
     Route::delete('/customer/cart/remove/{id}', [CustomerProductController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/customer/cart/update', [CustomerProductController::class, 'updateCart'])->name('cart.update');
-    Route::get('/customer/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    Route::get('/customer/contact', [ContactController::class, 'index'])->name('contact');
+    Route::get('/customer/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
+    Route::post('/customer/place-order', [CheckoutController::class, 'placeOrder'])->name('place.order');
+    Route::get('/customer/checkout/cod-info', [CheckoutController::class, 'showCodInfo'])->name('cod.info');
+    Route::post('/customer/checkout/cod-confirm', [CheckoutController::class, 'confirmCodOrder'])->name('cod.confirm');
 });
 
 // ===================================================

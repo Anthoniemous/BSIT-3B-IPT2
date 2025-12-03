@@ -51,8 +51,8 @@
                          data-name="{{ $product->name }}"
                          data-price="{{ $product->price }}"
                          data-featured="{{ $product->featured ?? 0 }}">
-                        <div class="store-item position-relative text-center">
-                            <img class="img-fluid" style="width: 407px; height: 416px;" src="{{ $product->image ? asset('img/products/' . $product->image) : 
+                        <div class="store-item position-relative text-center" style="width: 340px; height: 405px;">
+                            <img class="img-fluid" style="width: 407px; height: 250px;" src="{{ $product->image ? asset('img/products/' . $product->image) : 
                             asset('img/store-product-1.jpg') }}" alt="{{ $product->name }}">
                             <div class="p-4">
                                 <div class="text-center mb-3">
