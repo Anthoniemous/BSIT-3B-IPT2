@@ -11,7 +11,7 @@
 </head>
 <body class="bg-light">
 
- 
+
   <!-- Header / Nav -->
   <header class="header mb-4 d-flex justify-content-between align-items-center px-4 py-3 bg-white shadow-sm">
     <!-- Left: Title -->
@@ -34,7 +34,7 @@
 
   <div class="container">
 
-    {{-- ✅ Flash Messages --}}
+    {{-- Flash Messages --}}
     @if(session('success'))
       <div class="alert alert-success">
         {{ session('success') }}
@@ -47,7 +47,8 @@
       </div>
     @endif
 
-    {{-- ✅ Orders Table --}}
+
+    {{-- TABLE --}}
     @if($orders->isEmpty())
       <p class="no-orders">You have no orders yet.</p>
     @else
@@ -60,33 +61,65 @@
               <th>Address</th>
               <th>Contact</th>
               <th>Date</th>
-              <th>Product</th>
-              <th>Quantity</th>
+              <th>Products (Merged)</th>
               <th>Total</th>  
               <th>Status</th>
             </tr>
           </thead>
+
           <tbody>
-            @foreach($orders as $order)
-              @foreach($order->items as $item)
+          @foreach($orders as $order)
+
+              @php
+                  // Group items by PRODUCT + SIZE + PRICE
+                  $grouped = $order->items->groupBy(function($item) {
+                      return $item->product_id . '-' . ($item->size ?? 'N/A') . '-' . $item->product->price;
+                  });
+
+                  // Compute Total
+                  $finalTotal = $grouped->sum(function($items) {
+                      return $items->first()->product->price * $items->sum('quantity');
+                  });
+              @endphp
+
               <tr>
-                <td>{{ $order->order_id }}</td>
-                <td>{{ $order->name }}</td>
-                <td>{{ $order->address }}</td>
-                <td>{{ $order->contact_number }}</td>
-                <td>{{ $order->created_at->format('M d, Y') }}</td>
-                <td>{{ $item->product->product_name }}</td>
-                <td>{{ $item->quantity }}</td>
-                <td>${{ number_format($item->product->price * $item->quantity, 2) }}</td>
-                <td>
-                  <span class="status {{ strtolower($order->status) }}">
-                    {{ ucfirst($order->status) }}
-                  </span>
-                </td>
+                  <td>{{ $order->order_id }}</td>
+                  <td>{{ $order->name }}</td>
+                  <td>{{ $order->address }}</td>
+                  <td>{{ $order->contact_number }}</td>
+                  <td>{{ $order->created_at->format('M d, Y') }}</td>
+
+                  <td class="text-start">
+                      <ul class="mb-0 ps-3">
+                          @foreach($grouped as $items)
+                              @php
+                                  $item = $items->first();
+                                  $qty = $items->sum('quantity');
+                              @endphp
+
+                              <li>
+                                  {{ $item->product->product_name }}
+                                  ({{ $item->size ?? 'N/A' }})
+                                  - {{ $qty }} × ₱{{ number_format($item->product->price, 2) }}
+                              </li>
+                          @endforeach
+                      </ul>
+                  </td>
+
+                  <td>
+                      ₱{{ number_format($finalTotal, 2) }}
+                  </td>
+
+                  <td>
+                      <span class="status {{ strtolower($order->status) }}">
+                          {{ ucfirst($order->status) }}
+                      </span>
+                  </td>
               </tr>
-              @endforeach
-            @endforeach
+
+          @endforeach
           </tbody>
+
         </table>
       </div>
     @endif

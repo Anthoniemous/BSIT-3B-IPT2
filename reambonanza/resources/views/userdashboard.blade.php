@@ -124,16 +124,17 @@
             <h4>{{ $product->description }}</h4>
             <p class="price">${{ number_format($product->price, 2) }}</p>
 
-            <!-- Add to Wishlist -->
-            <form method="POST" action="{{ route('wishlist.add', $product->product_id) }}">
-              @csrf
-              <button type="submit" class="btn wishlist-btn">Add to Wishlist</button>
-            </form>
 
+        
             <!-- Add to Cart -->
             <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
               @csrf
               <button type="submit" class="btn add-cart">Add to Basket</button>
+            </form>
+
+             <form method="POST" action="{{ route('wishlist.add', $product->product_id) }}">
+              @csrf
+              <button type="submit" class="btn wishlist-btn">Add to Wishlist</button>
             </form>
           </div>
         </div>
@@ -143,7 +144,7 @@
   </main>
 
   <script>
-    // 🌸 Dropdown Toggle Script
+
     document.getElementById('profileDropdownToggle').addEventListener('click', function() {
       document.getElementById('profileDropdownMenu').classList.toggle('active');
     });

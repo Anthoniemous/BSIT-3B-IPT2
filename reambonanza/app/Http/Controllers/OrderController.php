@@ -34,46 +34,90 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:500',
-            'contact' => 'required|string|max:20',
-            'payment_method' => 'required|string',
-        ]);
+{
+    // Validate input
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'address' => 'required|string|max:500',
+        'contact' => 'required|string|max:20',
+        'payment_method' => 'required|string',
+        'selected_items' => 'required|array',
+    ]);
 
-        $user = Auth::user();
-        $order = new Order();
-        $order->user_id = $user->id;
-        $order->name = $request->name;
-        $order->address = $request->address;
-        $order->contact_number = $request->contact;
-        $order->status = 'pending';
-        $order->total_price = 0;
-        $order->save();
+    $user = Auth::user();
 
-        $cartItems = Cart::where('user_id', $user->id)->get();
-        foreach ($cartItems as $cart) {
-            $order->items()->create([
-                'product_id' => $cart->product_id,
-                'quantity' => $cart->quantity,
-                'price' => $cart->product->price,
-            ]);
-            $order->total_price += $cart->product->price * $cart->quantity;
+    // Create order
+    $order = new Order();
+    $order->user_id = $user->id;
+    $order->name = $request->name;
+    $order->address = $request->address;
+    $order->contact_number = $request->contact;
+    $order->status = 'pending';
+    $order->total_price = 0;
+    $order->save();
+
+    $total = 0;
+
+    // Group selected cart items by product_id
+    $cartItems = Cart::with('product')
+        ->whereIn('cart_id', $request->selected_items)
+        ->get()
+        ->groupBy('product_id');
+
+    foreach ($cartItems as $productId => $items) {
+        $product = $items[0]->product;
+
+        if (!$product) {
+            continue; // skip if product does not exist
         }
 
-        $order->save();
-        Cart::where('user_id', $user->id)->delete();
+        $quantity = $items->sum('quantity');
+        $price = $product->price;
 
-        $this->syncOrdersToLocal(); // ✅ Sync JSON + XML
+        // Save merged order item
+        $order->items()->create([
+            'product_id' => $product->product_id, // ✅ use correct key
+            'quantity'   => $quantity,
+            'price'      => $price,
+        ]);
 
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
+        $total += $quantity * $price;
+
+        // Delete all cart items for this product
+        foreach ($items as $cart) {
+            $cart->delete();
+        }
     }
 
-    // 🔸 Private helper: sync JSON + XML
+    $order->total_price = $total;
+    $order->save();
+
+    $this->syncOrdersToLocal();
+
+    return redirect()->route('orders.index')
+        ->with('success', 'Selected items checked out successfully!');
+}
+
+public function checkoutPage(Request $request)
+{
+    $selectedItems = $request->input('selected_items', []);
+
+    if (empty($selectedItems)) {
+        return redirect()->route('cart.index')->with('error', 'No items selected for checkout!');
+    }
+
+    $cartItems = Cart::with('product')->whereIn('cart_id', $selectedItems)->get();
+
+    return view('order', compact('cartItems'));
+}
+
+
+    // ============================== JSON / XML ==============================
+
     private function syncOrdersToLocal()
     {
         $orders = Order::with(['items.product', 'user'])->get();
+
         $jsonFolder = 'ORDERS';
         $xmlFolder = 'ORDERS';
         $userOrdersFolder = 'USERS-ORDER';
@@ -83,14 +127,11 @@ class OrderController extends Controller
         $this->ensureFolderExists(storage_path("app/ream_activity/$userOrdersFolder"));
         $this->ensureFolderExists(storage_path("app/ream_activity/XML/$userOrdersFolder"));
 
-        // Save JSON
         Storage::disk('ream_activity')->put("$jsonFolder/orders.json", $orders->toJson(JSON_PRETTY_PRINT));
 
-        // Save XML
         $xmlContent = $this->convertToXml($orders, 'orders', 'order');
         Storage::disk('ream_activity')->put("XML/$xmlFolder/orders.xml", $xmlContent);
 
-        // Save each user's orders separately
         foreach ($orders->groupBy('user_id') as $userId => $userOrders) {
             Storage::disk('ream_activity')->put("$userOrdersFolder/user_$userId.json", $userOrders->toJson(JSON_PRETTY_PRINT));
 
@@ -99,35 +140,31 @@ class OrderController extends Controller
         }
     }
 
-    // 🔹 Convert collection to XML
     private function convertToXml($data, $rootElement = 'items', $itemElement = 'item')
-{
-    $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
+    {   
+        $xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><$rootElement></$rootElement>");
 
-    foreach ($data as $record) {
-        $item = $xml->addChild($itemElement);
-        $this->arrayToXml($record->toArray(), $item);
+        foreach ($data as $record) {
+            $item = $xml->addChild($itemElement);
+            $this->arrayToXml($record->toArray(), $item);
+        }
+
+        return $xml->asXML();
     }
 
-    return $xml->asXML();
-}
-
-// Recursive function to handle nested arrays
-private function arrayToXml(array $data, \SimpleXMLElement &$xml)
-{
-    foreach ($data as $key => $value) {
-        if (is_array($value)) {
-            // Use numeric keys as 'item' by default
-            $childKey = is_numeric($key) ? 'item' : $key;
-            $subnode = $xml->addChild($childKey);
-            $this->arrayToXml($value, $subnode);
-        } else {
-            $xml->addChild($key, htmlspecialchars($value));
+    private function arrayToXml(array $data, \SimpleXMLElement &$xml)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $childKey = is_numeric($key) ? 'item' : $key;
+                $subnode = $xml->addChild($childKey);
+                $this->arrayToXml($value, $subnode);
+            } else {
+                $xml->addChild($key, htmlspecialchars($value));
+            }
         }
     }
-}
 
-    // 🔹 Ensure folder exists
     private function ensureFolderExists($folderPath)
     {
         if (!File::exists($folderPath)) {
