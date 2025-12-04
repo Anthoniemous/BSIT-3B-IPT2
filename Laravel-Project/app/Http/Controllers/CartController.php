@@ -63,11 +63,22 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Item removed from cart successfully!');
     }
 
-    public function checkout()
-    {
-        Cart::where('user_id', Auth::id())->delete();
-        return back()->with('success', 'Checkout complete!');
+    public function checkout(Request $request)
+{
+    $cartIds = explode(',', $request->cart_ids);
+
+    if(empty($cartIds)) {
+        return redirect()->route('cart.index')->with('error', 'No items selected for checkout!');
     }
+
+    $cartItems = \App\Models\Cart::with('product')
+        ->whereIn('cart_id', $cartIds)
+        ->where('user_id', auth()->id())
+        ->get();
+
+    return view('Order.order', compact('cartItems'));
+}
+
 
 
     public function updateSize(Request $request, $cartId)

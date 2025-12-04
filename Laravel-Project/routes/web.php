@@ -76,7 +76,27 @@ Route::patch('/admin/orders/{order}/status', [OrderController::class, 'adminUpda
       // web.php
 Route::delete('/admin/orders/{order}', [OrderController::class, 'adminRemove'])->name('admin.orders.remove')->middleware('auth:admin');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout/payment', function () {
+        $cartIds = session('checkout_cart_ids', []);
 
+        if (empty($cartIds)) {
+            return redirect()->route('cart.index')->with('error', 'No items selected for checkout!');
+        }
+
+        $cartItems = \App\Models\Cart::with('product')
+                        ->whereIn('cart_id', $cartIds)
+                        ->where('user_id', auth()->id())
+                        ->get();
+
+        // ❌ Instead of checkout.payment, use your existing order view
+        return view('Order.order', compact('cartItems'));
+    })->name('order.order');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/cart/updateQuantity/{id}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
+});
 
 Route::get('/user/orders', [OrderController::class, 'userOrders'])->name('user.orders');
 Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
@@ -113,6 +133,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/wishlist/add/{product}', [WishlistController::class, 'add'])->name('wishlist.add');
     Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
     Route::post('/wishlist/move-to-cart/{id}', [WishlistController::class, 'moveToCart'])->name('wishlist.moveToCart');
+    
 });
 
 // ====================== EMAIL VERIFICATION ======================

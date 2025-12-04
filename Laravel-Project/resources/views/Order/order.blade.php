@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Checkout 🧾</title>
+    <title>Payment </title>
     <link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -60,7 +60,7 @@
     </div>
   </header>
 <div class="checkout-container">
-    <h1 class="checkout-title">🧾 Checkout</h1>
+    <h1 class="checkout-title"> Payment</h1>
 
     <div class="checkout-card">
         <h3 class="section-title">Order Information</h3>
@@ -81,17 +81,21 @@
                 <input type="text" id="contact" name="contact" placeholder="09XXXXXXXXX" required>
             </div>
 
-            <div class="form-group">
-                <label for="payment_method">Payment Method</label>
-                <select id="payment_method" name="payment_method" required>
-                    <option value="">Select Payment Option</option>
-                    <option value="cod">Cash on Delivery</option>
-                    <option value="gcash">GCash</option>
-                </select>
-            </div>
+           <div class="form-group">
+    <label style="font-weight:bold; font-size:16px;">Payment Method</label>
+    <div class="payment-options">
+        <div class="payment-btn" data-method="cod"> Cash on Delivery</div>
+        <div class="payment-btn" data-method="gcash"> GCash</div>
+        <div class="payment-btn" data-method="maya"> Maya</div>
+        <div class="payment-btn" data-method="bank"> Bank Transfer</div>
+    </div>
+
+    <!-- Hidden input for submitted method -->
+    <input type="hidden" name="payment_method" id="payment_method" required>
+</div>
 
             <div class="form-actions">
-                <a href="{{ route('cart.index') }}" class="btn cancel">← Back to Cart</a>
+                <a href="{{ route('cart.index') }}" class="btn cancel">Back to Cart</a>
                 <button type="submit" class="btn submit">Place Order</button>
             </div>
         </form>
@@ -99,3 +103,18 @@
 </div>
 </body>
 </html>
+<script>
+document.querySelectorAll('.payment-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        // Remove active from all buttons
+        document.querySelectorAll('.payment-btn').forEach(x => x.classList.remove('active'));
+
+        // Add active to selected button
+        this.classList.add('active');
+
+        // Set hidden input value
+        document.getElementById('payment_method').value = this.dataset.method;
+    });
+});
+</script>

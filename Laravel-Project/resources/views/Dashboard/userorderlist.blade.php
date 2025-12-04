@@ -40,45 +40,48 @@
                     <th>Order ID</th>
                     <th>Date</th>
                     <th>Customer Name</th>
-                    <th>Product</th>
-                    <th>Size</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
+                    <th>Products</th>
+                    <th>Total Quantity</th>
+                    <th>Total Price</th>
                     <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($orders as $order)
-                    @foreach($order->items as $item)
-                        <tr>
-                            <td>{{ $order->order_id }}</td>
-                            <td>{{ $order->created_at->format('M d, Y') }}</td>
-                            <td>{{ $order->name }}</td>
-                            <td>{{ $item->product->product_name }}</td>
-                            <td>{{ $item->size ?? 'N/A' }}</td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>₱{{ number_format($item->product->price * $item->quantity, 2) }}</td>
-                          <td>
-                              <div style="display: flex; justify-content: center; gap: 5px; align-items: center;">
+                    <tr>
+                        <td>{{ $order->order_id }}</td>
+                        <td>{{ $order->created_at->format('M d, Y') }}</td>
+                        <td>{{ $order->name }}</td>
+                        <td>
+                            <ul style="list-style:none; padding-left:0;">
+                                @foreach($order->items as $item)
+                                    <li>{{ $item->product->product_name }} ({{ $item->size ?? 'N/A' }}) x {{ $item->quantity }}</li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td>{{ $order->items->sum('quantity') }}</td>
+                        <td>₱{{ number_format($order->items->sum(fn($i) => $i->product->price * $i->quantity), 2) }}</td>
+                        <td>
                             <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST">
-                            @csrf
-                            @method('PATCH')
-                            <select name="status" onchange="this.form.submit()">
-                                <option value="pending" {{ $order->status=='pending'?'selected':'' }}>Pending</option>
-                                <option value="processing" {{ $order->status=='processing'?'selected':'' }}>Processing</option>
-                                <option value="completed" {{ $order->status=='completed'?'selected':'' }}>Completed</option>
-                                <option value="cancelled" {{ $order->status=='cancelled'?'selected':'' }}>Cancelled</option>
-                            </select>
-                           </form>
-                             <!-- Remove Button -->
-                        <form action="{{ route('admin.orders.remove', $order) }}" method="POST" style="margin:0;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                        </form>
-                            </td>
-                        </tr>
-                    @endforeach
+                                @csrf
+                                @method('PATCH')
+                                <select name="status" onchange="this.form.submit()">
+                                    <option value="pending" {{ $order->status=='pending'?'selected':'' }}>Pending</option>
+                                    <option value="processing" {{ $order->status=='processing'?'selected':'' }}>Processing</option>
+                                    <option value="completed" {{ $order->status=='completed'?'selected':'' }}>Completed</option>
+                                    <option value="cancelled" {{ $order->status=='cancelled'?'selected':'' }}>Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="{{ route('admin.orders.remove', $order) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
                 @empty
                     <tr>
                         <td colspan="8">No orders found.</td>
@@ -93,17 +96,16 @@
     </div>
 </div>
 
-<!-- Auto-hide flash messages -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
-            setTimeout(() => {
-                alert.classList.add("fade");
-                setTimeout(() => alert.style.display = "none", 600);
-            }, 4000);
-        });
+document.addEventListener("DOMContentLoaded", function () {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.classList.add("fade");
+            setTimeout(() => alert.style.display = "none", 600);
+        }, 4000);
     });
+});
 </script>
 </body>
 </html>

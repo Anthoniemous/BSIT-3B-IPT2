@@ -76,4 +76,5 @@ class WishlistController extends Controller
 
         return back()->with('success', 'Product moved to cart!');
     }
+    
 }
