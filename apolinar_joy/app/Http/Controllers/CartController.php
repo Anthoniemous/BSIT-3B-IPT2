@@ -19,36 +19,38 @@ class CartController extends Controller
         return view('cart', compact('cartItems'));
     }
 
-    // Add product to cart (Route Model Binding)
+    // Add product to cart (using correct product_id)
     public function add(Product $product)
-{
-    $userId = Auth::id();
-    if (!$userId) {
-        return redirect()->route('login')->with('error', 'Please log in to add to cart.');
+    {
+        $userId = Auth::id();
+
+        if (!$userId) {
+            return redirect()->route('login')->with('error', 'Please log in to add to cart.');
+        }
+
+        // Check if item already exists in cart
+        $cartItem = Cart::where('user_id', $userId)
+                        ->where('product_id', $product->product_id)
+                        ->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += 1;
+            $cartItem->save();
+        } else {
+            Cart::create([
+                'user_id' => $userId,
+                'product_id' => $product->product_id,
+                'quantity' => 1,
+            ]);
+        }
+
+        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
-
-    $cartItem = Cart::where('user_id', $userId)
-                    ->where('product_id', $product->id)
-                    ->first();
-
-    if ($cartItem) {
-        $cartItem->quantity += 1;
-        $cartItem->save();
-    } else {
-        Cart::create([
-    'user_id' => $userId,
-    'product_id' => $product->product_id,
-    'quantity' => 1,
-]);
-    }
-
-    return redirect()->route('cart.index')->with('success', 'Product added to cart!');
-}
 
     // Remove item from cart
-   public function remove($id)
+    public function remove($cart_id)
     {
-        $cartItem = Cart::find($id);
+        $cartItem = Cart::find($cart_id);
 
         if (!$cartItem) {
             return redirect()->back()->with('error', 'Cart item not found!');

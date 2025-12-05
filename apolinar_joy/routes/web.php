@@ -36,7 +36,8 @@ Route::post('/reset-password', [PasswordController::class, 'reset'])->name('pass
 
 // ====================== ORDERS ======================
 Route::middleware('auth')->group(function () {
-    // User: create order from cart
+
+    // User: create order from cart (single)
     Route::get('/order/{cart_id}', [OrderController::class, 'create'])->name('orders.order');
 
     // Store order
@@ -44,7 +45,13 @@ Route::middleware('auth')->group(function () {
 
     // User: view their own orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+    // ⭐ MULTI-CHECKOUT (Selected Items)
+    Route::post('/orders/checkout-selected', [OrderController::class, 'checkoutSelected'])
+        ->name('orders.checkoutSelected');
 });
+
+Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('orders.checkoutPage');
 
 // ✅ ADMIN: View all orders
 Route::middleware(['auth:admin'])->group(function () {
