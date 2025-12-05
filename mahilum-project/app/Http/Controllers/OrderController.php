@@ -34,41 +34,83 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:500',
-            'contact' => 'required|string|max:20',
-            'payment_method' => 'required|string',
-        ]);
+{
+    // Validate input
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'address' => 'required|string|max:500',
+        'contact' => 'required|string|max:20',
+        'payment_method' => 'required|string',
+        'selected_items' => 'required|array',
+    ]);
 
-        $user = Auth::user();
-        $order = new Order();
-        $order->user_id = $user->id;
-        $order->name = $request->name;
-        $order->address = $request->address;
-        $order->contact_number = $request->contact;
-        $order->status = 'pending';
-        $order->total_price = 0;
-        $order->save();
+    $user = Auth::user();
 
-        $cartItems = Cart::where('user_id', $user->id)->get();
-        foreach ($cartItems as $cart) {
-            $order->items()->create([
-                'product_id' => $cart->product_id,
-                'quantity' => $cart->quantity,
-                'price' => $cart->product->price,
-            ]);
-            $order->total_price += $cart->product->price * $cart->quantity;
+    // Create order
+    $order = new Order();
+    $order->user_id = $user->id;
+    $order->name = $request->name;
+    $order->address = $request->address;
+    $order->contact_number = $request->contact;
+    $order->status = 'pending';
+    $order->total_price = 0;
+    $order->save();
+
+    $total = 0;
+
+    // Group selected cart items by product_id
+    $cartItems = Cart::with('product')
+        ->whereIn('cart_id', $request->selected_items)
+        ->get()
+        ->groupBy('product_id');
+
+    foreach ($cartItems as $productId => $items) {
+        $product = $items[0]->product;
+
+        if (!$product) {
+            continue; // skip if product does not exist
         }
 
-        $order->save();
-        Cart::where('user_id', $user->id)->delete();
+        $quantity = $items->sum('quantity');
+        $price = $product->price;
 
-        $this->syncOrdersToLocal(); // ✅ Sync JSON + XML
+        // Save merged order item
+        $order->items()->create([
+            'product_id' => $product->product_id, // ✅ use correct key
+            'quantity'   => $quantity,
+            'price'      => $price,
+        ]);
 
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
+        $total += $quantity * $price;
+
+        // Delete all cart items for this product
+        foreach ($items as $cart) {
+            $cart->delete();
+        }
     }
+
+    $order->total_price = $total;
+    $order->save();
+
+    $this->syncOrdersToLocal();
+ 
+    return redirect()->route('orders.index')
+        ->with('success', 'Selected items checked out successfully!');
+}
+
+public function checkoutPage(Request $request)
+{
+    $selectedItems = $request->input('selected_items', []);
+
+    if (empty($selectedItems)) {
+        return redirect()->route('cart.index')->with('error', 'No items selected for checkout!');
+    }
+
+    $cartItems = Cart::with('product')->whereIn('cart_id', $selectedItems)->get();
+
+    return view('order', compact('cartItems'));
+}
+
 
     // 🔸 Private helper: sync JSON + XML
     private function syncOrdersToLocal()

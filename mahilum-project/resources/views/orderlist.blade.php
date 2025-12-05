@@ -42,23 +42,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($orders as $order)
-                        @foreach($order->items as $item)
-                            <tr>
-                                <td>{{ $order->order_id }}</td>
-                                <td>{{ $order->created_at->format('M d, Y') }}</td>
-                                <td>{{ $item->product->product_name }}</td>
-                                <td>{{ $item->quantity }}</td>
-                                <td>${{ number_format($item->product->price * $item->quantity, 2) }}</td>
-                                <td>
-                                    <span class="status {{ strtolower($order->status) }}">
-                                        {{ ucfirst($order->status) }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endforeach
-                </tbody>
+                @foreach($orders as $order)
+                    @php
+                        // Combine all product names into one string
+                        $productNames = $order->items->map(function ($item) {
+                            return $item->product->product_name;
+                        })->unique()->join(', ');
+
+                        // Total quantity
+                        $totalQty = $order->items->sum('quantity');
+
+                        // Total price for the order
+                        $totalAmount = $order->items->sum(function ($item) {
+                            return $item->quantity * $item->product->price;
+                        });
+                    @endphp
+
+                    <tr>
+                        <td>{{ $order->order_id }}</td>
+                        <td>{{ $order->created_at->format('M d, Y') }}</td>
+                        <td>{{ $productNames }}</td>
+                        <td>{{ $totalQty }}</td>
+                        <td>₱{{ number_format($totalAmount, 2) }}</td>
+                        <td>
+                            <span class="status {{ strtolower($order->status) }}">
+                                {{ ucfirst($order->status) }}
+                            </span>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
             </table>
         </div>
 

@@ -42,6 +42,14 @@
                 </select>
             </div>
 
+               <!-- Hidden inputs for selected cart items -->
+            @if(isset($cartItems) && $cartItems->count() > 0)
+                @foreach($cartItems as $item)
+                    <input type="hidden" name="selected_items[]" value="{{ $item->cart_id }}">
+                @endforeach
+            @endif
+
+
             <div class="form-actions">
                 <a href="{{ route('cart.index') }}" class="btn cancel">← Back to Coffee Cart</a>
                 <button type="submit" class="btn submit">Confirm My Brew</button>

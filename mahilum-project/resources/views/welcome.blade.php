@@ -77,24 +77,6 @@
     </div>
   </section>
 
-  <section class="features container">
-    <div class="feature-card">
-      <i class="fa fa-truck"></i>
-      <div class="feature-copy"><strong>Fast Delivery</strong><span>Hot coffee, quick to your door</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-leaf"></i>
-      <div class="feature-copy"><strong>Fresh Beans</strong><span>Locally roasted daily</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-coffee"></i>
-      <div class="feature-copy"><strong>Premium Taste</strong><span>Crafted by expert baristas</span></div>
-    </div>
-    <div class="feature-card">
-      <i class="fa fa-credit-card"></i>
-      <div class="feature-copy"><strong>Secure Payment</strong><span>Safe and convenient</span></div>
-    </div>
-  </section>
 
 
 
