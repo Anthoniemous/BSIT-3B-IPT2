@@ -40,7 +40,7 @@ class Controller extends BaseController
 
         if ($admin && Hash::check($credentials['password'], $admin->password)) {
             Auth::guard('admin')->login($admin);
-            return redirect()->route('dashboard')->with('success', 'Welcome Admin!');
+           return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
         }
 
         // Else, proceed with normal user login

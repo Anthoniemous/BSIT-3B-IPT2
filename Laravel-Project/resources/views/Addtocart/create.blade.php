@@ -29,7 +29,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">
@@ -71,7 +71,7 @@
 
                 <div class="d-flex justify-content-center gap-3">
                     <button type="submit" class="btn btn-primary">Save Product</button>
-                    <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
+                   <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
 

@@ -19,25 +19,28 @@ class Product extends Model
         'description',
         'price',
         'brand',
-        'size', // single default size if needed
-        'sizes', // JSON array of sizes
+        'size',
+        'sizes',
         'image',
         'quantity',
         'category',
     ];
 
-    // Cast sizes JSON to array
     protected $casts = [
         'sizes' => 'array',
     ];
 
-    // Relationship to Cart
+    // ✅ ADD THIS METHOD - Tells Laravel to use product_id for routes
+   public function getRouteKeyName()
+{
+    return 'product_id';
+}
+
     public function carts()
     {
         return $this->hasMany(Cart::class, 'product_id', 'product_id');
     }
 
-    // Relationship to Wishlist
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class, 'product_id', 'product_id');

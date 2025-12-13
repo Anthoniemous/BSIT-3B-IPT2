@@ -50,6 +50,13 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('success', 'Product added to cart!');
         }
 
+        public function updateQuantity(Request $request, Cart $cart)
+{
+    $cart->quantity = $request->quantity;
+    $cart->save();
+    return response()->json(['success' => true]);
+}
+
     public function remove($id)
     {
         $cartItem = Cart::find($id);
@@ -65,17 +72,26 @@ class CartController extends Controller
 
     public function checkout(Request $request)
 {
-    $cartIds = explode(',', $request->cart_ids);
+    // Get cart_ids and filter out empty values
+    $cartIds = array_filter(explode(',', $request->cart_ids ?? ''));
 
-    if(empty($cartIds)) {
+    // Check if no items selected
+    if (empty($cartIds)) {
         return redirect()->route('cart.index')->with('error', 'No items selected for checkout!');
     }
 
+    // Get cart items
     $cartItems = \App\Models\Cart::with('product')
         ->whereIn('cart_id', $cartIds)
         ->where('user_id', auth()->id())
         ->get();
 
+    // Check if cart items actually exist
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart.index')->with('error', 'Selected items not found!');
+    }
+
+    // Return order view with cart items
     return view('Order.order', compact('cartItems'));
 }
 

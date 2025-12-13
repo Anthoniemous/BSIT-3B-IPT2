@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -122,43 +123,67 @@ class OrderController extends Controller
      * Store order from cart
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:500',
-            'contact' => 'required|string|max:20',
-            'payment_method' => 'required|string',
+{
+    $request->validate([
+        'cart_ids' => 'required|string',
+        'name' => 'required|string|max:255',
+        'address' => 'required|string',
+        'contact' => 'required|string|max:20',
+        'payment_method' => 'required|string|in:cod,gcash,maya,bank',
+    ]);
+
+    // Parse cart IDs
+    $cartIds = array_filter(explode(',', $request->cart_ids));
+
+    if (empty($cartIds)) {
+        return redirect()->route('cart.index')
+            ->with('error', 'No items found for checkout!');
+    }
+
+    // Get cart items
+    $cartItems = Cart::with('product')
+        ->whereIn('cart_id', $cartIds)
+        ->where('user_id', auth()->id())
+        ->get();
+
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart.index')
+            ->with('error', 'Selected items not found in your cart!');
+    }
+
+    // Calculate total
+    $total = $cartItems->sum(function($item) {
+        return $item->product->price * $item->quantity;
+    });
+
+    // Create the main order
+    $order = Order::create([
+        'user_id' => auth()->id(),
+        'name' => $request->name,
+        'address' => $request->address,
+        'contact_number' => $request->contact,  // ✅ FIXED: Changed from 'contact' to 'contact_number'
+        'total_price' => $total,  // ✅ FIXED: Changed from 'total_amount' to 'total_price' (based on your DB)
+        'status' => 'pending',
+    ]);
+
+    // Create order items and remove from cart
+    foreach ($cartItems as $cartItem) {
+        // Create order item
+        OrderItem::create([
+            'order_id' => $order->order_id,
+            'product_id' => $cartItem->product_id,
+            'quantity' => $cartItem->quantity,
+            'size' => $cartItem->size,
+            'price' => $cartItem->product->price,
         ]);
 
-        $user = Auth::user();
-        $order = new Order();
-        $order->user_id = $user->id;
-        $order->name = $request->name;
-        $order->address = $request->address;
-        $order->contact_number = $request->contact;
-        $order->status = 'pending';
-        $order->total_price = 0;
-        $order->save();
-
-        $cartItems = Cart::where('user_id', $user->id)->get();
-        foreach ($cartItems as $cart) {
-            $order->items()->create([
-                'product_id' => $cart->product_id,
-                'quantity'  => $cart->quantity,
-                'price'     => $cart->product->price,
-                'size'      => $cart->size,   // ⭐ SIZE SAVED HERE
-            ]);
-
-            $order->total_price += $cart->product->price * $cart->quantity;
-        }
-
-        $order->save();
-        Cart::where('user_id', $user->id)->delete();
-
-        $this->syncOrdersToLocal();
-
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
+        // Remove item from cart
+        $cartItem->delete();
     }
+
+    return redirect()->route('orders.index')
+        ->with('success', 'Order placed successfully! Order ID: ' . $order->order_id);
+}
 
     /**
      * Sync orders to local storage (JSON & XML)
