@@ -17,15 +17,15 @@
     
     <nav class="sidebar-nav">
         <a href="{{ route('admin.dashboard') }}" class="nav-item">
-            <span class="icon">📊</span>
+            <span class="icon"></span>
             <span>Dashboard</span>
         </a>
         <a href="{{ route('admin.products.index') }}" class="nav-item">
-            <span class="icon">📦</span>
+            <span class="icon"></span>
             <span>Add Products</span>
         </a>
         <a href="{{ route('admin.orders.index') }}" class="nav-item active">
-            <span class="icon">🛒</span>
+            <span class="icon"></span>
             <span>View Orders</span>
         </a>
         

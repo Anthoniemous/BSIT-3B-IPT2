@@ -6,6 +6,7 @@
     <title>Order List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/userorderlist.css') }}" />
+  
 </head>
 <body>
     <header class="site-header">
@@ -158,7 +159,7 @@
     </header>
 
     <div class="container mt-4">
-        <h1 class="page-title text-center mb-4">Order List </h1>
+        <h1 class="page-title text-center mb-4">Order List</h1>
 
         <!-- Flash Messages -->
         @if(session('success'))
@@ -181,6 +182,7 @@
                         <th>Products</th>
                         <th>Total</th>
                         <th>Status</th>
+                        <th class="action-column">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -209,22 +211,25 @@
                                 <span class="status {{ strtolower($order->status) }}">
                                     {{ ucfirst($order->status) }}
                                 </span>
-                                
+                            </td>
+                            <td class="text-center action-column">
                                 @if($order->status === 'pending')
-                                    <form action="{{ route('orders.cancel', $order) }}" method="POST" class="mt-2 d-inline">
+                                    <form action="{{ route('orders.cancel', $order) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn-cancel"
+                                        <button type="submit" class="btn-cancel-order"
                                             onclick="return confirm('Are you sure you want to cancel this order?')">
                                             Cancel Order
                                         </button>
                                     </form>
+                                @else
+                                    <span class="no-action-text">No actions available</span>
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-5">
+                            <td colspan="6" class="text-center py-5">
                                 <p class="text-muted">No orders found.</p>
                                 <a href="{{ route('user.dashboard') }}" class="btn btn-primary mt-3">Start Shopping</a>
                             </td>
@@ -234,10 +239,10 @@
             </table>
         </div>
 
-            <!-- PAGINATION -->
-    <div class="pagination-container">
-        {{ $orders->links('pagination::bootstrap-5') }}
-    </div>
+        <!-- PAGINATION -->
+        <div class="pagination-container">
+            {{ $orders->links('pagination::bootstrap-5') }}
+        </div>
 
         <!-- Back to Dashboard -->
         <div class="mt-4 text-center">
@@ -279,6 +284,22 @@ document.addEventListener("DOMContentLoaded", function () {
             profileMenu.classList.remove("active");
         }
     });
+
+    // Auto-hide success/error messages after 5 seconds
+    setTimeout(function() {
+        const successMsg = document.getElementById('success-message');
+        const errorMsg = document.getElementById('error-message');
+        if (successMsg) {
+            successMsg.style.transition = 'opacity 0.5s';
+            successMsg.style.opacity = '0';
+            setTimeout(() => successMsg.remove(), 500);
+        }
+        if (errorMsg) {
+            errorMsg.style.transition = 'opacity 0.5s';
+            errorMsg.style.opacity = '0';
+            setTimeout(() => errorMsg.remove(), 500);
+        }
+    }, 5000);
 });
 </script>
 </body>
