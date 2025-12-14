@@ -39,13 +39,14 @@ class CartController extends Controller
         return back()->with('success', 'Added to cart!');
     }
 
-    // Remove product from cart
-    public function remove($id)
-    {
-        Cart::where('user_id', auth()->id())
-            ->where('product_id', $id)
-            ->delete();
+   // Remove product from cart (by cart ID)
+public function remove($id)
+{
+    Cart::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->delete();
 
-        return back()->with('success', 'Removed from cart!');
-    }
+    return back()->with('success', 'Removed from cart!');
+}
+
 }

@@ -4,18 +4,83 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     /**
-     * Show the admin dashboard (Product Management Page)
+     * Show the admin dashboard with stats & charts
      */
     public function index()
     {
-        // ✅ Get all products (no relationship)
-        $products = Product::all();
+        // ✅ Get stats from Orders table
+        $totalOrders = Order::count();
+        $totalSales = Order::whereNotIn('status', ['cancelled'])->sum('total');
+        $totalProducts = Product::count();
+        $cancelledOrders = Order::where('status', 'cancelled')->count();
 
+        // ✅ Recent orders (latest 10) with user relationship
+        $recentOrders = Order::with('user')->latest()->take(10)->get();
+
+        // ✅ Orders by status (for bar chart)
+        $ordersByStatus = Order::select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get();
+        
+        $orderStatusLabels = $ordersByStatus->pluck('status')->map(fn($s) => ucfirst($s));
+        $orderStatusData = $ordersByStatus->pluck('count');
+
+        // ✅ Products by category (for doughnut chart)
+        $productsByCategory = Product::select('category', DB::raw('count(*) as count'))
+            ->groupBy('category')
+            ->get();
+        
+        $categoryLabels = $productsByCategory->pluck('category');
+        $categoryData = $productsByCategory->pluck('count');
+
+        // ✅ Most Marketable Products (highest sales)
+        $mostMarketable = DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.product_id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->whereNotIn('orders.status', ['cancelled'])
+            ->select('products.name', DB::raw('SUM(order_items.quantity) as total_sold'))
+            ->groupBy('products.product_id', 'products.name')
+            ->orderByDesc('total_sold')
+            ->take(5)
+            ->get();
+
+        // ✅ Non-Marketable Products (no sales or low sales)
+        $nonMarketable = DB::table('products')
+            ->leftJoin('order_items', 'products.product_id', '=', 'order_items.product_id')
+            ->select('products.name', DB::raw('COALESCE(SUM(order_items.quantity), 0) as total_sold'))
+            ->groupBy('products.product_id', 'products.name')
+            ->orderBy('total_sold', 'asc')
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalOrders',
+            'totalSales',
+            'totalProducts',
+            'cancelledOrders',
+            'recentOrders',
+            'orderStatusLabels',
+            'orderStatusData',
+            'categoryLabels',
+            'categoryData',
+            'mostMarketable',
+            'nonMarketable'
+        ));
+    }
+
+    /**
+     * Show products page
+     */
+    public function products()
+    {
+        $products = Product::all();
         return view('admin.products', compact('products'));
     }
 
@@ -49,10 +114,9 @@ class AdminController extends Controller
             'category'    => $request->category,
         ]);
 
-        // 🔥 SYNC TO JSON + XML
         $this->syncProducts();
 
-        return redirect()->route('admin.index')->with('success', '✅ Product added successfully!');
+        return redirect()->route('admin.products')->with('success', '✅ Product added successfully!');
     }
 
     /**
@@ -87,10 +151,9 @@ class AdminController extends Controller
             'category'    => $request->category,
         ]);
 
-        // 🔥 SYNC TO JSON + XML
         $this->syncProducts();
 
-        return redirect()->route('admin.index')->with('success', '✅ Product updated successfully!');
+        return redirect()->route('admin.products')->with('success', '✅ Product updated successfully!');
     }
 
     /**
@@ -100,33 +163,25 @@ class AdminController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Delete image
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
 
         $product->delete();
-
-        // 🔥 SYNC TO JSON + XML
         $this->syncProducts();
 
-        return redirect()->route('admin.index')->with('success', '🗑️ Product deleted successfully!');
+        return redirect()->route('admin.products')->with('success', '🗑️ Product deleted successfully!');
     }
 
-    // --------------------------------------------------------------
-    // 🔥 JSON + XML SYNC HANDLER
-    // --------------------------------------------------------------
     private function syncProducts()
     {
         $products = Product::all();
 
-        // SAVE JSON  
         Storage::disk('quibo_activity')->put(
             'products.json',
             $products->toJson(JSON_PRETTY_PRINT)
         );
 
-        // SAVE XML
         $xmlContent = $this->convertToXml($products, 'products', 'product');
         Storage::disk('xml_activity')->put('products.xml', $xmlContent);
     }

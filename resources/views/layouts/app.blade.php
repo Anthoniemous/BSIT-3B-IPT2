@@ -40,6 +40,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/contact') }}">Contact</a>
                     </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ route('orders.index') }}">
+                        My Orders
+                    </a>
+                </li>
+                    
 
                 <!-- Right Side (Auth Dropdown) -->
                 <ul class="navbar-nav ml-auto">

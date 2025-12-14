@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -42,6 +42,16 @@ Route::middleware('auth')->group(function () {
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
+
+
+Route::middleware('auth')->group(function () {
+    Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+});
 /*
 |--------------------------------------------------------------------------
 | Public Pages
@@ -66,14 +76,29 @@ Route::post('/contact/send', [PageController::class, 'sendContact'])->name('cont
 */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    // Admin Dashboard
+    // ✅ Admin Dashboard (Main Page)
     Route::get('/', [AdminController::class, 'index'])->name('index');
 
+    // ✅ Products Management Page
+    Route::get('/products', [AdminController::class, 'products'])->name('products');
+    
     // Product CRUD Routes
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::post('/products/store', [ProductController::class, 'store'])->name('products.store');
     Route::put('/products/update/{id}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/destroy/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::put('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+});
+
+Route::middleware(['auth', 'is_admin'])->group(function() {
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
 });
 
 // Wishlist Routes
@@ -84,11 +109,18 @@ Route::get('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name
 Route::get('/wishlist/move/{id}', [WishlistController::class, 'moveToCart'])->name('wishlist.move');
 
 
-    // Cart Routes
-    Route::post('/cart/add/{id}', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
-    Route::put('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-    Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+// Cart Routes
+Route::post('/cart/add/{id}', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+Route::put('/cart/update/{id}', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+
+Route::get('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])->middleware('auth');
+Route::delete('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])
+    ->middleware('auth')
+    ->name('cart.remove');
+
+
+
 });
 /*
 |--------------------------------------------------------------------------
