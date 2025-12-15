@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🧾 Orders</title>
     <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
+
 </head>
 <body>
 
@@ -87,6 +88,7 @@
                         <th>Quantity</th>
                         <th>Total</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -104,18 +106,44 @@
                         $totalAmount = $order->items->sum(function ($item) {
                             return $item->quantity * $item->product->price;
                         });
+
+                        // Check if order can be cancelled (only pending or processing)
+                        $canCancel = in_array(strtolower($order->status), ['pending', 'processing']);
                     @endphp
 
                     <tr>
                         <td>{{ $order->order_id }}</td>
                         <td>{{ $order->created_at->format('M d, Y') }}</td>
                         <td>{{ $productNames }}</td>
+                       @php
+                        $totalQty = $order->items->sum('quantity');
+                        @endphp
                         <td>{{ $totalQty }}</td>
                         <td>₱{{ number_format($totalAmount, 2) }}</td>
                         <td>
                             <span class="status {{ strtolower($order->status) }}">
                                 {{ ucfirst($order->status) }}
                             </span>
+                        </td>
+                        <td>
+                            @if($canCancel)
+                                <button 
+                                    class="action-btn btn-cancel" 
+                                    onclick="showCancelModal({{ $order->order_id }}, '{{ $productNames }}', '{{ number_format($totalAmount, 2) }}')"
+                                >
+                                    Cancel Order
+                                </button>
+                            @else
+                                <button class="action-btn btn-disabled" disabled>
+                                    @if(strtolower($order->status) == 'cancelled')
+                                        Cancelled
+                                    @elseif(strtolower($order->status) == 'completed')
+                                        Completed
+                                    @else
+                                        Not Available
+                                    @endif
+                                </button>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
@@ -131,6 +159,81 @@
     </div>
 
 </div>
+
+<!-- Cancel Order Modal -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>⚠️ Cancel Order</h2>
+            <button class="modal-close" onclick="closeCancelModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to cancel this order?</p>
+            <div class="order-details">
+                <p><strong>Order ID:</strong> <span id="modalOrderId"></span></p>
+                <p><strong>Products:</strong> <span id="modalProducts"></span></p>
+                <p><strong>Total Amount:</strong> ₱<span id="modalAmount"></span></p>
+            </div>
+            <p><strong>This action cannot be undone.</strong></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal btn-modal-cancel" onclick="closeCancelModal()">
+                No, Keep Order
+            </button>
+            <form id="cancelForm" method="POST" style="display: inline;">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="btn-modal btn-modal-confirm">
+                    Yes, Cancel Order
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show cancel modal
+    function showCancelModal(orderId, products, amount) {
+        document.getElementById('modalOrderId').textContent = orderId;
+        document.getElementById('modalProducts').textContent = products;
+        document.getElementById('modalAmount').textContent = amount;
+        
+        // Set form action
+        const form = document.getElementById('cancelForm');
+        form.action = `/orders/${orderId}/cancel`;
+        
+        // Show modal
+        document.getElementById('cancelModal').classList.add('show');
+    }
+
+    // Close cancel modal
+    function closeCancelModal() {
+        document.getElementById('cancelModal').classList.remove('show');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('cancelModal');
+        if (event.target === modal) {
+            closeCancelModal();
+        }
+    }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.getElementById("profileDropdownToggle");
+    const menu = document.getElementById("profileDropdownMenu");
+
+    toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menu.classList.toggle("active");
+    });
+
+    // close when clicking outside
+    document.addEventListener("click", function () {
+        menu.classList.remove("active");
+    });
+});
+</script>
 
 </body>
 </html>

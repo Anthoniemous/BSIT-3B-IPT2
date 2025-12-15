@@ -19,8 +19,8 @@ class CartController extends Controller
         return view('cart', compact('cartItems'));
     }
 
-    // Add product to cart (using correct product_id)
-    public function add(Product $product)
+    // Add product to cart (with quantity)
+    public function add(Request $request, Product $product)
     {
         $userId = Auth::id();
 
@@ -28,19 +28,29 @@ class CartController extends Controller
             return redirect()->route('login')->with('error', 'Please log in to add to cart.');
         }
 
-        // Check if item already exists in cart
+        $quantityToAdd = (int) $request->input('quantity', 1);
+
+        if ($quantityToAdd < 1) $quantityToAdd = 1;
+        if ($quantityToAdd > $product->quantity) {
+            return redirect()->back()->with('error', 'Quantity exceeds available stock.');
+        }
+
         $cartItem = Cart::where('user_id', $userId)
                         ->where('product_id', $product->product_id)
                         ->first();
 
         if ($cartItem) {
-            $cartItem->quantity += 1;
+            $newQuantity = $cartItem->quantity + $quantityToAdd;
+            if ($newQuantity > $product->quantity) {
+                return redirect()->back()->with('error', 'Total quantity in cart exceeds available stock.');
+            }
+            $cartItem->quantity = $newQuantity;
             $cartItem->save();
         } else {
             Cart::create([
                 'user_id' => $userId,
                 'product_id' => $product->product_id,
-                'quantity' => 1,
+                'quantity' => $quantityToAdd,
             ]);
         }
 
@@ -61,10 +71,49 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Item removed from cart successfully!');
     }
 
-    // Checkout (clear cart)
+    // Checkout (adjust stock & clear cart)
     public function checkout()
     {
-        Cart::where('user_id', Auth::id())->delete();
+        $userId = Auth::id();
+        $cartItems = Cart::with('product')->where('user_id', $userId)->get();
+
+        foreach ($cartItems as $item) {
+            $product = $item->product;
+            if ($product && $product->quantity >= $item->quantity) {
+                $product->quantity -= $item->quantity;
+                $product->save();
+            }
+        }
+
+        Cart::where('user_id', $userId)->delete();
+
         return back()->with('success', 'Checkout complete!');
     }
+
+    public function updateQuantity(Request $request, Cart $cart)
+{
+    $request->validate([
+        'quantity' => 'required|integer|min:1'
+    ]);
+
+    // security: owner check
+    if ($cart->user_id !== Auth::id()) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+
+    // stock check
+    if ($cart->product && $request->quantity > $cart->product->quantity) {
+        return response()->json([
+            'error' => 'Quantity exceeds available stock'
+        ], 422);
+    }
+
+    $cart->quantity = $request->quantity;
+    $cart->save();
+
+    return response()->json([
+        'success' => true,
+        'quantity' => $cart->quantity
+    ]);
+}
 }

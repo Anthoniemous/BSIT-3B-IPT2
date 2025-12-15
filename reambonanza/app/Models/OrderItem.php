@@ -16,15 +16,13 @@ class OrderItem extends Model
         'price',
     ];
 
-    // 🔹 Relationship to Order
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id', 'order_id');
     }
 
-    // 🔹 Relationship to Product
     public function product()
     {
-       return $this->belongsTo(Product::class, 'product_id', 'product_id');
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
 }

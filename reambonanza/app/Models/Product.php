@@ -9,17 +9,17 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'product_id'; // if your migration used product_id
+    protected $primaryKey = 'product_id';
     public $incrementing = true;
 
     protected $fillable = [
         'product_name',
-        'brand',        // add brand
-        'category',     // add category
+        'brand',
+        'category',
         'description',
         'price',
+        'quantity',   // ✅ STOCK
         'image',
-        'quantity',
     ];
 
     public function carts()

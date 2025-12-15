@@ -56,14 +56,15 @@ return [
             'throw' => false,
         ],
 
+          
           'ream_activity' => [
             'driver' => 'local',
-            'root' => 'D:\REAM_ACTIVITY',
+            'root' => 'C:\REAM_ACTIVITY',
             'throw' => false,
 
             'xml_activity' => [
             'driver' => 'local',
-            'root' => 'D:/REAM_ACTIVITY/XML',
+            'root' => 'C:/REAM_ACTIVITY/XML',
             'throw' => false,
         ],
     ],

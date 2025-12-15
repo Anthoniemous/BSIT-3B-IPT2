@@ -110,6 +110,21 @@
         </div>
     @endif
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.getElementById("profileDropdownToggle");
+    const menu = document.getElementById("profileDropdownMenu");
 
+    toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menu.classList.toggle("active");
+    });
+
+    // close when clicking outside
+    document.addEventListener("click", function () {
+        menu.classList.remove("active");
+    });
+});
+</script>
 </body>
 </html>

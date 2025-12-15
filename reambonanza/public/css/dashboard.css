@@ -363,3 +363,523 @@ body {
     border-color: #28a745;
     box-shadow: 0 0 0 4px rgba(40,167,69,0.2);
 }
+/* ========================================
+   PROFESSIONAL LOGIN/REGISTER MODAL STYLES
+   ======================================== */
+
+/* Modal Overlay */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Content Container */
+.modal-content {
+  background: linear-gradient(145deg, #ffffff 0%, #f9fffe 100%);
+  margin: 4vh auto;
+  padding: 0;
+  width: 90%;
+  max-width: 480px;
+  border-radius: 24px;
+  position: relative;
+  box-shadow: 
+    0 25px 70px rgba(0, 0, 0, 0.25),
+    0 10px 30px rgba(27, 92, 37, 0.15);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Decorative Header Accent */
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #1b5c25 0%, #4caf50 50%, #1b5c25 100%);
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  border: none;
+  line-height: 1;
+}
+
+.close:hover {
+  background: rgba(27, 92, 37, 0.1);
+  color: #1b5c25;
+  transform: rotate(90deg);
+}
+
+/* Modal Header */
+.modal-header {
+  text-align: center;
+  padding: 40px 40px 24px;
+}
+
+.modal-logo {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, #1b5c25 0%, #4caf50 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(27, 92, 37, 0.3);
+}
+
+.modal-logo i {
+  font-size: 32px;
+  color: #fff;
+}
+
+.modal-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1b3b27;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
+
+.modal-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Tabs Container */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin: 0 40px 32px;
+  background: rgba(27, 92, 37, 0.06);
+  padding: 6px;
+  border-radius: 14px;
+  position: relative;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 14px 20px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  font-size: 15px;
+  color: #6b7280;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.tabs button.active {
+  background: #ffffff;
+  color: #1b5c25;
+  box-shadow: 
+    0 4px 12px rgba(27, 92, 37, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.tabs button:hover:not(.active) {
+  color: #1b5c25;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Form Container */
+.form-container {
+  display: none;
+  padding: 0 40px 40px;
+  animation: fadeInForm 0.4s ease;
+}
+
+.form-container.active {
+  display: block;
+}
+
+@keyframes fadeInForm {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form Labels */
+.form-container label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+/* Input Fields */
+.form-container input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  font-size: 15px;
+  color: #1a1a1a;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  outline: none;
+}
+
+.form-container input::placeholder {
+  color: #9ca3af;
+}
+
+.form-container input:focus {
+  border-color: #4caf50;
+  box-shadow: 
+    0 0 0 4px rgba(76, 175, 80, 0.1),
+    0 2px 8px rgba(27, 92, 37, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-container input:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+/* Submit Button */
+.form-container button[type="submit"] {
+  padding: 15px 24px;
+  border: none;
+  background: linear-gradient(135deg, #1b5c25 0%, #4caf50 100%);
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 8px 20px rgba(27, 92, 37, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.form-container button[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.form-container button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 28px rgba(27, 92, 37, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.form-container button[type="submit"]:hover::before {
+  left: 100%;
+}
+
+.form-container button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* Google Login Button */
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #3c4043;
+  border: 2px solid #e5e7eb;
+  padding: 14px 20px;
+  margin: 16px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  gap: 12px;
+}
+
+.google-btn img {
+  width: 22px;
+  height: 22px;
+}
+
+.google-btn:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn:active {
+  transform: translateY(0);
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.divider span {
+  position: relative;
+  background: linear-gradient(145deg, #ffffff 0%, #f9fffe 100%);
+  padding: 0 16px;
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Links */
+.links {
+  font-size: 14px;
+  margin-top: 24px;
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.links p {
+  margin: 8px 0;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.links a {
+  color: #1b5c25;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.links a:hover {
+  color: #4caf50;
+}
+
+.links a:hover::after {
+  width: 100%;
+}
+
+/* Error & Success Messages */
+.error-msg p,
+.success-msg {
+  font-size: 14px;
+  margin: -8px 0 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.error-msg p {
+  color: #dc2626;
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+}
+
+.success-msg {
+  color: #059669;
+  background: #ecfdf5;
+  border-left: 4px solid #059669;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    margin: 2vh auto;
+    border-radius: 20px;
+  }
+
+  .modal-header {
+    padding: 32px 28px 20px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+  }
+
+  .modal-subtitle {
+    font-size: 14px;
+  }
+
+  .tabs {
+    margin: 0 28px 24px;
+  }
+
+  .tabs button {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .form-container {
+    padding: 0 28px 32px;
+  }
+
+  .form-container form {
+    gap: 16px;
+  }
+
+  .form-container input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .form-container button[type="submit"] {
+    padding: 13px 20px;
+    font-size: 15px;
+  }
+
+  .google-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .links {
+    font-size: 13px;
+  }
+}
+
+/* Scrollbar for modal */
+.modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: rgba(27, 92, 37, 0.3);
+  border-radius: 5px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(27, 92, 37, 0.5);
+}
+
+/* Loading state for submit button */
+.form-container button[type="submit"].loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.form-container button[type="submit"].loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Focus visible for accessibility */
+.tabs button:focus-visible,
+.form-container input:focus-visible,
+.form-container button:focus-visible,
+.google-btn:focus-visible,
+.close:focus-visible {
+  outline: 3px solid rgba(76, 175, 80, 0.4);
+  outline-offset: 2px;
+} 

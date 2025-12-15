@@ -29,7 +29,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -50,6 +50,12 @@
                 <label class="form-label">Price</label>
                 <input type="number" class="form-control" step="0.01" name="price" value="{{ old('price', $product->price) }}" required>
             </div>
+
+            <!-- Quantity -->
+<div class="mb-3">
+    <label class="form-label">Quantity</label>
+    <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}" min="0" required>
+</div>
 
             <!-- Brand -->
             <div class="mb-3">
@@ -88,7 +94,7 @@
 
             <!-- Buttons -->
             <div class="d-flex justify-content-between">
-                <a href="{{ route('products.index') }}" class="btn btn-secondary px-4">Cancel</a>
+                <a href="{{ route('admin.products.dashboard') }}" class="btn btn-secondary px-4">Cancel</a>
                 <button type="submit" class="btn btn-primary px-4">Update Product</button>
             </div>
 

@@ -34,94 +34,82 @@ Route::post('/forgotpassword', [PasswordController::class, 'sendResetLink'])->na
 Route::get('/reset-password/{token}', [PasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordController::class, 'reset'])->name('password.update');
 
-
 // ====================== WISHLIST ======================
 Route::middleware(['auth'])->group(function () {
-
-    Route::get('/wishlist', [WishlistController::class, 'index'])
-        ->name('wishlist.index');
-
-    Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])
-        ->name('wishlist.add');
-
-    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])
-        ->name('wishlist.remove');
-
-    Route::post('/wishlist/move-to-cart/{id}', [WishlistController::class, 'moveToCart'])
-        ->name('wishlist.moveToCart');
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+    Route::post('/wishlist/move-to-cart/{id}', [WishlistController::class, 'moveToCart'])->name('wishlist.moveToCart');
 });
 
 // ====================== ORDERS ======================
 Route::middleware('auth')->group(function () {
 
-    // User: create order from cart (single)
+    // User: create order from single cart item
     Route::get('/order/{cart_id}', [OrderController::class, 'create'])->name('orders.order');
 
-    // Store order
+    // Store order (checkout)
     Route::post('/order/store', [OrderController::class, 'store'])->name('orders.store');
+
+    // Multi-item checkout (selected items)
+    Route::post('/orders/checkout-selected', [OrderController::class, 'checkoutSelected'])->name('orders.checkoutSelected');
 
     // User: view their own orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
-    // ⭐ MULTI-CHECKOUT (Selected Items)
-    Route::post('/orders/checkout-selected', [OrderController::class, 'checkoutSelected'])
-        ->name('orders.checkoutSelected');
+    // User: cancel order
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
+
 });
 
 
+
+// Checkout page for selected cart items
 Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('orders.checkoutPage');
-
-// Admin: view all orders
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
-});
 
 // ====================== DASHBOARDS ======================
 
-// Admin Dashboard
-Route::get('/dashboard', function () {
-    $products = Product::all();
-    return view('dashboard', compact('products'));
-})->middleware(['auth:admin'])->name('dashboard');
+// Admin Analytics Dashboard
+Route::get('/dashboard', [ProductController::class, 'dashboard'])
+    ->middleware(['auth:admin'])
+    ->name('dashboard');
+
+// Admin Products Dashboard & CRUD
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/products', [ProductController::class, 'productsDashboard'])->name('products.dashboard');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Admin view all orders
+    Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders');
+
+    // Update order status
+    Route::patch('/orders/{order}/status', [ProductController::class, 'updateOrderStatus'])->name('orders.updateStatus');
+});
 
 // User Dashboard
 Route::get('/userdashboard', [ProductController::class, 'userDashboard'])
     ->middleware(['auth', 'verified'])
     ->name('user.dashboard');
-// ====================== PRODUCTS ======================
-Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    Route::get('/dashboard', function () {
-        $products = Product::all();
-        return view('dashboard', compact('products'));
-    })->name('dashboard');
-
-    Route::resource('products', ProductController::class);
-});
 
 // ====================== CART ======================
 Route::middleware('auth')->group(function () {
-
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-
 });
-
-Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-
-
+Route::patch('/cart/{cart}/update-quantity', [CartController::class, 'updateQuantity'])
+    ->name('cart.updateQuantity');
 // ====================== EMAIL VERIFICATION ======================
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
-
     $user = User::findOrFail($id);
 
     if (! hash_equals(sha1($user->getEmailForVerification()), (string) $hash)) {
@@ -137,7 +125,6 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
     }
 
     return redirect()->route('login')->with('message', 'Email verified successfully!');
-
 })->middleware('signed')->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
@@ -147,18 +134,13 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 // ====================== LOGOUT & PROFILE ======================
 Route::middleware('auth')->group(function () {
-
     Route::post('/logout', [Controller::class, 'logout'])->name('logout');
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Update profile photo
-    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])
-        ->name('profile.photo.update');
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
 });
 
 // ====================== GOOGLE AUTH ======================

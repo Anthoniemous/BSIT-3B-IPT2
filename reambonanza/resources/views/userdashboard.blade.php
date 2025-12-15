@@ -27,13 +27,10 @@
 
       <div class="user-option">
         @auth
-        <a href="{{ route('wishlist.index') }}" class="btn small wishlist-btn">
-      Wishlist
-      </a>
+          <a href="{{ route('wishlist.index') }}" class="btn small wishlist-btn">Wishlist</a>
           <a href="{{ route('orders.index') }}" class="btn small">Purchase History</a>
           <a href="{{ route('cart.index') }}" class="btn small">Your Shampoo Picks</a>
 
-       
           <div class="profile-container">
             <img 
               src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
@@ -88,7 +85,6 @@
       </select>
 
       <button type="submit" class="btn small">Filter</button>
-      
     </form>
 
     <!-- ⭐ SECTION HEADER -->
@@ -121,18 +117,23 @@
             <h3>{{ $product->product_name }}</h3>
             <p><strong>Brand:</strong> {{ $product->brand ?? 'N/A' }}</p>
             <p><strong>Category:</strong> {{ $product->category ?? 'N/A' }}</p>
-            <h4>{{ $product->description }}</h4>
-            <p class="price">${{ number_format($product->price, 2) }}</p>
+            <p><strong>Description:</strong> {{ $product->description }}</p>
+            <p class="price">₱{{ number_format($product->price, 2) }}</p>
+            <p class="quantity"><strong>Available Quantity:</strong> {{ $product->quantity }}</p>
 
-
-        
             <!-- Add to Cart -->
-            <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
-              @csrf
-              <button type="submit" class="btn add-cart">Add to Basket</button>
-            </form>
+            @if($product->quantity > 0)
+              <form method="POST" action="{{ route('cart.add', $product->product_id) }}">
+                @csrf
+                
+                <button type="submit" class="btn add-cart">Add to Basket</button>
+              </form>
+            @else
+              <button class="btn add-cart disabled" disabled>Out of Stock</button>
+            @endif
 
-             <form method="POST" action="{{ route('wishlist.add', $product->product_id) }}">
+            <!-- Add to Wishlist -->
+            <form method="POST" action="{{ route('wishlist.add', $product->product_id) }}">
               @csrf
               <button type="submit" class="btn wishlist-btn">Add to Wishlist</button>
             </form>
@@ -144,7 +145,6 @@
   </main>
 
   <script>
-
     document.getElementById('profileDropdownToggle').addEventListener('click', function() {
       document.getElementById('profileDropdownMenu').classList.toggle('active');
     });

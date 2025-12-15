@@ -20,15 +20,29 @@ class Order extends Model
         'total_price',
     ];
 
-    // 🔹 Order has many order items
+    // 🔹 Order has many items
     public function items()
     {
         return $this->hasMany(OrderItem::class, 'order_id', 'order_id');
     }
 
-    // 🔹 Order belongs to a user
+    // 🔹 Order belongs to user
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    // ✅ ADD: total quantity (FIXED)
+    public function totalQuantity()
+    {
+        return $this->items->sum('quantity');
+    }
+
+    // ✅ ADD: total amount (FIXED — uses item price)
+    public function totalAmount()
+    {
+        return $this->items->sum(function ($item) {
+            return $item->quantity * $item->price;
+        });
     }
 }

@@ -67,6 +67,7 @@
     @if($cartItems->isEmpty())
         <p style="text-align:center;">🧴 Your cart is empty! Add some shampoos to get started.</p>
     @else
+        <form id="checkoutForm" method="GET" action="{{ route('orders.checkoutPage') }}">
         <table id="cart-table">
             <thead>
                 <tr>
@@ -84,9 +85,9 @@
                     <td>{{ $item->product->product_name }}</td>
                     <td>
                         <div class="qty-wrapper">
-                            <button class="qty-btn minus">-</button>
-                            <input type="number" class="qty-input" value="{{ $item->quantity }}" min="1">
-                            <button class="qty-btn plus">+</button>
+                            <button type="button" class="qty-btn minus">-</button>
+                            <input type="number" class="qty-input" value="{{ $item->quantity }}" min="1" data-cartid="{{ $item->cart_id }}">
+                            <button type="button" class="qty-btn plus">+</button>
                         </div>
                     </td>
                     <td class="item-total">₱{{ number_format($item->product->price * $item->quantity, 2) }}</td>
@@ -106,11 +107,9 @@
             Grand Total: <span id="grandTotal">₱0.00</span>
         </div>
 
-<form id="checkoutForm" method="GET" action="{{ route('orders.checkoutPage') }}">
-    <div id="selectedItemsContainer"></div> <!-- container for hidden inputs -->
-    <button type="submit" class="btn primary big-checkout">🧴 Checkout Selected Items</button>
-</form>
-
+        <div id="selectedItemsContainer"></div>
+        <button type="submit" class="btn primary big-checkout">🧴 Checkout Selected Items</button>
+        </form>
     @endif
 
     <div style="text-align:center; margin-top:20px;">
@@ -121,10 +120,11 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
     const updateTotals = () => {
         let grandTotal = 0;
-        let selected = [];
-        const selectedItemsContainer = document.getElementById("selectedItemsContainer");
+        let selectedItemsContainer = document.getElementById("selectedItemsContainer");
+        selectedItemsContainer.innerHTML = "";
 
         document.querySelectorAll("#cart-table tbody tr").forEach(row => {
             const price = parseFloat(row.dataset.price);
@@ -138,36 +138,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (checkbox.checked) {
                 grandTotal += itemTotal;
-                selected.push(cartId);
+
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "selected_items[]";
+                input.value = cartId;
+                selectedItemsContainer.appendChild(input);
             }
         });
 
-        document.getElementById("grandTotal").textContent = "₱" + grandTotal.toFixed(2);
+        document.getElementById("grandTotal").textContent =
+            "₱" + grandTotal.toFixed(2);
+    };
 
-        // Update hidden inputs as array
-        selectedItemsContainer.innerHTML = ""; // clear old inputs
-        selected.forEach(cartId => {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "selected_items[]"; // <-- array
-            input.value = cartId;
-            selectedItemsContainer.appendChild(input);
+    const updateQuantityDB = (cartId, qty) => {
+        fetch(`/cart/${cartId}/update-quantity`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ quantity: qty })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            }
         });
     };
 
     document.querySelectorAll(".qty-wrapper").forEach(wrapper => {
         const input = wrapper.querySelector(".qty-input");
+        const cartId = input.dataset.cartid;
+
         wrapper.querySelector(".plus").addEventListener("click", () => {
-            input.value = parseInt(input.value)+1; updateTotals();
+            input.value = parseInt(input.value) + 1;
+            updateQuantityDB(cartId, input.value);
+            updateTotals();
         });
+
         wrapper.querySelector(".minus").addEventListener("click", () => {
-            if(input.value>1){input.value=parseInt(input.value)-1;} updateTotals();
+            if (input.value > 1) {
+                input.value = parseInt(input.value) - 1;
+                updateQuantityDB(cartId, input.value);
+                updateTotals();
+            }
+        });
+
+        input.addEventListener("change", () => {
+            updateQuantityDB(cartId, input.value);
+            updateTotals();
         });
     });
 
-    document.querySelectorAll(".qty-input, .select-item").forEach(el => el.addEventListener("change", updateTotals));
+    document.querySelectorAll(".select-item")
+        .forEach(el => el.addEventListener("change", updateTotals));
 
-    updateTotals(); // initialize totals
+    updateTotals();
 });
 </script>
 

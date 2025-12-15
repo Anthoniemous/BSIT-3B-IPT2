@@ -29,7 +29,7 @@
       </div>
       @endif
 
-      <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <!-- Product Name -->
@@ -69,6 +69,13 @@
           <input type="number" name="price" step="0.01" class="form-control" required>
         </div>
 
+        <!-- Stock -->
+<!-- Quantity -->
+<div class="mb-3">
+  <label for="quantity" class="form-label">Quantity</label>
+  <input type="number" name="quantity" class="form-control" value="0" min="0" required>
+</div>
+
         <!-- Image -->
         <div class="mb-4">
           <label for="image" class="form-label">Shampoo Image</label>
@@ -78,7 +85,7 @@
         <!-- Buttons -->
         <div class="d-flex justify-content-center gap-3">
           <button type="submit" class="btn btn-primary">Save Shampoo</button>
-          <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
+          <a href="{{ route('admin.products.dashboard') }}" class="btn btn-secondary">Cancel</a>
         </div>
 
       </form>
