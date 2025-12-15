@@ -17,8 +17,8 @@ class CartController extends Controller
 
         // Check if item already exists in DB cart
         $cartItem = Cart::where('user_id', $user->id)
-                        ->where('product_id', $product->id)
-                        ->first();
+                         ->where('product_id', $product->id)
+                         ->first();
 
         if ($cartItem) {
             $cartItem->quantity++;
@@ -33,6 +33,40 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', $product->name.' added to cart!');
     }
+
+    /**
+     * Add 1 item to cart and redirect straight to Checkout.
+     */
+    public function buyNow($id)
+    {
+        $user = Auth::user();
+        $product = Product::findOrFail($id);
+
+        // Check if item already exists in DB cart
+        $cartItem = Cart::where('user_id', $user->id)
+                         ->where('product_id', $product->id)
+                         ->first();
+
+        if ($cartItem) {
+            // Kung naa na, sigurohon lang nga ang quantity dili 0 (pwede ra i-ignore ang update)
+            // But we ensure it exists before redirecting
+            if ($cartItem->quantity == 0) {
+                $cartItem->quantity = 1;
+                $cartItem->save();
+            }
+        } else {
+            // Kung wala pa, buhati og bag-o nga cart item
+            Cart::create([
+                'user_id' => $user->id,
+                'product_id' => $product->id,
+                'quantity' => 1, // Default to 1 for Buy Now
+            ]);
+        }
+        
+        // Redirect diretso sa Checkout page!
+        return redirect()->route('checkout.index')->with('success', $product->name . ' added to cart. Proceeding to checkout.');
+    }
+
 
     // Show cart page
     public function index()

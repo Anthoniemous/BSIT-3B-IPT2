@@ -111,14 +111,15 @@ public function login(Request $request)
 }
 
     // ✅ Logout
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+ // AuthController.php
+public function logout(Request $request)
+{
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        return redirect()->route('login');
-    }
+    return redirect('/'); // 👈 Dapat ani na
+}
 
     // ✅ Customer Dashboard
    // ✅ Customer Dashboard with Search

@@ -22,7 +22,6 @@
 </head>
 <body>
 
-    <!-- === NAVBAR HEADER === -->
     <nav class="navbar">
         <div class="logo">Coffee ' Sodoso ☕</div>
 
@@ -64,7 +63,6 @@
         </div>
     </nav>
 
-    <!-- === HEADER BAR === -->
     <div class="header-bar">
         <h1>My Wishlist</h1>
     </div>
@@ -73,7 +71,6 @@
         @if($products && $products->count() > 0)
             @foreach($products as $product)
             <div class="product-card" id="product-{{ $product->id }}">
-                <!-- Wishlist Heart -->
                 <div class="wishlist-heart">
                     <button class="wishlist-btn" data-id="{{ $product->id }}">
                         💖
@@ -89,15 +86,31 @@
                     <p class="product-card-description">{{ $product->description ?? '-' }}</p>
                 </div>
 
-                <div class="product-card-footer">
-                    <form action="{{ route('cart.add', $product->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn-order">Add to Cart</button>
-                    </form>
-                    <!-- Remove from wishlist button -->
-                   
+                <div class="product-card-footer" style="padding: 10px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <form action="{{ route('cart.add', $product->id) }}" method="POST" style="flex-grow: 1; margin: 0;">
+                            @csrf
+                            <button type="submit" class="btn-order" 
+                                style="background-color: #6c757d; width: 100%; padding: 10px; border: none; border-radius: 4px; cursor: pointer; color: #fff; font-weight: bold;">
+                                Add to Cart
+                            </button>
+                        </form>
+                        
+                        <form action="{{ route('buy.now', $product->id) }}" method="POST" style="flex-grow: 1; margin: 0;">
+                            @csrf
+                            <button type="submit" class="btn-order" 
+                                style="background-color: #007bff; width: 100%; padding: 10px; border: none; border-radius: 4px; cursor: pointer; color: #fff; font-weight: bold;">
+                                Buy Now
+                            </button>
+                        </form>
+                    </div>
+
+                    <button class="btn-order btn-remove" data-id="{{ $product->id }}" 
+                        style="background-color: #dc3545; width: 100%; padding: 10px; border: none; border-radius: 4px; cursor: pointer; color: #fff; font-weight: bold;">
+                        Remove from Wishlist
+                    </button>
                 </div>
-            </div>
+                </div>
             @endforeach
         @else
             <p>No products in your wishlist.</p>
@@ -105,6 +118,18 @@
     </div>
 
     <script>
+        // === Notification Function ===
+        function showNotification(message) {
+            let notif = document.createElement('div');
+            notif.className = 'wishlist-notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+
+            setTimeout(() => {
+                notif.remove();
+            }, 2000); // auto remove after 2 seconds
+        }
+
         // Wishlist toggle by heart
         document.querySelectorAll('.wishlist-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -122,34 +147,33 @@
                         document.getElementById('product-' + productId).remove();
                         showNotification('Product removed from wishlist!');
                     } else if(data.status === 'added') {
-                        showNotification('Product added to wishlist!');
+                        showNotification('Product added to wishlist!'); 
                     }
                 });
             });
         });
 
-        // Remove button functionality
-       document.querySelectorAll('.btn-remove').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const productId = this.dataset.id;
-        fetch("{{ url('/wishlist/remove') }}/" + productId, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-            },
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === 'removed') {
-                document.getElementById('product-' + productId).remove();
-                showNotification('Product removed from wishlist!');
-            }
+        // Remove button functionality (using the separate button)
+        document.querySelectorAll('.btn-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.id;
+                fetch("{{ url('/wishlist/remove') }}/" + productId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'removed') {
+                        document.getElementById('product-' + productId).remove();
+                        showNotification('Product removed from wishlist!');
+                    }
+                });
+            });
         });
-    });
-});
-
     </script>
 
-</body>
+</body> 
 </html>

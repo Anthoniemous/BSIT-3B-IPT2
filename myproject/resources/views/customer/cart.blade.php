@@ -112,6 +112,14 @@
             </table>
 
             <h3 class="total">Total: ₱ {{ number_format($total, 2) }}</h3>
+            <h3 class="total">Total: ₱ {{ number_format($total, 2) }}</h3>
+
+<div style="text-align: right; margin-top: 20px;">
+    <a href="{{ route('checkout.index') }}" class="btn-checkout" 
+       style="background-color: #ff5722; color: white; padding: 12px 30px; text-decoration: none; font-size: 18px; border-radius: 5px; font-weight: bold;">
+       Check Out
+    </a>
+</div>
         @else
             <p class="empty-cart">Your cart is empty.</p>
         @endif
