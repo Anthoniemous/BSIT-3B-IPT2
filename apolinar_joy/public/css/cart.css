@@ -136,3 +136,157 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(255, 145, 175, 0.5);
 }
+/* ---------- HEADER WRAPPER ---------- */
+.site-header {
+    background: #fff;
+    border-bottom: 2px solid #ffcce0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(255, 182, 193, 0.35);
+}
+
+/* ---------- CONTAINER ---------- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ---------- HEADER INNER ---------- */
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+}
+
+/* ---------- LOGO ---------- */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 3px 8px rgba(255, 182, 193, 0.4);
+}
+
+.brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #e75480;
+    letter-spacing: 0.5px;
+}
+
+/* ---------- NAV ---------- */
+.main-nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-btn {
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff80ab, #ff4da6);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.nav-btn:hover {
+    background: linear-gradient(90deg, #ff66a3, #ff1a8c);
+    transform: translateY(-2px);
+}
+
+/* ---------- USER OPTIONS ---------- */
+.user-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn.small {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff80ab, #ff4da6);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn.small:hover {
+    background: linear-gradient(90deg, #ff66a3, #ff1a8c);
+    transform: translateY(-2px);
+}
+
+/* ---------- PROFILE DROPDOWN ---------- */
+.profile-container {
+    position: relative;
+}
+
+.profile-pic {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #ff4da6;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: #fff;
+    border-radius: 12px;
+    width: 230px;
+    padding: 15px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    display: none;
+    text-align: center;
+}
+
+.dropdown-menu h4 {
+    margin: 0 0 10px;
+    color: #e75480;
+}
+
+.dropdown-menu.active {
+    display: block;
+}
+
+.logout-btn {
+    width: 100%;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+
+    .brand {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn.small {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}

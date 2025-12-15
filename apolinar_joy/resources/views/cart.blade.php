@@ -4,9 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart</title>
+    <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
 </head>
 <body>
-<link rel="stylesheet" href="{{ asset('css/cart.css') }}">
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="logo">
+      <img src="{{ asset('css/img/image.png') }}" alt="Logo">
+      <span class="brand">Glamour Makeup Store 💋</span>
+    </div>
+
+    <nav class="main-nav">
+      <ul>
+        <a href="{{ route('user.dashboard') }}" class="nav-btn">Home</a>
+      </ul>
+    </nav>
+
+    <div class="user-option">
+      @auth
+        <a href="{{ route('wishlist.index') }}" class="btn small">💖 Wishlist</a>
+        <a href="{{ route('orders.index') }}" class="btn small">Orders</a>
+        <a href="{{ route('cart.index') }}" class="btn small">Cart 🛒</a>
+        
+
+        <div class="profile-container">
+          <img 
+            src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
+            alt="Profile" 
+            class="profile-pic" 
+            id="profileDropdownToggle"
+          >
+          <div class="dropdown-menu" id="profileDropdownMenu">
+            <h4>Welcome back, {{ Auth::user()->name }}!</h4>
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit" class="btn small logout-btn">Logout</button>
+            </form>
+          </div>
+        </div>
+      @endauth
+    </div>
+  </div>
+</header>
+
 
 <div class="container">
     <h1 class="page-title">Glamour Makeup Store</h1>
@@ -84,13 +125,16 @@
     @endif
 
     <div class="mt-6 text-center">
-        <a href="{{ route('user.dashboard') }}" class="nav-btn">← Back to Dashboard</a>
+        <a href="{{ route('user.dashboard') }}" class="nav-btn">Back to Dashboard</a>
         <a href="{{ route('orders.index') }}" class="nav-btn ml-3">View My Orders</a>
     </div>
 </div>
 
 <!-- JAVASCRIPT FUNCTION (IMPORTANT) -->
 <script>
+    document.getElementById('profileDropdownToggle').addEventListener('click', function () {
+    document.getElementById('profileDropdownMenu').classList.toggle('active');
+})
 document.addEventListener("DOMContentLoaded", () => {
 
     const updateTotals = () => {
@@ -147,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateTotals();
 });
+
 </script>
 
 </body>

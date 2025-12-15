@@ -1,102 +1,269 @@
-<x-app-layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Management - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>ADMIN<span>HUB</span></h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="{{ route('dashboard') }}" class="nav-item">
+                    <span class="icon"></span>
+                    <span>Analytics</span>
+                </a>
+                <a href="{{ route('admin.products.dashboard') }}" class="nav-item">
+                    <span class="icon"></span>
+                    <span>Products</span>
+                </a>
+                <a href="{{ route('admin.orders') }}" class="nav-item active">
+                    <span class="icon"></span>
+                    <span>Orders</span>
+                </a>
+                <form method="POST" action="{{ route('logout') }}" class="nav-item logout-form">
+                    @csrf
+                    <button type="submit" class="logout-btn">
+                        <span class="icon"></span>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </nav>
+        </aside>
 
-<link rel="stylesheet" href="{{ asset('css/orderlist.css') }}">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Flash Messages (moved to top) -->
+            @if(session('success'))
+                <div class="alert alert-success">✨ {{ session('success') }}</div>
+            @endif
 
-<div class="container">
-    <h1 class="page-title"> Customer Orders  </h1>
+            @if(session('error'))
+                <div class="alert alert-danger">⚠️ {{ session('error') }}</div>
+            @endif
 
-    {{-- ✅ Flash Messages --}}
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">Orders Management</h1>
+                    <p class="page-subtitle">View and manage all customer orders 💕</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-badge">
+                        <span class="stat-number">{{ $orders->count() }}</span>
+                        <span class="stat-label">Total Orders</span>
+                    </div>
+                </div>
+            </header>
 
-    @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+            <!-- Orders Section -->
+            @if($orders->isEmpty())
+                <div class="empty-state">
+                    <div class="empty-icon">🛒</div>
+                    <h2>No Orders Yet!</h2>
+                    <p>Orders will appear here once customers start purchasing ✨</p>
+                </div>
+            @else
+                <!-- Filter Options (redesigned) -->
+                <div class="filters-container">
+                    <div class="search-group">
+                        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by name or order ID..." onkeyup="searchOrders()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">📋 Status:</label>
+                        <select id="statusFilter" class="filter-select" onchange="filterOrders()">
+                            <option value="all">All Orders</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="processing">⚙️ Processing</option>
+                            <option value="completed">✅ Completed</option>
+                            <option value="cancelled">❌ Cancelled</option>
+                        </select>
+                    </div>
+                </div>
 
-    {{-- ✅ Check if user has any orders --}}
-    @if($orders->isEmpty())
-        <p class="no-orders">You have no orders yet.</p>
-    @else
-        <div class="order-table">
-            <table>
-                <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Contact</th>
-              <th>Date</th>
-              <th>Products (Merged)</th>
-              <th>Total</th>  
-              <th>Status</th>
-            </tr>
-          </thead>
+                <!-- Orders Table -->
+                <section class="orders-section">
+                    <div class="orders-table-container">
+                        <table class="orders-table" id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>🆔 Order ID</th>
+                                    <th>👤 Customer</th>
+                                    <th>📞 Contact</th>
+                                    <th>📅 Date</th>
+                                    <th>📦 Products</th>
+                                    <th>💰 Total</th>
+                                    <th>📊 Status</th>
+                                    <th>⚙️ Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($orders as $order)
+                                    @php
+                                        // Group items by PRODUCT + SIZE + PRICE
+                                        $grouped = $order->items->groupBy(function($item) {
+                                            return $item->product_id . '-' . ($item->size ?? 'N/A') . '-' . $item->product->price;
+                                        });
 
-          <tbody>
-          @foreach($orders as $order)
+                                        // Compute Total
+                                        $finalTotal = $grouped->sum(function($items) {
+                                            return $items->first()->product->price * $items->sum('quantity');
+                                        });
+                                    @endphp
 
-              @php
-                  // Group items by PRODUCT + SIZE + PRICE
-                  $grouped = $order->items->groupBy(function($item) {
-                      return $item->product_id . '-' . ($item->size ?? 'N/A') . '-' . $item->product->price;
-                  });
-
-                  // Compute Total
-                  $finalTotal = $grouped->sum(function($items) {
-                      return $items->first()->product->price * $items->sum('quantity');
-                  });
-              @endphp
-
-              <tr>
-                  <td>{{ $order->order_id }}</td>
-                  <td>{{ $order->name }}</td>
-                  <td>{{ $order->address }}</td>
-                  <td>{{ $order->contact_number }}</td>
-                  <td>{{ $order->created_at->format('M d, Y') }}</td>
-
-                  <td class="text-start">
-                      <ul class="mb-0 ps-3">
-                          @foreach($grouped as $items)
-                              @php
-                                  $item = $items->first();
-                                  $qty = $items->sum('quantity');
-                              @endphp
-
-                              <li>
-                                  {{ $item->product->product_name }}
-                                  ({{ $item->size ?? 'N/A' }})
-                                  - {{ $qty }} × ₱{{ number_format($item->product->price, 2) }}
-                              </li>
-                          @endforeach
-                      </ul>
-                  </td>
-
-                  <td>
-                      ₱{{ number_format($finalTotal, 2) }}
-                  </td>
-
-                  <td>
-                      <span class="status {{ strtolower($order->status) }}">
-                          {{ ucfirst($order->status) }}
-                      </span>
-                  </td>
-              </tr>
-
-          @endforeach
-          </tbody>
-
-        </table>
-      </div>
-    @endif
-
-    <div class="text-center">
-      <a href="{{ route('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+                                    <tr data-status="{{ strtolower($order->status) }}" data-search="{{ strtolower($order->name . ' ' . $order->order_id) }}">
+                                        <td><strong>#{{ str_pad($order->order_id, 5, '0', STR_PAD_LEFT) }}</strong></td>
+                                        <td>
+                                            <div class="customer-info">
+                                                <strong>{{ $order->name }}</strong>
+                                                <small>📍 {{ $order->address }}</small>
+                                            </div>
+                                        </td>
+                                        <td>{{ $order->contact_number }}</td>
+                                        <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                        <td>
+                                            <button class="view-items-btn" onclick="viewOrderItems({{ $order->order_id }})">
+                                                👁️ {{ $order->items->count() }} item(s)
+                                            </button>
+                                        </td>
+                                        <td><strong>₱{{ number_format($finalTotal, 2) }}</strong></td>
+                                        <td>
+                                            <span class="status-badge {{ strtolower($order->status) }}">
+                                                {{ ucfirst($order->status) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="{{ route('admin.orders.updateStatus', $order->order_id) }}" class="status-form">
+                                                @csrf
+                                                @method('PATCH')
+                                                <select name="status" class="status-select" onchange="this.form.submit()">
+                                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
+                                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>⚙️ Processing</option>
+                                                    <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>✅ Completed</option>
+                                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>❌ Cancelled</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            @endif
+        </main>
     </div>
 
-</div>
-</x-app-layout>
+    <!-- Modal for Order Items -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2>💕 Order Details</h2>
+            <div id="orderItemsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Store orders data for modal
+        const ordersData = {!! json_encode($orders) !!};
+
+        // Filter Orders by Status
+        function filterOrders() {
+            const filter = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            
+            rows.forEach(row => {
+                const status = row.dataset.status;
+                if (filter === 'all' || status === filter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Search Orders
+        function searchOrders() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            
+            rows.forEach(row => {
+                const searchData = row.dataset.search;
+                if (searchData.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // View Order Items Modal
+        function viewOrderItems(orderId) {
+            const order = ordersData.find(o => o.order_id === orderId);
+            
+            if (!order) return;
+
+            // Group items
+            const grouped = {};
+            order.items.forEach(item => {
+                const key = `${item.product_id}-${item.size || 'N/A'}-${item.product.price}`;
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        product: item.product,
+                        size: item.size || 'N/A',
+                        quantity: 0,
+                        price: item.product.price
+                    };
+                }
+                grouped[key].quantity += item.quantity;
+            });
+
+            let itemsHtml = '<table class="modal-table"><thead><tr><th>💄 Product</th><th>📏 Size</th><th>🔢 Quantity</th><th>💰 Price</th><th>💵 Subtotal</th></tr></thead><tbody>';
+            
+            let total = 0;
+            Object.values(grouped).forEach(item => {
+                const subtotal = item.quantity * item.price;
+                total += subtotal;
+                itemsHtml += `
+                    <tr>
+                        <td><strong>${item.product.product_name}</strong></td>
+                        <td>${item.size}</td>
+                        <td><strong>${item.quantity}</strong></td>
+                        <td>₱${parseFloat(item.price).toFixed(2)}</td>
+                        <td><strong>₱${subtotal.toFixed(2)}</strong></td>
+                    </tr>
+                `;
+            });
+            
+            itemsHtml += `
+                <tr class="total-row">
+                    <td colspan="4" style="text-align: right;"><strong>💖 Grand Total:</strong></td>
+                    <td><strong>₱${total.toFixed(2)}</strong></td>
+                </tr>
+            `;
+            itemsHtml += '</tbody></table>';
+            
+            document.getElementById('orderItemsContent').innerHTML = itemsHtml;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
