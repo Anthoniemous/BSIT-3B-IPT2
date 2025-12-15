@@ -1,5 +1,14 @@
-<x-app-layout>
-    <!-- Page Body -->
+@extends('layouts.customer')
+
+@section('title', 'Online Store')
+@section('page_heading', 'Tea Store')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+    <li class="breadcrumb-item text-dark" aria-current="page">Store</li>
+@endsection
+
+@section('content')
     <!-- Store Start -->
     <div class="container-xxl py-5">
         <div class="container">
@@ -15,11 +24,11 @@
                     <button type="submit" class="btn btn-primary rounded-pill ms-2">Search</button>
                 </form>
 
-                 <!-- Sorting Dropdown -->
+                <!-- Sorting Dropdown -->
                 <div>
                     <select id="sortSelect" class="form-select rounded-pill px-3" style="width: 180px;">
                         <option value="" selected disabled>Sort By</option>
-                         <option value="newest">Newest</option>
+                        <option value="newest">Newest</option>
                         <option value="featured">Featured</option>
                         <option value="name_asc">Name (A → Z)</option>
                         <option value="name_desc">Name (Z → A)</option>
@@ -44,16 +53,24 @@
                 </div>
             </div>
 
-
             <div class="row g-4">
                 @foreach($products as $product)
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s"
+
+                    {{-- ✅ IMPORTANT integration fixes (NO JS changes):
+                         1) store-item class moved to the COLUMN so search hides whole card
+                         2) data-id added so "Newest" sort works --}}
+                    <div class="col-lg-4 col-md-6 wow fadeInUp store-item"
+                         data-wow-delay="0.1s"
+                         data-id="{{ $product->product_id }}"
                          data-name="{{ $product->name }}"
                          data-price="{{ $product->price }}"
                          data-featured="{{ $product->featured ?? 0 }}">
-                        <div class="store-item position-relative text-center" style="width: 340px; height: 405px;">
-                            <img class="img-fluid" style="width: 407px; height: 250px;" src="{{ $product->image ? asset('img/products/' . $product->image) : 
-                            asset('img/store-product-1.jpg') }}" alt="{{ $product->name }}">
+
+                        <div class="position-relative text-center" style="width: 407px; height: 505px;">
+                            <img class="img-fluid" style="width: 407px; height: 271px;"
+                                 src="{{ $product->image ? asset('img/products/' . $product->image) : asset('img/store-product-1.jpg') }}"
+                                 alt="{{ $product->name }}">
+
                             <div class="p-4">
                                 <div class="text-center mb-3">
                                     <small class="fa fa-star text-primary"></small>
@@ -68,9 +85,10 @@
                             </div>
 
                             <div class="store-overlay">
-                               @php
+                                @php
                                     $inCart = collect(session('cart', []))->contains('id', $product->product_id);
                                 @endphp
+
                                 @if(!$inCart)
                                     <form action="{{ route('cart.add', $product->product_id) }}" method="POST">
                                         @csrf
@@ -78,6 +96,7 @@
                                             <i class="fa fa-cart-plus me-1"></i> Add to Cart
                                         </button>
                                     </form>
+
                                     <form action="{{ route('wishlist.add', $product->product_id) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-warning rounded-pill py-2 px-4 m-2">
@@ -107,137 +126,94 @@
         </div>
     </div>
     <!-- Store End -->
+@endsection
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark footer mt-5 py-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-primary mb-4">Our Office</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary me-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt text-primary me-3"></i>+012 345 67890</p>
-                    <p class="mb-2"><i class="fa fa-envelope text-primary me-3"></i>info@example.com</p>
-                    <div class="d-flex pt-3">
-                        <a class="btn btn-square btn-primary rounded-circle me-2" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-square btn-primary rounded-circle me-2" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-square btn-primary rounded-circle me-2" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-square btn-primary rounded-circle me-2" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-primary mb-4">Quick Links</h4>
-                    <a class="btn btn-link" href="">About Us</a>
-                    <a class="btn btn-link" href="">Contact Us</a>
-                    <a class="btn btn-link" href="">Our Services</a>
-                    <a class="btn btn-link" href="">Terms & Condition</a>
-                    <a class="btn btn-link" href="">Support</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-primary mb-4">Business Hours</h4>
-                    <p class="mb-1">Monday - Friday</p>
-                    <h6 class="text-light">09:00 am - 07:00 pm</h6>
-                    <p class="mb-1">Saturday</p>
-                    <h6 class="text-light">09:00 am - 12:00 pm</h6>
-                    <p class="mb-1">Sunday</p>
-                    <h6 class="text-light">Closed</h6>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-primary mb-4">Newsletter</h4>
-                    <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                    <div class="position-relative w-100">
-                        <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
+@push('scripts')
+<script>
+    // Search function
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
 
-    <script>
-        // Search function
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchForm = document.getElementById('searchForm');
-            const searchInput = document.getElementById('searchInput');
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const query = searchInput.value.trim().toLowerCase();
+            const items = document.querySelectorAll('.store-item');
 
-            searchForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const query = searchInput.value.trim().toLowerCase();
-                const items = document.querySelectorAll('.store-item');
-
-                let found = false;
-                items.forEach(item => {
-                    const name = item.querySelector('h4').textContent.toLowerCase();
-                    item.style.display = name.includes(query) ? 'block' : 'none';
-                    if (name.includes(query)) found = true;
-                });
-
-                if (!found) alert("No product found with that name.");
+            let found = false;
+            items.forEach(item => {
+                const name = item.querySelector('h4').textContent.toLowerCase();
+                item.style.display = name.includes(query) ? 'block' : 'none';
+                if (name.includes(query)) found = true;
             });
+
+            if (!found) alert("No product found with that name.");
         });
-       document.addEventListener('DOMContentLoaded', function () {
-            const sortSelect = document.getElementById('sortSelect');
-            if (!sortSelect) return;
+    });
 
-            const container = document.querySelector('.row.g-4');
-            if (!container) return;
+   document.addEventListener('DOMContentLoaded', function () {
+        const sortSelect = document.getElementById('sortSelect');
+        if (!sortSelect) return;
 
-            function getCards() {
-                return Array.from(container.querySelectorAll('.col-lg-4.col-md-6[data-name]'));
+        const container = document.querySelector('.row.g-4');
+        if (!container) return;
+
+        function getCards() {
+            return Array.from(container.querySelectorAll('.col-lg-4.col-md-6[data-name]'));
+        }
+
+        // Save original order
+        getCards().forEach((card, idx) => {
+            if (!card.hasAttribute('data-original-index')) {
+                card.setAttribute('data-original-index', idx);
             }
+        });
 
-            // Save original order
-            getCards().forEach((card, idx) => {
-                if (!card.hasAttribute('data-original-index')) {
-                    card.setAttribute('data-original-index', idx);
+        function parsePrice(val) {
+            if (!val) return 0;
+            const cleaned = String(val).replace(/[^0-9.]/g, '');
+            return parseFloat(cleaned) || 0;
+        }
+
+        sortSelect.addEventListener('change', function () {
+            const sortType = this.value;
+            const cards = getCards();
+
+            cards.sort((a, b) => {
+                const nameA = a.dataset.name.toLowerCase();
+                const nameB = b.dataset.name.toLowerCase();
+                const priceA = parsePrice(a.dataset.price);
+                const priceB = parsePrice(b.dataset.price);
+                const idA = parseInt(a.dataset.id);
+                const idB = parseInt(b.dataset.id);
+                const featA = parseInt(a.dataset.featured);
+                const featB = parseInt(b.dataset.featured);
+
+                switch (sortType) {
+                    case 'name_asc':
+                        return nameA.localeCompare(nameB);
+                    case 'name_desc':
+                        return nameB.localeCompare(nameA);
+                    case 'price_low_high':
+                        return priceA - priceB;
+                    case 'price_high_low':
+                        return priceB - priceA;
+                    case 'newest':
+                        return idB - idA; // larger ID = newer
+                    case 'featured':
+                        return featB - featA; // 1 = featured, sort to top
+                    default:
+                        return parseInt(a.dataset.originalIndex) - parseInt(b.dataset.originalIndex);
                 }
             });
 
-            function parsePrice(val) {
-                if (!val) return 0;
-                const cleaned = String(val).replace(/[^0-9.]/g, '');
-                return parseFloat(cleaned) || 0;
-            }
-
-            sortSelect.addEventListener('change', function () {
-                const sortType = this.value;
-                const cards = getCards();
-
-                cards.sort((a, b) => {
-                    const nameA = a.dataset.name.toLowerCase();
-                    const nameB = b.dataset.name.toLowerCase();
-                    const priceA = parsePrice(a.dataset.price);
-                    const priceB = parsePrice(b.dataset.price);
-                    const idA = parseInt(a.dataset.id);
-                    const idB = parseInt(b.dataset.id);
-                    const featA = parseInt(a.dataset.featured);
-                    const featB = parseInt(b.dataset.featured);
-
-                    switch (sortType) {
-                        case 'name_asc':
-                            return nameA.localeCompare(nameB);
-                        case 'name_desc':
-                            return nameB.localeCompare(nameA);
-                        case 'price_low_high':
-                            return priceA - priceB;
-                        case 'price_high_low':
-                            return priceB - priceA;
-                        case 'newest':
-                            return idB - idA; // larger ID = newer
-                        case 'featured':
-                            return featB - featA; // 1 = featured, sort to top
-                        default:
-                            return parseInt(a.dataset.originalIndex) - parseInt(b.dataset.originalIndex);
-                    }
-                });
-
-                const frag = document.createDocumentFragment();
-                cards.forEach(c => frag.appendChild(c));
-                container.appendChild(frag);
-            });
+            const frag = document.createDocumentFragment();
+            cards.forEach(c => frag.appendChild(c));
+            container.appendChild(frag);
         });
+    });
 
-       // >>> ADDED CODE START (FILTER SCRIPT)
+   // >>> ADDED CODE START (FILTER SCRIPT)
 const priceFilter = document.getElementById('priceFilter');
 const resetFilters = document.getElementById('resetFilters');
 const filterCards = document.querySelectorAll('.col-lg-4.col-md-6[data-name]');
@@ -270,7 +246,5 @@ resetFilters.addEventListener('click', () => {
     filterCards.forEach(card => card.style.display = "block");
 });
 // >>> ADDED CODE END
-
-
-    </script>
-</x-app-layout>
+</script>
+@endpush

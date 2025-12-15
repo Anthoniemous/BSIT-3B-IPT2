@@ -3,39 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <!-- Link sa separate CSS -->
+    <title>Admin Login</title>
+
+    <!-- Uses the same enhanced CSS -->
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h2>WELCOME<h2>
 
-        @if(session('success'))
-            <div class="success-msg">{{ session('success') }}</div>
-        @endif
+    <!-- overlay for readability -->
+    <div class="bg-overlay"></div>
 
-        @if($errors->any())
-            <div class="error-msg">
-                @foreach($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
+    <div class="auth-wrap">
+        <div class="container">
+
+            <div class="brand">
+                <h2>WELCOME</h2>
+                <p class="sub">Admin login to manage the store</p>
             </div>
-        @endif
 
-        <form method="POST" action="{{ route('admin.login.post') }}">
-            @csrf
-            <label>Email:</label>
-            <input type="email" name="email" required>
-            
-            <label>Password:</label>
-            <input type="password" name="password" required>
-            
-            <button type="submit">Login</button>
-        </form>
+            @if(session('success'))
+                <div class="alert success-msg">{{ session('success') }}</div>
+            @endif
 
-        <p>Don't have an account? <a href="{{ url('/register')  }}">Register here</a></p>
-        <p>Forgot your password? <a href="{{ url('/forgotpassword') }}">Click here</a></p>
+            @if($errors->any())
+                <div class="alert error-msg">
+                    @foreach($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('admin.login.post') }}">
+                @csrf
+
+                <div class="field">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="admin@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <div class="links">
+                <p>Don't have an account? <a href="{{ url('/admin/register') }}">Register here</a></p>
+                <p>Forgot your password? <a href="{{ url('/forgotpassword') }}">Click here</a></p>
+            </div>
+
+        </div>
     </div>
+
 </body>
 </html>

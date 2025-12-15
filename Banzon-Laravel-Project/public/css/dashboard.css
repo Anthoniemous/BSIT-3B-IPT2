@@ -504,3 +504,10 @@
 .copyright a:hover {
     color: #FFFFFF !important;
 }
+
+.border-orange-500 { border-color: #f97316 !important; }
+.bg-orange-50 { background: #fff7ed !important; }
+.text-orange-600 { color: #f97316 !important; }
+.border-gray-200 { border-color: #e5e7eb !important; }
+.bg-gray-50 { background: #f9fafb !important; }
+.text-gray-500 { color: #6b7280 !important; }

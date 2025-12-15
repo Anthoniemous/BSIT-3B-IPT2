@@ -1,29 +1,53 @@
-<x-app-layout>
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-2xl font-bold mb-6 text-primary">Your Cart</h1>
+@extends('layouts.customer')
 
-        @if(!empty($lastOrder))
-            <div class="mb-4 bg-blue-50 border border-blue-200 text-sm text-blue-800 px-4 py-3 rounded">
-                Last order #{{ $lastOrder->order_id }} status:
-                <span class="font-semibold">{{ $lastOrder->order_status }}</span>
+@section('title', 'Your Cart')
+@section('page_heading', 'Your Cart')
 
-                @if(!empty($lastPayment))
-                    — Payment: {{ $lastPayment->payment_method }} ({{ $lastPayment->payment_status }})
-                @endif
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+    <li class="breadcrumb-item text-dark" aria-current="page">Cart</li>
+@endsection
 
-                — Total: ₱{{ number_format($lastOrder->total_amount, 2) }}
-            </div>
-        @endif
+@section('content')
+<div class="container py-5">
 
-        @php
-            $grandTotal = 0;
-            $totalItems = 0;
-        @endphp
+    <h2 class="mb-4 text-center text-primary">Your Cart</h2>
 
-        @if(session('cart') && count(session('cart')) > 0)
-            {{-- CART ITEMS --}}
-            <div class="border border-gray-200 rounded bg-white">
+    @if(!empty($lastOrder))
+        <div class="mb-4 alert alert-info">
+            Last order #{{ $lastOrder->order_id }} status:
+            <span class="fw-semibold">{{ $lastOrder->order_status }}</span>
 
+            @if(!empty($lastPayment))
+                — Payment: {{ $lastPayment->payment_method }} ({{ $lastPayment->payment_status }})
+            @endif
+
+            — Total: ₱{{ number_format($lastOrder->total_amount, 2) }}
+        </div>
+    @endif
+
+    @php
+        $grandTotal = 0;
+        $totalItems = 0;
+    @endphp
+
+    @if(session('cart') && count(session('cart')) > 0)
+
+        <div class="table-responsive bg-white shadow-sm rounded-4 overflow-hidden">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;" class="text-center">Select</th>
+                        <th style="width:110px;">Image</th>
+                        <th>Product</th>
+                        <th style="width:140px;" class="text-end">Unit Price</th>
+                        <th style="width:220px;" class="text-center">Quantity</th>
+                        <th style="width:140px;" class="text-end">Total</th>
+                        <th style="width:160px;" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
                 @foreach(session('cart') as $id => $item)
                     @php
                         $price = isset($item['price']) ? floatval($item['price']) : 0;
@@ -33,171 +57,152 @@
                         $totalItems += $quantity;
                     @endphp
 
-                    <div class="flex items-center px-4 py-4 border-b last:border-b-0 text-sm">
+                    <tr>
+                        <!-- Checkbox (UNCHANGED CLASS + DATA ATTRS) -->
+                        <td class="text-center">
+                            <input type="checkbox"
+                                   class="form-check-input item-checkbox"
+                                   data-qty="{{ $quantity }}"
+                                   data-total="{{ $total }}"
+                                   checked>
+                        </td>
 
-                        {{-- Checkbox --}}
-                        <div class="w-6 flex justify-center">
-                            <input type="checkbox" class="form-checkbox item-checkbox"  data-qty="{{ $quantity }}"
-                             data-total="{{ $total }}" checked>
-                        </div>
-
-                        {{-- Product image --}}
-                        <div class="w-16 h-16 mr-3 flex items-center justify-center border border-gray-200">
+                        <!-- Image -->
+                        <td>
                             <img
-                                 src="{{ !empty($item['image']) ? asset('img/products/' . $item['image']) : asset('img/no-image.png') }}"
-                                 alt="{{ $item['name'] ?? 'Product image' }}"
-                                class="object-contain max-h-16"
+                                src="{{ !empty($item['image']) ? asset('img/products/' . $item['image']) : asset('img/no-image.png') }}"
+                                alt="{{ $item['name'] ?? 'Product image' }}"
+                                class="img-fluid rounded-3"
+                                style="width: 90px; height: 70px; object-fit: cover;"
                             >
-                        </div>
+                        </td>
 
-                        {{-- Product name & variation text --}}
-                        <div class="flex-1">
-                            <div class="text-gray-800 line-clamp-2">
+                        <!-- Name + Variation -->
+                        <td>
+                            <div class="fw-semibold text-dark">
                                 {{ $item['name'] ?? 'Unknown Product' }}
                             </div>
-                            <div class="text-xs text-gray-400 mt-1">
-                                Variations:
-                                <span class="text-gray-500">
-                                    {{ $item['variation'] ?? 'Default' }}
-                                </span>
+                            <div class="small text-muted mt-1">
+                                Variations: <span class="text-secondary">{{ $item['variation'] ?? 'Default' }}</span>
                             </div>
-                        </div>
+                        </td>
 
-                        {{-- Unit price (old + new) --}}
-                        <div class="w-32 text-right mr-6">
+                        <!-- Unit price -->
+                        <td class="text-end">
                             @if(isset($item['old_price']))
-                                <div class="text-xs text-gray-400 line-through">
+                                <div class="small text-muted text-decoration-line-through">
                                     ₱{{ number_format($item['old_price'], 2) }}
                                 </div>
                             @endif
-                            <div class="text-sm text-gray-800">
+                            <div class="text-dark">
                                 ₱{{ number_format($price, 2) }}
                             </div>
-                        </div>
+                        </td>
 
-                        {{-- Quantity stepper --}}
-                        <div class="w-32 flex justify-center mr-6">
-                            <form action="{{ route('cart.update') }}" method="POST" class="flex items-center">
+                        <!-- Quantity stepper (FORM + onclick unchanged structure) -->
+                        <td class="text-center">
+                            <form action="{{ route('cart.update') }}" method="POST" class="d-inline-flex align-items-center">
                                 @csrf
-                                {{-- minus --}}
+
                                 <button
                                     type="button"
                                     onclick="this.nextElementSibling.stepDown(); this.form.submit();"
-                                    class="border border-gray-300 w-7 h-7 flex items-center justify-center text-gray-500"
+                                    class="btn btn-outline-secondary btn-sm"
                                 >−</button>
 
-                                {{-- number input --}}
                                 <input
                                     type="number"
                                     name="quantities[{{ $id }}]"
                                     value="{{ $quantity }}"
                                     min="1"
-                                    class="border-t border-b border-gray-300 w-12 h-7 text-center text-xs"
+                                    class="form-control form-control-sm text-center mx-2"
+                                    style="width: 70px;"
                                 >
 
-                                {{-- plus --}}
                                 <button
                                     type="button"
                                     onclick="this.previousElementSibling.stepUp(); this.form.submit();"
-                                    class="border border-gray-300 w-7 h-7 flex items-center justify-center text-gray-500"
+                                    class="btn btn-outline-secondary btn-sm"
                                 >+</button>
                             </form>
-                        </div>
+                        </td>
 
-                        {{-- Item total (right side orange price) & actions --}}
-                        <div class="w-32 text-right">
-                            <div class="text-sm text-orange-500">
-                                ₱{{ number_format($total, 2) }}
-                            </div>
+                        <!-- Item total -->
+                        <td class="text-end fw-semibold" style="color:#f97316;">
+                            ₱{{ number_format($total, 2) }}
+                        </td>
 
-                            <div class="mt-2 text-xs">
-                                <form action="{{ route('cart.remove', $id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-gray-500 hover:text-red-500">
-                                        Delete
-                                    </button>
-                                </form>
-                                <span class="text-gray-300 mx-1">|</span>
-                                <button class="text-orange-500 hover:underline" type="button">
-                                    Find Similar
+                        <!-- Actions (delete form unchanged) -->
+                        <td class="text-center">
+                            <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                    Delete
                                 </button>
-                            </div>
-                        </div>
-                    </div>
+                            </form>
+                        </td>
+                    </tr>
                 @endforeach
+                </tbody>
+            </table>
+        </div>
 
-                    {{-- VOUCHER ROWS (just visual like screenshot) --}}
-                <div class="mt-3 bg-white border border-gray-200 rounded text-xs text-gray-600">
-                    <div class="px-4 py-3 border-b flex items-center">
-                        <span class="mr-2 text-orange-500">🏷</span>
-                        <span>Add shop voucher code</span>
-                    </div>
-                    <div class="px-4 py-3 flex items-center justify-between">
-                        <div class="flex items-center">
-                            <span class="mr-2 text-orange-500">🏷</span>
-                            <span>Platform Voucher</span>
+        {{-- Voucher rows (visual only, kept) --}}
+        <div class="mt-3 bg-white border rounded-4 overflow-hidden shadow-sm">
+            <div class="px-4 py-3 border-bottom d-flex align-items-center">
+                <span class="me-2" style="color:#f97316;">🏷</span>
+                <span class="text-muted">Add shop voucher code</span>
+            </div>
+            <div class="px-4 py-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <span class="me-2" style="color:#f97316;">🏷</span>
+                    <span class="text-muted">Platform Voucher</span>
+                </div>
+                <a href="#" class="fw-semibold" style="color:#f97316;">Select or enter code</a>
+            </div>
+        </div>
+
+        {{-- Bottom bar: Select All + Total + Checkout (IDs unchanged for JS) --}}
+        <div class="mt-4 bg-white border rounded-4 shadow-sm">
+            <div class="p-3 d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <label class="d-flex align-items-center gap-2 mb-0">
+                        <input type="checkbox" class="form-check-input" id="select-all" checked>
+                        <span>Select All ({{ $totalItems }})</span>
+                    </label>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between justify-content-lg-end gap-4">
+                    <div class="text-end">
+                        <div class="small text-muted">
+                            Total (<span id="selected-count">{{ $totalItems }}</span> items):
                         </div>
-                        <a href="#" class="text-orange-500 font-semibold">Select or enter code</a>
+                        <div class="fs-4 fw-semibold" style="color:#f97316;" id="selected-total">
+                            ₱{{ number_format($grandTotal, 2) }}
+                        </div>
                     </div>
+
+                    <a href="{{ route('checkout') }}" class="btn btn-lg text-white fw-semibold px-4 rounded-3
+                    btn-success"
+                      >
+                        Check Out
+                    </a>
                 </div>
 
             </div>
+        </div>
 
-            {{-- BOTTOM BAR: select all + total + checkout --}}
-            @php
-                $itemLabel = $totalItems === 1 ? 'item' : 'items';
-            @endphp
+    @else
+        <p class="text-center text-muted">Your cart is empty.</p>
+    @endif
+</div>
+@endsection
 
-            <div class="fixed md:static bottom-0 left-0 right-0 bg-white border-t border-gray-200 mt-4">
-                <div class="container mx-auto px-4 py-3 flex items-center justify-between text-sm">
-
-                    <div class="flex items-center gap-3">
-                        <label class="flex items-center gap-1">
-                            <input
-                                type="checkbox"
-                                class="form-checkbox"
-                                id="select-all"
-                                checked
-                            >
-                            <span>Select All ({{ $totalItems }})</span>
-                        </label>
-                        <button class="text-gray-500 hover:text-red-500">Delete</button>
-                        <button class="text-gray-500 hover:text-gray-700">
-                            Remove inactive products
-                        </button>
-                        <button class="text-orange-500 hover:underline">
-                            Move to My Likes
-                        </button>
-                    </div>
-
-                   <div class="flex items-center gap-4">
-                        <div class="text-right">
-                            <div class="text-xs text-gray-500">
-                                Total (<span id="selected-count">{{ $totalItems }}</span> items):
-                            </div>
-                            <div class="text-xl font-semibold text-orange-500" id="selected-total">
-                                ₱{{ number_format($grandTotal, 2) }}
-                            </div>
-                        </div>
-
-                        <a
-                            href="{{ route('checkout') }}"
-                            class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded"
-                        >
-                            Check Out
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-        @else
-            <p class="text-gray-600">Your cart is empty.</p>
-        @endif
-    </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
     const checkboxes   = document.querySelectorAll('.item-checkbox');
     const countElement = document.getElementById('selected-count');
     const totalElement = document.getElementById('selected-total');
@@ -251,6 +256,5 @@
     // initial calculation
     recalcTotals();
 });
-    </script>
-
-</x-app-layout>
+</script>
+@endpush

@@ -12,11 +12,12 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                      <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="url('#shop')" :active="request()->is('shop')">
-                        {{ __('Shop') }}
+
+                    <x-nav-link :href="route('admin.products')" :active="request()->routeIs('admin.products')">
+                        {{ __('Products') }}
                     </x-nav-link>
                     <x-nav-link :href="url('#cart')" :active="request()->is('cart')">
                         {{ __('Cart') }}

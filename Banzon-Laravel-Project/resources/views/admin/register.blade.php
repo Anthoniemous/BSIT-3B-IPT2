@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Admin Register</title>
 
-    <!-- CSS -->
+    <!-- Uses the same enhanced CSS -->
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body>
 
-    <!-- background overlay -->
+    <!-- overlay for readability -->
     <div class="bg-overlay"></div>
 
     <div class="auth-wrap">
         <div class="container">
 
             <div class="brand">
-                <h2>WELCOME</h2>
-                <p class="sub">Login to continue shopping</p>
+                <h2>ADMIN REGISTER</h2>
+                <p class="sub">Create a new admin account</p>
             </div>
 
             @if(session('success'))
                 <div class="alert success-msg">{{ session('success') }}</div>
-            @endif
-
-            @if(session('warning'))
-                <div class="alert error-msg">{{ session('warning') }}</div>
             @endif
 
             @if($errors->any())
@@ -37,12 +33,17 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ url('/login') }}">
+            <form method="POST" action="{{ route('admin.register.post') }}">
                 @csrf
 
                 <div class="field">
+                    <label>Username</label>
+                    <input type="text" name="username" value="{{ old('username') }}" placeholder="Admin username" required>
+                </div>
+
+                <div class="field">
                     <label>Email</label>
-                    <input type="email" name="email" placeholder="you@example.com" required>
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="admin@example.com" required>
                 </div>
 
                 <div class="field">
@@ -50,23 +51,18 @@
                     <input type="password" name="password" placeholder="••••••••" required>
                 </div>
 
-                <button type="submit">Login</button>
-
-                <div class="divider">
-                    <span>or</span>
+                <div class="field">
+                    <label>Confirm Password</label>
+                    <input type="password" name="password_confirmation" placeholder="••••••••" required>
                 </div>
 
-                <div class="google-login">
-                    <a href="{{ route('google-auth') }}" class="google-btn">
-                        <span class="g-icon">G</span>
-                        Sign in with Google
-                    </a>
-                </div>
+                <button type="submit">Create Admin</button>
             </form>
 
             <div class="links">
-                <p>Don't have an account? <a href="{{ url('/register') }}">Register here</a></p>
-                <p>Forgot your password? <a href="{{ url('/forgotpassword') }}">Click here</a></p>
+                <p>Already have an admin account?
+                    <a href="{{ route('admin.login') }}">Login here</a>
+                </p>
             </div>
 
         </div>

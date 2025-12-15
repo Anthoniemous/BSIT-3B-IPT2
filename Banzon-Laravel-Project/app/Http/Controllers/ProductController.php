@@ -32,7 +32,8 @@ class ProductController extends Controller
         'stock_quantity' => $request->stock_quantity,
         'image' => $imageName, // save filename in DB
         'created_at' => now(),
-        'updated_by' => Auth::id(),
+        'updated_by' => Auth::guard('admin')->id(),
+
     ]);
 
     return redirect()->back()->with('success', 'Product added successfully!');
@@ -46,7 +47,8 @@ class ProductController extends Controller
         ->orderBy('created_at', 'desc')
         ->get();
 
-        return view('dashboard', compact('products'));
+        return view('products', compact('products'));
+
     }
     public function update(Request $request, $id)
 {

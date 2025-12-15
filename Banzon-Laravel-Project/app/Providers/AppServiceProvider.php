@@ -1,7 +1,10 @@
 <?php
 
+
 namespace App\Providers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +26,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+         View::composer('*', function ($view) {
+        $customerId = session('customer_id');
+
+        $navCustomer = $customerId
+            ? DB::table('customer')
+                ->select('customer_id', 'name', 'profile_image')
+                ->where('customer_id', $customerId)
+                ->first()
+            : null;
+
+        $view->with('navCustomer', $navCustomer);
+    });
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Verified;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -14,6 +16,7 @@ use App\Http\Controllers\CustomerProductController;
 use App\Http\Controllers\CustomerProfileController;
 use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\WishlistController;
 
 // ===================================================
@@ -40,6 +43,10 @@ Route::get('admin/auth/google/callback', [AdminGoogleAuthController::class, 'cal
 // ===================================================
 Route::get('/admin/login', [AdminController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.post');
+// Admin Registration (Manual)
+Route::get('/admin/register', [AdminController::class, 'showRegister'])->name('admin.register');
+Route::post('/admin/register', [AdminController::class, 'register'])->name('admin.register.post');
+
 
 // ===================================================
 // EMAIL VERIFICATION ROUTES
@@ -52,11 +59,28 @@ Route::get('/email/verify', function () {
 
 
 // Verification link (from email)
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->user('customer')->markEmailAsVerified(); 
-    return redirect()->route('customer.dashboard');
-})->middleware(['auth:customer', 'signed'])->name('verification.verify');
 
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+
+    $customer = Customer::where('customer_id', $id)->firstOrFail();
+
+    // validate hash
+    if (! hash_equals(sha1($customer->getEmailForVerification()), (string) $hash)) {
+        abort(403, 'Invalid verification link.');
+    }
+
+    // update DB
+    if (! $customer->hasVerifiedEmail()) {
+        $customer->markEmailAsVerified(); // sets email_verified_at
+        event(new Verified($customer));
+    }
+
+    // auto-login after verifying
+    Auth::guard('customer')->login($customer);
+    $request->session()->regenerate();
+
+    return redirect()->route('customer.dashboard')->with('success', 'Email verified successfully!');
+})->middleware(['signed'])->name('verification.verify');
 
 // Resend verification link
 Route::post('/email/verification-notification', function (Request $request) {
@@ -97,13 +121,42 @@ Route::middleware(['auth:customer', 'verified'])->group(function () {
     Route::post('/customer/place-order', [CheckoutController::class, 'placeOrder'])->name('place.order');
     Route::get('/customer/checkout/cod-info', [CheckoutController::class, 'showCodInfo'])->name('cod.info');
     Route::post('/customer/checkout/cod-confirm', [CheckoutController::class, 'confirmCodOrder'])->name('cod.confirm');
+
+    // Bank checkout routes
+    Route::get('/customer/checkout/bank-info', [CheckoutController::class, 'showBankInfo'])->name('bank.info');
+    Route::post('/customer/checkout/bank-confirm', [CheckoutController::class, 'confirmBankOrder'])->name('bank.confirm');
+
+    // My Purchases
+Route::get('/customer/purchases', [CheckoutController::class, 'myPurchases'])
+    ->name('purchases.index');
+
+Route::get('/customer/purchases/{orderId}', [CheckoutController::class, 'showPurchase'])
+    ->name('purchases.show');
+
 });
 
 // ===================================================
 // Admin Dashboard
 // ===================================================
-Route::get('/admin/dashboard', [ProductController::class, 'index'])
-    ->name('dashboard');
+
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+    ->name('admin.dashboard');
+
+// Admin Products page (your current dashboard.blade.php content goes here)
+Route::get('/admin/products', [ProductController::class, 'index'])
+    ->name('admin.products');
+
+// Admin Orders page
+Route::get('/admin/orders', [AdminController::class, 'orders'])
+    ->name('admin.orders');
+
+// Update order status (from Orders page)
+Route::put('/admin/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])
+    ->name('admin.orders.status');
+
+Route::get('/admin/activity-logs', [ActivityLogController::class, 'index'])
+    ->name('admin.activity_logs');
+
 
 // ===================================================
 // Product Routes (for Admin)
@@ -117,4 +170,6 @@ Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
 Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
 Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
 Route::post('/wishlist/move-to-cart/{id}', [WishlistController::class, 'moveToCart'])->name('wishlist.moveToCart');
+
+
 

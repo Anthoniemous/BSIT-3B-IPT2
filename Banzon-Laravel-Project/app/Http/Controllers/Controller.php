@@ -99,17 +99,24 @@ class Controller extends BaseController
             'password' => 'required|confirmed|min:8',
         ]);
 
-        // ✅ Create customer
-        $customerId = DB::table('customer')->insertGetId([
+        $customer = Customer::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'created_at' => now(),
         ]);
 
-      return redirect('/login')->with('success', 'Registration successful! Please log in to continue.');
-    }
+        // ✅ sends verification email
+        event(new Registered($customer));
 
+        // ✅ log them in so they can see the verify notice page
+        Auth::guard('customer')->login($customer);
+        $request->session()->regenerate();
+        $request->session()->put('role', 'customer');
+        $request->session()->put('customer_id', $customer->customer_id);
+
+        return redirect()->route('verification.notice')
+            ->with('success', 'Account created! Please check your email to verify.');
+    }
     // ===================================================
     // Handle Logout (for Admin & Customer)
     // ===================================================

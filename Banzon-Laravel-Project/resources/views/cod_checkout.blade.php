@@ -1,116 +1,138 @@
-<x-app-layout>
-    <div class="container mx-auto px-4 py-8 text-sm">
-        <h1 class="text-2xl font-bold mb-6 text-primary">Cash on Delivery - Shipping Details</h1>
+@extends('layouts.customer')
 
-        @php
-            $grandTotal = $pending['total'] ?? 0;
-            $totalItems = $pending['items'] ?? 0;
-        @endphp
+@section('title', 'COD Shipping Details')
+@section('page_heading', 'Cash on Delivery')
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {{-- LEFT: INFO FORM --}}
-            <div class="lg:col-span-2 bg-white border border-gray-200 rounded p-4">
-                <h2 class="text-sm font-semibold text-gray-800 mb-4">
-                    Shipping Information
-                </h2>
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('checkout') }}">Checkout</a></li>
+    <li class="breadcrumb-item text-dark" aria-current="page">COD Details</li>
+@endsection
 
-                <form action="{{ route('cod.confirm') }}" method="POST" class="space-y-3">
+@section('content')
+<div class="container py-5">
+    <h2 class="mb-4 text-center text-primary">Cash on Delivery - Shipping Details</h2>
+
+    @php
+        $grandTotal = $pending['total'] ?? 0;
+        $totalItems = $pending['items'] ?? 0;
+    @endphp
+
+    <div class="row g-4">
+        {{-- LEFT: INFO FORM --}}
+        <div class="col-12 col-lg-8">
+            <div class="bg-white border rounded-4 shadow-sm p-4">
+                <h5 class="fw-semibold text-dark mb-4">Shipping Information</h5>
+
+                <form action="{{ route('cod.confirm') }}" method="POST">
                     @csrf
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Full Name</label>
-                        <input type="text" name="full_name"
-                               class="w-full border rounded px-3 py-2 text-sm"
-                               value="{{ old('full_name') }}"
-                               required>
-                        @error('full_name')
-                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <div class="row g-3">
+                        {{-- Full Name --}}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small text-muted">Full Name</label>
+                            <input type="text"
+                                   name="full_name"
+                                   class="form-control @error('full_name') is-invalid @enderror"
+                                   value="{{ old('full_name') }}"
+                                   required>
+                            @error('full_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Phone Number</label>
-                        <input type="text" name="phone"
-                               class="w-full border rounded px-3 py-2 text-sm"
-                               value="{{ old('phone') }}"
-                               required>
-                        @error('phone')
-                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                        {{-- Phone Number --}}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small text-muted">Phone Number</label>
+                            <input type="text"
+                                   name="phone"
+                                   class="form-control @error('phone') is-invalid @enderror"
+                                   value="{{ old('phone') }}"
+                                   required>
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Address</label>
-                        <textarea name="address"
-                                  class="w-full border rounded px-3 py-2 text-sm"
-                                  rows="3"
-                                  required>{{ old('address') }}</textarea>
-                        @error('address')
-                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                        {{-- Address --}}
+                        <div class="col-12">
+                            <label class="form-label small text-muted">Address</label>
+                            <textarea name="address"
+                                      rows="3"
+                                      class="form-control @error('address') is-invalid @enderror"
+                                      required>{{ old('address') }}</textarea>
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <div>
-                        <label class="block text-xs text-gray-600 mb-1">Notes (optional)</label>
-                        <textarea name="notes"
-                                  class="w-full border rounded px-3 py-2 text-sm"
-                                  rows="2">{{ old('notes') }}</textarea>
-                        @error('notes')
-                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                        {{-- Notes --}}
+                        <div class="col-12">
+                            <label class="form-label small text-muted">Notes (optional)</label>
+                            <textarea name="notes"
+                                      rows="2"
+                                      class="form-control @error('notes') is-invalid @enderror">{{ old('notes') }}</textarea>
+                            @error('notes')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <div class="flex justify-end mt-4">
-                        <button type="submit"
-                                class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded text-sm">
-                            Confirm Order
-                        </button>
+                        {{-- Submit --}}
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit"
+                                    class="btn text-white fw-semibold px-4 py-2 rounded-3 btn-success">
+                                Confirm Order
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
+        </div>
 
-            {{-- RIGHT: ORDER SUMMARY --}}
-            <div class="bg-white border border-gray-200 rounded p-4">
-                <h2 class="text-sm font-semibold text-gray-800 mb-4">
-                    Order Summary
-                </h2>
+        {{-- RIGHT: ORDER SUMMARY --}}
+        <div class="col-12 col-lg-4">
+            <div class="bg-white border rounded-4 shadow-sm p-4">
+                <h5 class="fw-semibold text-dark mb-4">Order Summary</h5>
 
-                <div class="space-y-2 mb-4">
+                <div class="mb-3">
                     @foreach($cart as $item)
                         @php
                             $price     = isset($item['price']) ? floatval($item['price']) : 0;
                             $quantity  = $item['quantity'] ?? 1;
                             $lineTotal = $price * $quantity;
                         @endphp
-                        <div class="flex justify-between text-xs text-gray-700">
-                            <div class="pr-2">
+
+                        <div class="d-flex justify-content-between small text-secondary py-1">
+                            <div class="pe-2">
                                 {{ $item['name'] ?? 'Product' }}
-                                <span class="text-gray-400">x{{ $quantity }}</span>
+                                <span class="text-muted">x{{ $quantity }}</span>
                             </div>
-                            <div>
-                                ₱{{ number_format($lineTotal, 2) }}
-                            </div>
+                            <div>₱{{ number_format($lineTotal, 2) }}</div>
                         </div>
                     @endforeach
                 </div>
 
-                <div class="border-t pt-3 mt-3 space-y-1 text-sm text-gray-700">
-                    <div class="flex justify-between">
+                <div class="border-top pt-3">
+                    <div class="d-flex justify-content-between small text-secondary mb-1">
                         <span>Items ({{ $totalItems }})</span>
                         <span>₱{{ number_format($grandTotal, 2) }}</span>
                     </div>
-                    <div class="flex justify-between">
+
+                    <div class="d-flex justify-content-between small text-secondary mb-2">
                         <span>Shipping Fee</span>
                         <span>Free</span>
                     </div>
-                    <div class="flex justify-between items-center pt-2 mt-2 border-t">
-                        <span class="text-gray-600">Total Payment:</span>
-                        <span class="text-lg font-semibold text-orange-500">
+
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="text-muted">Total Payment:</span>
+                        <span class="fs-5 fw-semibold" style="color:#f97316;">
                             ₱{{ number_format($grandTotal, 2) }}
                         </span>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection
