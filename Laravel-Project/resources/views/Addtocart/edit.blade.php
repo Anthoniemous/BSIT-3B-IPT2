@@ -39,6 +39,12 @@
                     <input type="number" step="0.01" name="price" value="{{ old('price', $product->price) }}" required>
                 </div>
 
+                <!-- Stock / Quantity -->
+                <div class="form-group">
+                    <label>Stock / Quantity</label>
+                    <input type="number" name="quantity" min="0" value="{{ old('quantity', $product->quantity) }}" required>
+                </div>
+
                 <!-- Brand -->
                 <div class="form-group">
                     <label>Brand</label>

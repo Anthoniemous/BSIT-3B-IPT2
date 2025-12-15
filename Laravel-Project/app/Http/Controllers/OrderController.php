@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -168,18 +169,31 @@ class OrderController extends Controller
 
     // Create order items and remove from cart
     foreach ($cartItems as $cartItem) {
-        // Create order item
-        OrderItem::create([
-            'order_id' => $order->order_id,
-            'product_id' => $cartItem->product_id,
-            'quantity' => $cartItem->quantity,
-            'size' => $cartItem->size,
-            'price' => $cartItem->product->price,
-        ]);
 
-        // Remove item from cart
-        $cartItem->delete();
+    $product = Product::where('product_id', $cartItem->product_id)->lockForUpdate()->first();
+
+    // ❌ OUT OF STOCK CHECK
+    if ($product->quantity < $cartItem->quantity) {
+        return redirect()->route('cart.index')
+            ->with('error', 'Not enough stock for ' . $product->product_name);
     }
+
+    // ✅ CREATE ORDER ITEM
+    OrderItem::create([
+        'order_id'  => $order->order_id,
+        'product_id'=> $cartItem->product_id,
+        'quantity'  => $cartItem->quantity,
+        'size'      => $cartItem->size,
+        'price'     => $product->price,
+    ]);
+
+    // 🔥 UPDATE STOCK & SOLD
+    $product->decrement('quantity', $cartItem->quantity);
+    $product->increment('total_sold', $cartItem->quantity);
+
+    // 🗑 REMOVE FROM CART
+    $cartItem->delete();
+}
 
     return redirect()->route('orders.index')
         ->with('success', 'Order placed successfully! Order ID: ' . $order->order_id);

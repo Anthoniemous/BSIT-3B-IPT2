@@ -206,9 +206,7 @@
               <span class="product-badge">New</span>
               <form method="POST" action="{{ route('wishlist.add', ['product' => $product->product_id]) }}" class="wishlist-form">
                 @csrf
-                <button type="submit" class="wishlist-btn">
-                  <i class="far fa-heart"></i>
-                </button>
+
               </form>
               <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->product_name }}">
             </div>
@@ -218,7 +216,18 @@
               <div class="product-brand">Brand: {{ $product->brand ?? 'N/A' }}</div>
               <p class="product-description">{{ Str::limit($product->description, 80) }}</p>
               <div class="product-price">₱{{ number_format($product->price, 2) }}</div>
-              
+
+              <!-- STOCK DISPLAY -->
+              <div class="product-stock">
+                @if($product->quantity > 10)
+                  <span style="color: #22c55e; font-weight: bold;">In Stock: {{ $product->quantity }}</span>
+                @elseif($product->quantity > 0)
+                  <span style="color: #f59e0b; font-weight: bold;">Low Stock: {{ $product->quantity }}</span>
+                @else
+                  <span style="color: #ef4444; font-weight: bold;">Out of Stock</span>
+                @endif
+              </div>
+
               <form method="POST" action="{{ route('cart.add', $product->product_id) }}" class="product-actions">
                 @csrf
                 <select name="size" class="size-select" required>
@@ -230,9 +239,12 @@
                   <option value="40">40</option>
                   <option value="41">41</option>
                 </select>
-                <button type="submit" class="add-cart-btn">
+                <button type="submit" class="add-cart-btn" @if($product->quantity == 0) disabled style="background-color: #ccc; cursor: not-allowed;" @endif>
                   <i class="fas fa-shopping-cart"></i> Add to Cart
                 </button>
+                  <button type="button" class="wishlist-btn">
+                    <i class="fas fa-list"></i> Wishlist
+                  </button>
               </form>
             </div>
           </div>
@@ -251,7 +263,7 @@
     </div>
   </section>
 
-   <!-- Features -->
+  <!-- Features -->
   <section class="features">
     <div class="container">
       <div class="features-grid">

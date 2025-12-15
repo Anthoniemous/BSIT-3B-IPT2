@@ -47,7 +47,7 @@
                 <div class="stat-card clickable-card" onclick="openModal('ordersModal')">
                     <div class="stat-card-header">
                         <span class="stat-card-title">Total Orders</span>
-                        <span class="stat-card-icon bg-blue">📦</span>
+                        
                     </div>
                     <div class="stat-card-value">{{ number_format($totalOrders) }}</div>
                     <div class="stat-card-change {{ $ordersGrowth >= 0 ? '' : 'negative' }}">
@@ -59,7 +59,7 @@
                 <div class="stat-card clickable-card" onclick="openModal('salesModal')">
                     <div class="stat-card-header">
                         <span class="stat-card-title">Total Sales</span>
-                        <span class="stat-card-icon bg-green">💰</span>
+                        
                     </div>
                     <div class="stat-card-value">₱{{ number_format($totalSales, 2) }}</div>
                     <div class="stat-card-change {{ $salesGrowth >= 0 ? '' : 'negative' }}">
@@ -71,7 +71,7 @@
                 <div class="stat-card clickable-card" onclick="openModal('cancelledModal')">
                     <div class="stat-card-header">
                         <span class="stat-card-title">Cancelled Orders</span>
-                        <span class="stat-card-icon bg-red">❌</span>
+                      
                     </div>
                     <div class="stat-card-value">{{ number_format($cancelledOrders) }}</div>
                     <div class="stat-card-change">
@@ -83,7 +83,7 @@
                 <div class="stat-card clickable-card" onclick="openModal('productsModal')">
                     <div class="stat-card-header">
                         <span class="stat-card-title">Active Products</span>
-                        <span class="stat-card-icon bg-purple">🏷️</span>
+                    
                     </div>
                     <div class="stat-card-value">{{ number_format($activeProducts) }}</div>
                     <div class="stat-card-change">Available in store</div>
@@ -240,7 +240,7 @@
     <div id="ordersModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>📦 Total Orders Details</h2>
+                <h2> Total Orders Details</h2>
                 <span class="close" onclick="closeModal('ordersModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -295,7 +295,7 @@
     <div id="salesModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>💰 Total Sales Details</h2>
+                <h2> Total Sales Details</h2>
                 <span class="close" onclick="closeModal('salesModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -338,7 +338,7 @@
     <div id="cancelledModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>❌ Cancelled Orders Details</h2>
+                <h2> Cancelled Orders Details</h2>
                 <span class="close" onclick="closeModal('cancelledModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -404,7 +404,7 @@
     <div id="productsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🏷️ Active Products Details</h2>
+                <h2>Active Products Details</h2>
                 <span class="close" onclick="closeModal('productsModal')">&times;</span>
             </div>
             <div class="modal-body">

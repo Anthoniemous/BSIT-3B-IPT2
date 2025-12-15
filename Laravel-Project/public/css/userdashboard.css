@@ -27,11 +27,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: url('/css/img/weweew.jpg') no-repeat center center fixed;
-  background-size: 100% auto; /* 🔹 this acts like "background width" */
+  background-size: 100% auto;
   background-color: #fff;
   color: #ffffff;
   line-height: 1.45;
-  
 }
 
 .container {
@@ -531,10 +530,10 @@ body {
 }
 
 .hero-image img {
-  width: 200px;          /* adjust size */
+  width: 200px;
   height: 200px;
-  object-fit: cover;    /* para dili ma-stretch */
-  border-radius: 50%;   /* 👉 mao ni ang mag-circle */
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 @keyframes float {
@@ -600,17 +599,17 @@ body {
 .products-section {
   padding: 80px 0;
 }
+
 .section-header {
   text-align: center;
   margin-bottom: 60px;
-
 }
 
 .section-header h2 {
   font-size: 42px;
   font-weight: 900;
   margin-bottom: 12px;
-   color: #f1f1f1;
+  color: #f1f1f1;
 }
 
 .section-header p {
@@ -735,33 +734,9 @@ body {
   transform: scale(1.05);
 }
 
+/* REMOVE OLD HEART WISHLIST BUTTON */
 .wishlist-form {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 10;
-}
-
-.wishlist-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--white);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-md);
-  transition: all 0.2s;
-  font-size: 18px;
-  color: var(--text-dark);
-}
-
-.wishlist-btn:hover {
-  background: var(--primary);
-  color: var(--white);
-  transform: scale(1.1);
+  display: none !important;
 }
 
 .product-badge {
@@ -818,6 +793,11 @@ body {
   margin-bottom: 16px;
 }
 
+.product-stock {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
 .product-actions {
   display: flex;
   flex-direction: column;
@@ -842,8 +822,43 @@ body {
   box-shadow: 0 0 0 4px rgba(201,8,42,0.1);
 }
 
+/* ==========================================
+   NEW WISHLIST BUTTON STYLES
+   ========================================== */
+
+/* Shared Button Style */
+.add-cart-btn,
+.wishlist-btn {
+  flex: 1;
+  padding: 8px 12px;          /* ↓ gikan 12px 20px */
+  font-size: 13px;            /* ↓ gikan 15px */
+  border-radius: 8px;         /* ↓ gikan 10px */
+  font-weight: 600;           /* ↓ slight */
+  min-height: 40px;           /* same height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Icons smaller */
+.add-cart-btn i,
+.wishlist-btn i {
+  font-size: 13px;
+}
+
+
+
+
+/* Container para sa Add to Cart & Wishlist buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Add to Cart Button */
 .add-cart-btn {
-  width: 100%;
+  flex: 1;
   padding: 12px 20px;
   background: var(--primary);
   color: var(--white);
@@ -859,10 +874,43 @@ body {
   font-size: 15px;
 }
 
-.add-cart-btn:hover {
+.add-cart-btn:hover:not(:disabled) {
   background: #a50722;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(201,8,42,0.3);
+}
+
+.add-cart-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* NEW WISHLIST BUTTON - text with list icon */
+.wishlist-btn {
+  padding: 12px 20px;
+  background: var(--secondary);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.wishlist-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(23, 64, 139, 0.3);
+}
+
+.wishlist-btn i {
+  font-size: 14px;
 }
 
 .no-products {
@@ -1060,5 +1108,15 @@ body {
   .dropdown-menu {
     width: 280px;
     right: -10px;
+  }
+
+  /* Responsive wishlist buttons */
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .wishlist-btn,
+  .add-cart-btn {
+    width: 100%;
   }
 }

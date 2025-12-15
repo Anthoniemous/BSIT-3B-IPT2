@@ -50,6 +50,10 @@
                     <label for="brand" class="form-label">Brand</label>
                     <input type="text" name="brand" id="brand" class="form-control">
                 </div>
+                <div class="form-group">
+                <label for="quantity">Quantity (Stock)</label>
+                <input type="number" name="quantity" id="quantity" min="0" required>
+            </div>
 
                 <!-- Category dropdown -->
                 <div class="mb-3">

@@ -87,57 +87,79 @@
         </div>
 
         <!-- TABLE -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Brand</th>
-                        <th>Price</th>
-                        <th>Image</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($products as $product)
-                    <tr>
-                        <td>{{ $product->category }}</td>
-                        <td>{{ $product->product_name }}</td>
-                        <td>{{ $product->description }}</td>
-                        <td>{{ $product->brand ?? '—' }}</td>
-                        <td>₱{{ number_format($product->price, 2) }}</td>
-                        <td>
-                            @if ($product->image)
-                                <img src="{{ asset('storage/'.$product->image) }}" alt="Product">
-                            @else
-                                N/A
-                            @endif
-                        </td>
-                        <td>
-                            <!-- ✅ SIMPLE LINK - NO MODAL, NO JAVASCRIPT -->
-                            <a href="/admin/products/{{ $product->product_id }}/edit" class="btn btn-warning">
-                                Edit
-                            </a>
-                            <form action="{{ route('admin.products.destroy', $product->product_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">
-                            No products found.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+      <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Stock</th> <!-- ✅ ADDED -->
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($products as $product)
+            <tr>
+                <td>{{ $product->category }}</td>
+                <td>{{ $product->product_name }}</td>
+                <td>{{ $product->description }}</td>
+                <td>{{ $product->brand ?? '—' }}</td>
+                <td>₱{{ number_format($product->price, 2) }}</td>
+
+                <!-- ✅ STOCK COLUMN -->
+                <td>
+                    @if($product->quantity > 10)
+                        <span style="color: #22c55e; font-weight: bold;">
+                            {{ $product->quantity }}
+                        </span>
+                    @elseif($product->quantity > 0)
+                        <span style="color: #f59e0b; font-weight: bold;">
+                            {{ $product->quantity }} (Low)
+                        </span>
+                    @else
+                        <span style="color: #ef4444; font-weight: bold;">
+                            Out of Stock
+                        </span>
+                    @endif
+                </td>
+
+                <td>
+                    @if ($product->image)
+                        <img src="{{ asset('storage/'.$product->image) }}" alt="Product">
+                    @else
+                        N/A
+                    @endif
+                </td>
+
+                <td>
+                    <a href="/admin/products/{{ $product->product_id }}/edit" class="btn btn-warning">
+                        Edit
+                    </a>
+
+                    <form action="{{ route('admin.products.destroy', $product->product_id) }}" 
+                          method="POST" 
+                          style="display:inline;" 
+                          onsubmit="return confirm('Are you sure you want to delete this product?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="8" style="text-align:center; padding:40px; color:rgba(255,255,255,0.5);">
+                    No products found.
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
     <!-- 🆕 ADD PRODUCT MODAL -->
     <div id="addModal" class="modal">
