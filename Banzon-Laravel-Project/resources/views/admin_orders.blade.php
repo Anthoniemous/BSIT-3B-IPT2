@@ -8,6 +8,19 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+    <div class="d-flex align-items-center gap-2">
+    <form method="GET" action="{{ route('admin.orders') }}" class="d-flex align-items-center gap-2">
+        <label class="small text-muted mb-0">Sort by</label>
+        <select name="sort" class="form-select form-select-sm" style="width: 200px;" onchange="this.form.submit()">
+            <option value="newest" @selected(($sort ?? 'newest') === 'newest')>Newest</option>
+            <option value="oldest" @selected(($sort ?? '') === 'oldest')>Oldest</option>
+            <option value="total_high" @selected(($sort ?? '') === 'total_high')>Total (High → Low)</option>
+            <option value="total_low" @selected(($sort ?? '') === 'total_low')>Total (Low → High)</option>
+            <option value="status_az" @selected(($sort ?? '') === 'status_az')>Status (A → Z)</option>
+            <option value="status_za" @selected(($sort ?? '') === 'status_za')>Status (Z → A)</option>
+        </select>
+    </form>
+</div>
 
     <div class="bg-light rounded p-4">
         <div class="d-flex align-items-center justify-content-between mb-4">

@@ -14,6 +14,22 @@
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
             <h6 class="mb-0">Products</h6>
 
+               <!-- Search + Sort (GET) -->
+    <form method="GET" action="{{ route('admin.products') }}" class="d-flex gap-2" style="max-width: 520px;">
+        <select name="sort" class="form-select" style="width: 220px;" onchange="this.form.submit()">
+            <option value="newest" @selected(($sort ?? 'newest') === 'newest')>Newest</option>
+            <option value="name_az" @selected(($sort ?? '') === 'name_az')>Name (A → Z)</option>
+            <option value="name_za" @selected(($sort ?? '') === 'name_za')>Name (Z → A)</option>
+            <option value="price_high" @selected(($sort ?? '') === 'price_high')>Price (High → Low)</option>
+            <option value="price_low" @selected(($sort ?? '') === 'price_low')>Price (Low → High)</option>
+            <option value="stock_high" @selected(($sort ?? '') === 'stock_high')>Stock (High → Low)</option>
+            <option value="stock_low" @selected(($sort ?? '') === 'stock_low')>Stock (Low → High)</option>
+            <option value="active_first" @selected(($sort ?? '') === 'active_first')>Active First</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+
             <div class="d-flex gap-2 align-items-center flex-wrap">
                 <form id="searchForm" class="d-flex" style="max-width: 380px;">
                     <input type="text" id="searchInput" class="form-control" placeholder="Search product name..." required>

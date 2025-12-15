@@ -40,16 +40,60 @@ class ProductController extends Controller
 }
 
 
-        public function index()
-    {
-        $products = DB::table('product')
-                 ->select('product_id as id', 'name', 'description', 'price', 'stock_quantity', 'status','image', 'created_at')
-        ->orderBy('created_at', 'desc')
-        ->get();
+public function index(Request $request)
+{
+    $sort = $request->get('sort', 'newest');
+    $q    = $request->get('q');
 
-        return view('products', compact('products'));
+    $query = DB::table('product')
+        ->select('product_id as id', 'name', 'description', 'price', 'stock_quantity', 'status', 'image', 'created_at');
 
+    // optional search (server-side)
+    if (!empty($q)) {
+        $query->where('name', 'like', "%{$q}%");
     }
+
+    switch ($sort) {
+        case 'name_az':
+            $query->orderBy('name', 'asc');
+            break;
+
+        case 'name_za':
+            $query->orderBy('name', 'desc');
+            break;
+
+        case 'price_high':
+            $query->orderBy('price', 'desc');
+            break;
+
+        case 'price_low':
+            $query->orderBy('price', 'asc');
+            break;
+
+        case 'stock_high':
+            $query->orderBy('stock_quantity', 'desc');
+            break;
+
+        case 'stock_low':
+            $query->orderBy('stock_quantity', 'asc');
+            break;
+
+        case 'active_first':
+            $query->orderByRaw("CASE WHEN status='active' THEN 0 ELSE 1 END")
+                  ->orderBy('name', 'asc');
+            break;
+
+        case 'newest':
+        default:
+            $query->orderBy('created_at', 'desc');
+            break;
+    }
+
+    $products = $query->get();
+
+    return view('products', compact('products', 'sort', 'q'));
+}
+
     public function update(Request $request, $id)
 {
     $request->validate([

@@ -153,17 +153,50 @@ class AdminController extends Controller
         ));
     }
 
-    public function orders()
-    {
-        $orders = DB::table('order')
-            ->join('customer', 'order.customer_id', '=', 'customer.customer_id')
-            ->select('order.*', 'customer.name as customer_name', 'customer.email as customer_email')
-            ->orderByDesc('order.order_date')
-            ->get();
+ public function orders(Request $request)
+{
+    $sort = $request->get('sort', 'newest');
 
-        return view('admin_orders', compact('orders'));
+    $query = DB::table('order')
+        ->join('customer', 'order.customer_id', '=', 'customer.customer_id')
+        ->select('order.*', 'customer.name as customer_name', 'customer.email as customer_email');
+
+    switch ($sort) {
+        case 'oldest':
+            $query->orderBy('order.order_date', 'asc');
+            break;
+
+        case 'total_high':
+            $query->orderBy('order.total_amount', 'desc');
+            break;
+
+        case 'total_low':
+            $query->orderBy('order.total_amount', 'asc');
+            break;
+
+        case 'status_az':
+            $query->orderBy('order.order_status', 'asc')
+                  ->orderBy('order.order_date', 'desc');
+            break;
+
+        case 'status_za':
+            $query->orderBy('order.order_status', 'desc')
+                  ->orderBy('order.order_date', 'desc');
+            break;
+
+        case 'newest':
+        default:
+            $query->orderBy('order.order_date', 'desc');
+            break;
     }
 
+    $orders = $query->get();
+
+    return view('admin_orders', compact('orders', 'sort'));
+}
+
+
+    
     public function updateOrderStatus(Request $request, $id)
     {
         $request->validate([

@@ -87,6 +87,82 @@
 </div>
 <!-- Sales Chart End -->
 
+<!-- Marketable / Non-marketable Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+
+        <!-- Most Marketable -->
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="mb-0">Most Marketable Products (Top 5)</h6>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover mb-0 text-start align-middle">
+                        <thead>
+                            <tr class="text-dark">
+                                <th>Product</th>
+                                <th class="text-end">Qty Sold</th>
+                                <th class="text-end">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($topMarketable as $p)
+                                <tr>
+                                    <td>{{ $p->name }}</td>
+                                    <td class="text-end">{{ number_format($p->qty_sold) }}</td>
+                                    <td class="text-end">₱{{ number_format($p->revenue, 2) }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center">No data found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Least Marketable -->
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="mb-0">Non-marketable Products (Lowest 5)</h6>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover mb-0 text-start align-middle">
+                        <thead>
+                            <tr class="text-dark">
+                                <th>Product</th>
+                                <th class="text-end">Qty Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($nonMarketable as $p)
+                                <tr>
+                                    <td>{{ $p->name }}</td>
+                                    <td class="text-end">{{ number_format($p->qty_sold) }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="text-center">No data found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Marketable / Non-marketable End -->
+
 
 <!-- Recent Sales Start -->
 <div class="container-fluid pt-4 px-4">

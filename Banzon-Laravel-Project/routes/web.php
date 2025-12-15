@@ -150,6 +150,8 @@ Route::get('/admin/products', [ProductController::class, 'index'])
 Route::get('/admin/orders', [AdminController::class, 'orders'])
     ->name('admin.orders');
 
+    
+
 // Update order status (from Orders page)
 Route::put('/admin/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])
     ->name('admin.orders.status');
