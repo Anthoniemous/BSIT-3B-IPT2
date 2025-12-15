@@ -4,39 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify Email</title>
-
-    {{-- Link to your custom CSS --}}
-    <link rel="stylesheet" href="{{ asset('auth/verify.css') }}">
 </head>
-<body>
+<body style="font-family: Arial, sans-serif; padding: 30px;">
 
-    <div class="verify-container">
-        <div class="verify-card">
-            <div class="verify-header">
-                <h2>Verify Your Email Address</h2>
-            </div>
+    <h2>Email Verification</h2>
 
-            <div class="verify-body">
-                <p>
-                    Before proceeding, please check your email for a verification link.
-                    If you did not receive the email, you can request another one below.
-                </p>
+    @if (session('message'))
+        <p style="color: green;">{{ session('message') }}</p>
+    @endif
 
-                @if (session('message'))
-                    <div class="alert success">
-                        {{ session('message') }}
-                    </div>
-                @endif
+    @if (session('status') === 'verification-link-sent')
+        <p style="color: green;">✅ Verification link sent! Please check your email.</p>
+    @endif
 
-                <form method="POST" action="{{ route('verification.resend') }}">
-                    @csrf
-                    <button type="submit" class="resend-btn">
-                        Resend Verification Email
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <p>We sent a verification link to your email. Please verify to continue.</p>
+
+    <form method="POST" action="{{ route('verification.resend') }}">
+        @csrf
+        <button type="submit" style="padding: 10px 15px; cursor: pointer;">
+            Resend Verification Email
+        </button>
+    </form>
+
+    <form method="POST" action="{{ route('logout') }}" style="margin-top: 15px;">
+        @csrf
+        <button type="submit" style="padding: 10px 15px; cursor: pointer;">
+            Logout
+        </button>
+    </form>
 
 </body>
 </html>

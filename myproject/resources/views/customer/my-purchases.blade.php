@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Cart | Coffee ' Sodoso</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Purchases | Coffee ' Sodoso</title>
 
-  <link rel="stylesheet" href="{{ asset('customer/cart.css') }}">
+  <link rel="stylesheet" href="{{ asset('customer/purchases.css') }}">
 </head>
 <body>
 
@@ -26,9 +26,9 @@
         <span class="mi">🏠</span> <span>Dashboard</span>
       </a>
 
-      <a class="menu-item active" href="{{ route('cart.index') }}">
+      <a class="menu-item" href="{{ route('cart.index') }}">
         <span class="mi">🛒</span> <span>Cart</span>
-        @if(isset($cartItems) && count($cartcartItems ?? $cartItems) > 0)
+        @if(isset($cartItems) && count($cartItems) > 0)
           <span class="badge">{{ count($cartItems) }}</span>
         @endif
       </a>
@@ -40,7 +40,7 @@
         @endif
       </a>
 
-      <a class="menu-item" href="{{ route('customer.purchases') }}">
+      <a class="menu-item active" href="{{ route('customer.purchases') }}">
         <span class="mi">📦</span> <span>My Purchases</span>
       </a>
     </nav>
@@ -59,8 +59,8 @@
     <!-- TOP BAR -->
     <header class="topbar">
       <div class="top-left">
-        <h1 class="page-title">Cart</h1>
-        <p class="page-sub">Review your items before checkout.</p>
+        <h1 class="page-title">My Purchases</h1>
+        <p class="page-sub">Track your orders and view details.</p>
       </div>
 
       <div class="top-right">
@@ -68,11 +68,9 @@
           <button class="profile-btn">
             👤 {{ Auth::user()->name }} <span class="caret">▾</span>
           </button>
-
           <div class="dropdown">
             <a href="#" id="viewProfileBtn">View Profile</a>
-            <a href="{{ route('customer.purchases') }}">My Purchases</a>
-
+            <a href="{{ route('customer.dashboard') }}">Back to Shop</a>
             <form action="{{ route('logout') }}" method="POST" style="margin:0;">
               @csrf
               <button type="submit" class="dropdown-logout">Logout</button>
@@ -88,120 +86,75 @@
         <div class="alert alert-success">{{ session('success') }}</div>
       @endif
 
-      @if(session('error'))
-        <div class="alert alert-error">{{ session('error') }}</div>
+      @if(session('pending'))
+        <div class="alert alert-warn">{{ session('pending') }}</div>
       @endif
 
-      <!-- CART BOX -->
       <section class="card-box">
         <div class="card-head">
-          <h2 class="card-title">Your Cart</h2>
-          <a href="{{ route('customer.dashboard') }}" class="btn-link">← Back to Dashboard</a>
+          <h2 class="card-title">Your Orders</h2>
+          <a href="{{ route('customer.dashboard') }}" class="btn-link">← Back to Shop</a>
         </div>
 
-        @if(count($cartItems) > 0)
-
+        @if($orders->count() === 0)
+          <div class="empty-state">Wala pa kay purchases. Pag order sa shop 😊</div>
+        @else
           <div class="table-wrap">
-            <table class="cart-table">
+            <table class="orders-table">
               <thead>
                 <tr>
-                  <th>Product</th>
-                  <th>Price</th>
-                  <th>Quantity</th>
-                  <th>Subtotal</th>
+                  <th>Order #</th>
+                  <th>Date</th>
+                  <th>Items</th>
+                  <th>Payment</th>
+                  <th>Total</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
 
               <tbody>
-                @php $total = 0; @endphp
-                @foreach($cartItems as $item)
+                @foreach($orders as $order)
                   @php
-                    $subtotal = $item->product->price * $item->quantity;
-                    $total += $subtotal;
+                    $status = strtolower($order->status ?? 'pending');
                   @endphp
-
                   <tr>
-                    <td class="product-info">
-                      <img class="product-img"
-                        src="{{ $item->product->image ? asset('storage/products/'.$item->product->image) : 'https://via.placeholder.com/80' }}"
-                        alt="{{ $item->product->name }}">
-                      <div class="pmeta">
-                        <div class="pname">{{ $item->product->name }}</div>
-                        <div class="pcat">{{ $item->product->category->name ?? '' }}</div>
-                      </div>
-                    </td>
-
-                    <td class="money">₱ {{ number_format($item->product->price, 2) }}</td>
-
+                    <td class="mono">#{{ $order->id }}</td>
+                    <td>{{ optional($order->created_at)->format('M d, Y h:i A') }}</td>
+                    <td>{{ $order->items->sum('quantity') }}</td>
+                    <td>{{ $order->payment_method }}</td>
+                    <td class="money">₱ {{ number_format($order->total_amount, 2) }}</td>
                     <td>
-                      <form action="{{ route('cart.update', $item->id) }}" method="POST" class="qty-form">
-                        @csrf
-                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" class="qty-input">
-                        <button type="submit" class="btn-update">Update</button>
-                      </form>
+                      <span class="status-badge
+                        {{ $status === 'pending' ? 'pending' : '' }}
+                        {{ $status === 'paid' ? 'paid' : '' }}
+                        {{ $status === 'processing' ? 'processing' : '' }}
+                        {{ $status === 'delivered' ? 'delivered' : '' }}
+                        {{ $status === 'cancelled' ? 'cancelled' : '' }}
+                      ">
+                        {{ strtoupper($order->status ?? 'pending') }}
+                      </span>
                     </td>
-
-                    <td class="money">₱ {{ number_format($subtotal, 2) }}</td>
-
                     <td>
-                      <form action="{{ route('cart.remove', $item->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn-remove">Remove</button>
-                      </form>
+                      <a class="btn-view" href="{{ route('customer.purchases.show', $order->id) }}">View</a>
                     </td>
                   </tr>
-
                 @endforeach
               </tbody>
             </table>
           </div>
 
-          <div class="cart-summary">
-            <div class="total">
-              Total: <strong>₱ {{ number_format($total, 2) }}</strong>
-            </div>
-
-            <a href="{{ route('checkout.index') }}" class="btn-checkout">Check Out</a>
+          <div class="pagination-wrap">
+            {{ $orders->links() }}
           </div>
-
-        @else
-          <p class="empty-cart">Your cart is empty.</p>
         @endif
-      </section>
-
-      <!-- FEATURED PRODUCTS -->
-      <section class="card-box" style="margin-top:16px;">
-        <div class="card-head">
-          <h2 class="card-title">Featured Coffees</h2>
-        </div>
-
-        <div class="product-grid">
-          @foreach($products as $product)
-            <div class="product-card">
-              <img
-                src="{{ $product->image ? asset('storage/products/'.$product->image) : 'https://via.placeholder.com/300x200.png?text=Coffee' }}"
-                alt="{{ $product->name }}">
-
-              <div class="pbody">
-                <h3>{{ $product->name }}</h3>
-                <p class="pprice">₱ {{ number_format($product->price, 2) }}</p>
-              </div>
-
-              <form action="{{ route('cart.add', $product->id) }}" method="POST" class="pfoot">
-                @csrf
-                <button type="submit" class="btn-quickshop">Quick Shop</button>
-              </form>
-            </div>
-          @endforeach
-        </div>
       </section>
 
     </div>
   </main>
 </div>
 
-<!-- PROFILE MODAL -->
+<!-- PROFILE MODAL (same as other pages) -->
 <div id="profileModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
@@ -249,7 +202,7 @@
 </div>
 
 <script>
-  // Image preview
+  // ===== Profile Modal =====
   function previewFile() {
     const file = document.getElementById('profile_image').files[0];
     const preview = document.getElementById('previewImage');
@@ -258,16 +211,14 @@
     if (file) reader.readAsDataURL(file);
   }
 
-  // Modal open/close
   const modal = document.getElementById('profileModal');
-  const btn = document.getElementById('viewProfileBtn');
-  const span = document.querySelector('.close');
+  const viewBtn = document.getElementById('viewProfileBtn');
+  const closeBtn = document.querySelector('.close');
 
-  if (btn) btn.onclick = (e) => { e.preventDefault(); modal.style.display = 'flex'; };
-  if (span) span.onclick = () => modal.style.display = 'none';
+  if (viewBtn) viewBtn.onclick = (e) => { e.preventDefault(); modal.style.display = 'flex'; };
+  if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
   window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
 
-  // Edit toggle
   const editBtn = document.getElementById('editBtn');
   const saveBtn = document.getElementById('saveBtn');
   const inputs = ['name', 'address', 'profile_image'];

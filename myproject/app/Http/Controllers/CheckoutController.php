@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 
+
 class CheckoutController extends Controller
 {
     /**
@@ -98,6 +99,31 @@ class CheckoutController extends Controller
         }); // End DB::transaction
 
         // 4. Success Redirect
-        return redirect()->route('customer.dashboard')->with('success', 'Order placed successfully! Thank you for your purchase.');
+      return redirect()->route('customer.dashboard')
+    ->with('pending', '✅ Order placed! Status: PENDING. Please wait for confirmation.');
+
     }
+ 
+public function myPurchases()
+{
+    $userId = Auth::id();
+
+    $orders = Order::where('user_id', $userId)
+        ->with(['items.product'])
+        ->latest()
+        ->paginate(10);
+
+    return view('customer.my-purchases', compact('orders'));
+}
+
+public function purchaseShow(Order $order)
+{
+    // security: dapat iya ni nga order
+    abort_if($order->user_id !== Auth::id(), 403);
+
+    $order->load(['items.product']);
+
+    return view('customer.purchase-show', compact('order'));
+}
+
 }

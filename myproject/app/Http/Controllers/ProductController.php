@@ -6,6 +6,14 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use App\Helpers\Logger;
+
+
 
 class ProductController extends Controller
 {
@@ -64,6 +72,9 @@ class ProductController extends Controller
         }
 
         $product->save();
+
+        Logger::log('Products', 'CREATE', "Added product #{$product->id} ({$product->name})");
+
         $this->updateXML();
 
         return redirect()->route('products.index')->with('success', 'Product added successfully!');
@@ -104,6 +115,8 @@ class ProductController extends Controller
         }
 
         $product->save();
+        Logger::log('Products', 'UPDATE', "Updated product #{$product->id} ({$product->name})");
+
         $this->updateXML();
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
@@ -119,8 +132,10 @@ class ProductController extends Controller
 
         $product->delete();
         $this->updateXML();
+            Logger::log('Products', 'DELETE', "Deleted product #{$product->id} ({$product->name})");
 
         return redirect()->back()->with('success', 'Product deleted successfully!');
+
     }
 
     public function mainDashboard(Request $request)
@@ -149,7 +164,87 @@ class ProductController extends Controller
             $products = Product::all();
         }
 
-        return view('admin.main-dashboard', compact('products'));
+        // --- DASHBOARD STATS (added) ---
+
+        // ✅ Line chart: Total Sales per day (exclude cancelled)
+$salesRows = Order::where('status', '!=', 'cancelled')
+    ->selectRaw('DATE(created_at) as day, SUM(total_amount) as total')
+    ->groupBy('day')
+    ->orderBy('day')
+    ->get();
+
+$salesLabels = $salesRows->pluck('day')->map(function ($d) {
+    return Carbon::parse($d)->format('M d');
+})->toArray();
+
+$salesTotals = $salesRows->pluck('total')->map(fn($v) => (float) $v)->toArray();
+
+// ✅ Doughnut chart: Order status counts
+$statusRows = Order::selectRaw('status, COUNT(*) as cnt')
+    ->groupBy('status')
+    ->get();
+
+$statusLabels = $statusRows->pluck('status')->map(fn($s) => strtoupper($s))->toArray();
+$statusCounts = $statusRows->pluck('cnt')->toArray();
+
+$totalOrders = Order::count();
+
+$todaySales = Order::whereDate('created_at', today())
+    ->where('status', '!=', 'cancelled')
+    ->sum('total_amount');
+
+$totalSales = Order::where('status', '!=', 'cancelled')
+    ->sum('total_amount');
+
+// total number of cancelled products (sum qty of items in cancelled orders)
+$cancelledProducts = DB::table('order_items')
+    ->join('orders', 'orders.id', '=', 'order_items.order_id')
+    ->where('orders.status', 'cancelled')
+    ->sum('order_items.quantity');
+
+// recent orders
+$recentOrders = Order::with('user')->latest()->take(10)->get();
+
+// marketable / non-marketable
+$topProducts = DB::table('order_items')
+    ->join('orders', 'orders.id', '=', 'order_items.order_id')
+    ->join('products', 'products.id', '=', 'order_items.product_id')
+    ->where('orders.status', '!=', 'cancelled')
+    ->groupBy('products.id', 'products.name')
+    ->select('products.name', DB::raw('SUM(order_items.quantity) as qty_sold'))
+    ->orderByDesc('qty_sold')
+    ->limit(5)
+    ->get();
+
+$lowProducts = DB::table('products')
+    ->leftJoin('order_items', 'order_items.product_id', '=', 'products.id')
+    ->leftJoin('orders', function($join){
+        $join->on('orders.id', '=', 'order_items.order_id')
+             ->where('orders.status', '!=', 'cancelled');
+    })
+    ->groupBy('products.id', 'products.name')
+    ->select('products.name', DB::raw('COALESCE(SUM(order_items.quantity),0) as qty_sold'))
+    ->orderBy('qty_sold')
+    ->limit(5)
+    ->get();
+
+
+       return view('admin.main-dashboard', compact(
+    'products',
+    'totalOrders',
+    'todaySales',
+    'totalSales',
+    'cancelledProducts',
+    'recentOrders',
+    'topProducts',
+    'lowProducts',
+    'salesLabels',
+    'salesTotals',
+    'statusLabels',
+    'statusCounts'
+));
+
+
     }
 
     public function customerDashboard(Request $request)

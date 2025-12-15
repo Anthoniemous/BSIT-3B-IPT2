@@ -17,27 +17,30 @@ class AuthController extends Controller
     }
 
     // ✅ Handle Registration
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+   public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8|confirmed',
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'customer',
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'customer',
+    ]);
 
-        // Send email verification link
-        $user->sendEmailVerificationNotification();
+    Auth::login($user);
+    $request->session()->regenerate();
 
-        return redirect()->route('verification.notice')
-            ->with('message', 'Verification link sent! Check your email.');
-    }
+    $user->sendEmailVerificationNotification();
+
+    return redirect()->route('verification.notice')
+        ->with('message', 'Verification link sent! Check your email.');
+}
+
 
     // ✅ Show Login Page
     public function showLogin()
@@ -56,26 +59,28 @@ public function login(Request $request)
 
     $credentials = $request->only('email', 'password');
 
-    // 🔹 Hardcoded Admin Login
-    if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
-        // Check if admin exists in DB, if not, create
-        $admin = User::firstOrCreate(
-            ['email' => 'eljohn@example.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('admin123'),
-                'role' => 'admin',
-                'email_verified_at' => now(),
-            ]
-        );
+   if ($credentials['email'] === 'eljohn@gmail.com' && $credentials['password'] === 'admin123') {
 
-        Auth::login($admin);
-        $request->session()->put('role', 'admin');
-        $request->session()->regenerate();
+    $admin = User::updateOrCreate(
+        ['email' => 'eljohn@gmail.com'],
+        [
+            'name' => 'Admin User',
+            'password' => Hash::make('admin123'),
+            'role' => 'admin',
+            'email_verified_at' => now(), // ✅ para moagi sa 'verified' middleware
+        ]
+    );
 
-        return redirect()->route('admin.dashboard')
-                         ->with('success', 'Welcome Admin!');
-    }
+    Auth::login($admin);
+    $request->session()->regenerate();
+
+    // if ganahan jud ka i-store sa session:
+    $request->session()->put('role', 'admin');
+
+    return redirect()->route('admin.dashboard')->with('success', 'Welcome Admin!');
+}
+
+
 
     // 🔹 Normal login attempt
     if (Auth::attempt($credentials)) {

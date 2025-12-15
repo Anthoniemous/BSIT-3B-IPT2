@@ -1,64 +1,69 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+
+use App\Models\User;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
-use App\Models\User; // <-- KINI ANG GIDUGANG ARON MA-FIX ANG "Class 'User' not found" ERROR
-// ... (ubang uses)
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
-// ... (ubang uses)
 use App\Http\Controllers\CheckoutController;
-use Illuminate\Http\Request; // Gidugang usab kini kung wala pa (para sa Route closure)
-use Illuminate\Support\Facades\Auth; // Gidugang usab kini kung wala pa
-use Illuminate\Support\Facades\Mail; // Gidugang usab kini kung wala pa
 
-
-// 🔸 Root Route Logic (FIXED: Dili na mag-loop sa login)
+/*
+|--------------------------------------------------------------------------
+| ROOT
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
-        // Role-based redirect para sa root /
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        return redirect()->route('customer.dashboard');
+        return $user->role === 'admin'
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('customer.dashboard');
     }
     return redirect()->route('login');
 });
 
-// 🔸 Laravel built-in auth (with email verification enabled)
-Auth::routes(['verify' => true]);
+/*
+|--------------------------------------------------------------------------
+| REMOVE built-in auth routes (AYAW I-MIX)
+|--------------------------------------------------------------------------
+*/
+// ❌ tanggalon ni kay naa kay custom AuthController
+// Auth::routes(['verify' => true]);
 
 /*
-|--------------------------------------------------------------------------|
-| AUTHENTICATION ROUTES
-|--------------------------------------------------------------------------|
+|--------------------------------------------------------------------------
+| AUTH ROUTES (CUSTOM)
+|--------------------------------------------------------------------------
 */
-
-// ✅ Register
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
-// ✅ Login / Logout
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-// Logout (Use the correct, fixed logout in AuthController)
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); 
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*
-|--------------------------------------------------------------------------|
-| EMAIL VERIFICATION ROUTES
-|--------------------------------------------------------------------------|
+|--------------------------------------------------------------------------
+| EMAIL VERIFICATION ROUTES (NO VerificationController)
+|--------------------------------------------------------------------------
 */
-// (Verification routes here are unchanged)
-Route::get('/email/verify', [VerificationController::class, 'notice'])
-    ->middleware('auth')
-    ->name('verification.notice');
 
+// ✅ Notice page (you have resources/views/auth/verify.blade.php)
+Route::get('/email/verify', function () {
+    return view('auth.verify');
+})->middleware('auth')->name('verification.notice');
+
+// ✅ Verify link (signed)
 Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
-    // Karon, gi-recognize na sa PHP ang "User" tungod sa import sa taas.
-    $user = User::findOrFail($id); 
+    $user = User::findOrFail($id);
 
     if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
         abort(403, 'Invalid verification link.');
@@ -71,34 +76,36 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
     Auth::login($user);
     $request->session()->regenerate();
 
-    return redirect()->route('customer.dashboard')
-        ->with('success', 'Email verified successfully! Welcome!');
+    // ✅ role-based redirect after verify
+    return $user->role === 'admin'
+        ? redirect()->route('admin.dashboard')->with('success', 'Email verified! Welcome Admin!')
+        : redirect()->route('customer.dashboard')->with('success', 'Email verified! Welcome!');
 })->middleware('signed')->name('verification.verify');
 
-Route::post('/email/resend', [VerificationController::class, 'resend'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.resend');
+// ✅ Resend verification
+Route::post('/email/resend', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
 
 /*
-|--------------------------------------------------------------------------|
-| DASHBOARD ROUTES (Protected by Auth and Verification)
-|--------------------------------------------------------------------------|
+|--------------------------------------------------------------------------
+| DASHBOARDS (Protected)
+|--------------------------------------------------------------------------
 */
-
-// ✅ Customer Dashboard (The main product list view)
 Route::get('/customer/dashboard', [ProductController::class, 'customerDashboard'])
     ->middleware(['auth', 'verified'])
     ->name('customer.dashboard');
 
-// ✅ Admin Dashboard (Protected by admin middleware)
 Route::get('/admin/dashboard', [ProductController::class, 'mainDashboard'])
-    ->middleware(['auth', 'admin']) 
+    ->middleware(['auth', 'verified', 'admin'])
     ->name('admin.dashboard');
 
+
 /*
-|--------------------------------------------------------------------------|
-| ADMIN PRODUCT MANAGEMENT ROUTES (Protected by admin middleware)
-|--------------------------------------------------------------------------|
+|--------------------------------------------------------------------------
+| ADMIN PRODUCT MANAGEMENT
+|--------------------------------------------------------------------------
 */
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -106,53 +113,60 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    Route::get('/orders', [\App\Http\Controllers\AdminOrderController::class, 'index'])->name('admin.orders.index');
+Route::get('/orders/{order}', [\App\Http\Controllers\AdminOrderController::class, 'show'])->name('admin.orders.show');
+Route::put('/orders/{order}/status', [\App\Http\Controllers\AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+Route::get('/logs', [\App\Http\Controllers\AdminLogController::class, 'index'])->name('admin.logs');
+
+
+// activity logs page
+Route::get('/logs', [\App\Http\Controllers\AdminLogController::class, 'index'])->name('admin.logs');
+
 });
 
 /*
-|--------------------------------------------------------------------------|
-| CUSTOMER ROUTES (Protected by Auth and Verification)
-|--------------------------------------------------------------------------|
+|--------------------------------------------------------------------------
+| CUSTOMER ROUTES
+|--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
-    // 🛒 Cart Routes
+
+    // Cart
     Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-    Route::post('/buy/{id}', [CartController::class, 'buyNow'])->name('buy.now'); // 👈 ADDED THIS ROUTE
+    Route::post('/buy/{id}', [CartController::class, 'buyNow'])->name('buy.now');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
-    // 👤 Profile Routes
+    // Profile
     Route::get('/profile', [CustomerController::class, 'showProfile'])->name('customer.profile');
     Route::put('/profile/update', [CustomerController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/store', [ProfileController::class, 'store'])->name('profile.store');
 
-    // 🏠 Customer Home (Alternative dashboard route)
-    Route::get('/dashboard', [CustomerController::class, 'index'])->name('customer.home'); 
+    // Home
+    Route::get('/dashboard', [CustomerController::class, 'index'])->name('customer.home');
     Route::post('/save-profile', [CustomerController::class, 'saveProfile'])->name('customer.profile.save');
 
-    // ❤️ Wishlist Routes
+    // Wishlist
     Route::get('/wishlist', [CustomerController::class, 'wishlist'])->name('customer.wishlist');
     Route::post('/wishlist/toggle/{id}', [CustomerController::class, 'toggleWishlist'])->name('customer.wishlist.toggle');
     Route::post('/wishlist/remove/{id}', [CustomerController::class, 'removeFromWishlist'])->name('wishlist.remove');
 
-    // 💳 Checkout Routes
+    // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
+
+    // My Purchases
+Route::get('/my-purchases', [CheckoutController::class, 'myPurchases'])->name('customer.purchases');
+Route::get('/my-purchases/{order}', [CheckoutController::class, 'purchaseShow'])->name('customer.purchases.show');
+
 });
 
 /*
-|--------------------------------------------------------------------------|
-| GOOGLE LOGIN ROUTES
-|--------------------------------------------------------------------------|
-*/
-// Siguradoha nga gi-import nimo ang GoogleAuthController sa taas kung gigamit nimo kini
-// Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
-// Route::get('auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
-
-/*
-|--------------------------------------------------------------------------|
-| TEST MAIL (Mailtrap or Mailpit)
-|--------------------------------------------------------------------------|
+|--------------------------------------------------------------------------
+| TEST MAIL
+|--------------------------------------------------------------------------
 */
 Route::get('/test-mail', function () {
     Mail::raw('Test email from Coffee Shop system.', function ($message) {

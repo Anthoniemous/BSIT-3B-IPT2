@@ -37,9 +37,24 @@
 <body>
 
   <nav class="navbar" style="padding: 15px 50px; background:white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display:flex; justify-content:space-between; align-items:center;">
-    <div class="logo" style="font-weight:bold; font-size:20px;">Coffee ' Sodoso ☕ | Checkout</div>
-    <a href="{{ route('cart.index') }}" style="text-decoration:none; color:#333;">Back to Cart</a>
-  </nav>
+  <div class="logo" style="font-weight:bold; font-size:20px;">Coffee ' Sodoso ☕ | Checkout</div>
+
+  <div style="display:flex; gap:15px; align-items:center;">
+    <a href="{{ route('customer.dashboard') }}" style="text-decoration:none; color:#333;">Shop</a>
+    <a href="{{ route('cart.index') }}" style="text-decoration:none; color:#333;">Cart</a>
+
+    {{-- ✅ My Purchases link --}}
+    <a href="{{ route('customer.purchases') }}" style="text-decoration:none; color:#333;">My Purchases</a>
+
+    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+      @csrf
+      <button type="submit" style="border:1px solid #ddd;background:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;">
+        Logout
+      </button>
+    </form>
+  </div>
+</nav>
+
 
   <form action="{{ route('checkout.placeOrder') }}" method="POST" class="checkout-container">
     @csrf

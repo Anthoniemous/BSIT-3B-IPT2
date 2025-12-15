@@ -1,0 +1,124 @@
+/* ===== Light Theme Overrides for DarkPan ===== */
+
+:root{
+  --primary:#0d6efd;
+  --light:#f8f9fa;
+  --dark:#212529;
+}
+
+/* body + overall */
+body,
+.bg-secondary,
+.sidebar,
+.content,
+.navbar,
+.table,
+.dropdown-menu{
+  background:#f4f6f9 !important;
+  color:#1f2937 !important;
+}
+
+/* sidebar */
+.sidebar{
+  background:#ffffff !important;
+  border-right:1px solid #e5e7eb;
+}
+.sidebar .navbar .navbar-brand h3,
+.sidebar .navbar .navbar-nav .nav-link{
+  color:#111827 !important;
+}
+.sidebar .navbar .navbar-nav .nav-link{
+  border-radius:12px;
+  margin:6px 10px;
+}
+.sidebar .navbar .navbar-nav .nav-link:hover{
+  background:#eef2ff !important;
+}
+.sidebar .navbar .navbar-nav .nav-link.active{
+  background:#e0e7ff !important;
+  color:#1d4ed8 !important;
+}
+
+/* top navbar */
+.content .navbar{
+  background:#ffffff !important;
+  border-bottom:1px solid #e5e7eb;
+}
+.content .navbar .nav-link,
+.content .navbar .dropdown-toggle{
+  color:#111827 !important;
+}
+
+/* cards/containers */
+.bg-secondary.rounded,
+.bg-secondary.text-center.rounded,
+.bg-secondary.text-start.rounded{
+  background:#ffffff !important;
+  border:1px solid #e5e7eb;
+  box-shadow:0 8px 20px rgba(17,24,39,0.06);
+}
+
+/* KPI icons */
+.text-primary{
+  color:#0d6efd !important;
+}
+
+/* tables */
+.table{
+  background:#ffffff !important;
+}
+.table thead th{
+  background:#f3f4f6 !important;
+  color:#111827 !important;
+  border-color:#e5e7eb !important;
+}
+.table td{
+  color:#111827 !important;
+  border-color:#e5e7eb !important;
+}
+
+/* select + inputs */
+.form-select,
+.form-control{
+  background:#ffffff !important;
+  color:#111827 !important;
+  border:1px solid #e5e7eb !important;
+}
+.form-select:focus,
+.form-control:focus{
+  border-color:#93c5fd !important;
+  box-shadow:0 0 0 .2rem rgba(13,110,253,.15) !important;
+}
+
+/* buttons */
+.btn-primary{
+  background:#0d6efd !important;
+  border-color:#0d6efd !important;
+}
+.btn-primary:hover{
+  filter:brightness(0.95);
+}
+
+/* dropdown */
+.dropdown-menu{
+  background:#ffffff !important;
+  border:1px solid #e5e7eb !important;
+}
+.dropdown-menu .dropdown-item{
+  color:#111827 !important;
+}
+.dropdown-menu .dropdown-item:hover{
+  background:#f3f4f6 !important;
+}
+
+/* remove dark overlay/grey blocks if any */
+#spinner{
+  background:rgba(255,255,255,0.85) !important;
+}
+
+/* your product preview cards (optional) */
+.product-card{
+  background:#ffffff !important;
+  border:1px solid #e5e7eb;
+  box-shadow:0 8px 18px rgba(17,24,39,0.06);
+}
