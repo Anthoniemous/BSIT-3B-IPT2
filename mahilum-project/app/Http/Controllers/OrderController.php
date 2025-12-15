@@ -34,84 +34,110 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Validate input
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'address' => 'required|string|max:500',
-        'contact' => 'required|string|max:20',
-        'payment_method' => 'required|string',
-        'selected_items' => 'required|array',
-    ]);
-
-    $user = Auth::user();
-
-    // Create order
-    $order = new Order();
-    $order->user_id = $user->id;
-    $order->name = $request->name;
-    $order->address = $request->address;
-    $order->contact_number = $request->contact;
-    $order->status = 'pending';
-    $order->total_price = 0;
-    $order->save();
-
-    $total = 0;
-
-    // Group selected cart items by product_id
-    $cartItems = Cart::with('product')
-        ->whereIn('cart_id', $request->selected_items)
-        ->get()
-        ->groupBy('product_id');
-
-    foreach ($cartItems as $productId => $items) {
-        $product = $items[0]->product;
-
-        if (!$product) {
-            continue; // skip if product does not exist
-        }
-
-        $quantity = $items->sum('quantity');
-        $price = $product->price;
-
-        // Save merged order item
-        $order->items()->create([
-            'product_id' => $product->product_id, // ✅ use correct key
-            'quantity'   => $quantity,
-            'price'      => $price,
+    {
+        // Validate input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:500',
+            'contact' => 'required|string|max:20',
+            'payment_method' => 'required|string',
+            'selected_items' => 'required|array',
         ]);
 
-        $total += $quantity * $price;
+        $user = Auth::user();
 
-        // Delete all cart items for this product
-        foreach ($items as $cart) {
-            $cart->delete();
+        // Create order
+        $order = new Order();
+        $order->user_id = $user->id;
+        $order->name = $request->name;
+        $order->address = $request->address;
+        $order->contact_number = $request->contact;
+        $order->status = 'pending';
+        $order->total_price = 0;
+        $order->save();
+
+        $total = 0;
+
+        // Group selected cart items by product_id
+        $cartItems = Cart::with('product')
+            ->whereIn('cart_id', $request->selected_items)
+            ->get()
+            ->groupBy('product_id');
+
+        foreach ($cartItems as $productId => $items) {
+            $product = $items[0]->product;
+
+            if (!$product) {
+                continue; // skip if product does not exist
+            }
+
+            $quantity = $items->sum('quantity');
+            $price = $product->price;
+
+            // Save merged order item
+            $order->items()->create([
+                'product_id' => $product->product_id, // ✅ use correct key
+                'quantity'   => $quantity,
+                'price'      => $price,
+            ]);
+
+            $total += $quantity * $price;
+
+            // Delete all cart items for this product
+            foreach ($items as $cart) {
+                $cart->delete();
+            }
         }
+
+        $order->total_price = $total;
+        $order->save();
+
+        $this->syncOrdersToLocal();
+     
+        return redirect()->route('orders.index')
+            ->with('success', 'Selected items checked out successfully!');
     }
 
-    $order->total_price = $total;
-    $order->save();
+    public function checkoutPage(Request $request)
+    {
+        $selectedItems = $request->input('selected_items', []);
 
-    $this->syncOrdersToLocal();
- 
-    return redirect()->route('orders.index')
-        ->with('success', 'Selected items checked out successfully!');
-}
+        if (empty($selectedItems)) {
+            return redirect()->route('cart.index')->with('error', 'No items selected for checkout!');
+        }
 
-public function checkoutPage(Request $request)
-{
-    $selectedItems = $request->input('selected_items', []);
+        $cartItems = Cart::with('product')->whereIn('cart_id', $selectedItems)->get();
 
-    if (empty($selectedItems)) {
-        return redirect()->route('cart.index')->with('error', 'No items selected for checkout!');
+        return view('order', compact('cartItems'));
     }
 
-    $cartItems = Cart::with('product')->whereIn('cart_id', $selectedItems)->get();
+    /**
+     * 🚫 USER: Cancel their own order
+     * Only allows cancellation if order is pending or processing
+     */
+    public function cancelOrder($orderId)
+    {
+        // Find the order and verify it belongs to the current user
+        $order = Order::where('order_id', $orderId)
+                     ->where('user_id', Auth::id())
+                     ->firstOrFail();
 
-    return view('order', compact('cartItems'));
-}
+        // Check if order can be cancelled (only pending or processing)
+        if (!in_array(strtolower($order->status), ['pending', 'processing'])) {
+            return redirect()->route('orders.index')
+                ->with('error', 'This order cannot be cancelled. Only pending or processing orders can be cancelled.');
+        }
 
+        // Update order status to cancelled
+        $order->status = 'cancelled';
+        $order->save();
 
+        // Sync to local storage
+        $this->syncOrdersToLocal();
+
+        return redirect()->route('orders.index')
+            ->with('success', 'Order #' . $orderId . ' has been cancelled successfully.');
+    }
     // 🔸 Private helper: sync JSON + XML
     private function syncOrdersToLocal()
     {

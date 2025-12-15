@@ -17,9 +17,14 @@ class OrderItem extends Model
     ];
 
     // 🔹 Relationship to Order
+    // FIXED: Explicitly specify that it connects to Order's 'order_id' primary key
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id', 'order_id');
+        //                                     ^^^^^^^^^  ^^^^^^^^^
+        //                                     foreign    owner key
+        //                                     key in     (Order's
+        //                                     this table primary key)
     }
 
     // 🔹 Relationship to Product

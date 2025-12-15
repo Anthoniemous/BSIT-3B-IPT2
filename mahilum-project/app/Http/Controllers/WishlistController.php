@@ -9,19 +9,26 @@ use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
-    // Show all wishlist items for current user
+    /**
+     * Display all wishlist items for the current user.
+     */
     public function index()
     {
-        $wishlistItems = Wishlist::with('product')
+        // Load wishlist with related products for the logged-in user
+        $wishlist = Wishlist::with('product')
             ->where('user_id', Auth::id())
             ->get();
 
-        return view('wishlist', compact('wishlistItems'));
+        // Return view with $wishlist (matches Blade variable)
+        return view('wishlist', compact('wishlist'));
     }
 
-    // Add product to wishlist
+    /**
+     * Add a product to the wishlist.
+     */
     public function add(Request $request, $productId)
     {
+        // Check if the product is already in the wishlist
         $exists = Wishlist::where('user_id', Auth::id())
             ->where('product_id', $productId)
             ->first();
@@ -36,10 +43,13 @@ class WishlistController extends Controller
         return back()->with('success', 'Product added to wishlist!');
     }
 
-    // Remove product from wishlist
+    /**
+     * Remove a product from the wishlist.
+     */
     public function remove($id)
     {
         $item = Wishlist::findOrFail($id);
+
         if ($item->user_id == Auth::id()) {
             $item->delete();
         }
@@ -47,13 +57,15 @@ class WishlistController extends Controller
         return back()->with('success', 'Product removed from wishlist!');
     }
 
-    // Move product from wishlist to cart
+    /**
+     * Move a wishlist item to the cart.
+     */
     public function moveToCart($id)
     {
         $item = Wishlist::findOrFail($id);
 
         if ($item->user_id == Auth::id()) {
-            // Add to cart (assuming you have CartController)
+            // Add to cart (assuming you have a Cart model)
             \App\Models\Cart::create([
                 'user_id' => Auth::id(),
                 'product_id' => $item->product_id,

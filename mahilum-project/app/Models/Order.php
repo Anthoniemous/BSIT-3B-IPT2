@@ -9,6 +9,7 @@ class Order extends Model
 {
     use HasFactory;
 
+    // 🔹 IMPORTANT: Your primary key is 'order_id', not 'id'
     protected $primaryKey = 'order_id';
 
     protected $fillable = [
@@ -21,6 +22,7 @@ class Order extends Model
     ];
 
     // 🔹 Order has many order items
+    // FIXED: Since your primary key is 'order_id', specify it explicitly
     public function items()
     {
         return $this->hasMany(OrderItem::class, 'order_id', 'order_id');

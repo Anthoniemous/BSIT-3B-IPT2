@@ -8,8 +8,62 @@
 </head>
 <body>
 
+<header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <img src="{{ asset('css/img/logo.png') }}" alt="Shampoo Logo">
+        <span class="brand">Coffee Cart</span>
+      </div>
+
+     <nav class="main-nav">
+        <ul>
+          <li><a href="{{ url('/') }}">Home</a></li>
+          <li><a href="{{ url('/userdashboard') }}">Products</a></li>
+        </ul>
+      </nav>
+
+      <div class="user-option">
+        @auth
+        <a href="{{ route('wishlist.index') }}" class="btn small wishlist-btn">
+      Wishlist
+      </a>
+          <a href="{{ route('orders.index') }}" class="btn small">Coffee Orders</a>
+          <a href="{{ route('cart.index') }}" class="btn small">Coffee Cart</a>
+
+          <div class="profile-container">
+            <img 
+              src="{{ Auth::user()->profile_photo ? asset('storage/' . Auth::user()->profile_photo) : asset('css/img/default-avatar.png') }}" 
+              alt="Profile" 
+              class="profile-pic" 
+              id="profileDropdownToggle"
+            >
+
+            <div class="dropdown-menu" id="profileDropdownMenu">
+              <h4>Welcome, {{ Auth::user()->name }}!</h4>
+
+              <form action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="profile_photo" required>
+                <button type="submit">Update Photo</button>
+              </form>
+
+              @if(session('success'))
+                <div class="alert-success">{{ session('success') }}</div>
+              @endif
+
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" style="margin-top: 10px; background: #dc3545;">Logout</button>
+              </form>
+            </div>
+          </div>
+        @endauth
+      </div>
+    </div>
+</header>
+
 <div class="container">
-    <h1 class="page-title">☕ Your Coffee Cart</h1>
+
 
     {{-- Flash messages --}}
     @if(session('success'))
@@ -92,60 +146,85 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
+    const csrf = "{{ csrf_token() }}";
+
     const updateTotals = () => {
-        let grandTotal = 0;
-        let selected = [];
-        const container = document.getElementById("selectedItemsContainer");
+        let total = 0;
+        let container = document.getElementById("selectedItemsContainer");
+        container.innerHTML = "";
 
         document.querySelectorAll("#cart-table tbody tr").forEach(row => {
             const price = parseFloat(row.dataset.price);
             const qty = parseInt(row.querySelector(".qty-input").value);
-            const checkbox = row.querySelector(".select-item");
-            const totalCell = row.querySelector(".item-total");
+            const checked = row.querySelector(".select-item").checked;
             const cartId = row.dataset.cartid;
 
             const itemTotal = price * qty;
-            totalCell.textContent = "₱" + itemTotal.toFixed(2);
+            row.querySelector(".item-total").textContent =
+                "₱" + itemTotal.toFixed(2);
 
-            if (checkbox.checked) {
-                grandTotal += itemTotal;
-                selected.push(cartId);
+            if (checked) {
+                total += itemTotal;
+
+                let input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "selected_items[]";
+                input.value = cartId;
+                container.appendChild(input);
             }
         });
 
-        document.getElementById("grandTotal").textContent = "₱" + grandTotal.toFixed(2);
+        document.getElementById("grandTotal").textContent =
+            "₱" + total.toFixed(2);
+    };
 
-        container.innerHTML = "";
-        selected.forEach(id => {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "selected_items[]";
-            input.value = id;
-            container.appendChild(input);
+    const updateDB = (cartId, qty) => {
+        fetch(`/cart/update/${cartId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrf
+            },
+            body: JSON.stringify({ quantity: qty })
         });
     };
 
-    document.querySelectorAll(".qty-wrapper").forEach(wrapper => {
-        const input = wrapper.querySelector(".qty-input");
+    document.querySelectorAll("#cart-table tbody tr").forEach(row => {
+        const input = row.querySelector(".qty-input");
+        const cartId = row.dataset.cartid;
 
-        wrapper.querySelector(".plus").addEventListener("click", () => {
-            input.value = parseInt(input.value) + 1;
+        row.querySelector(".plus").onclick = () => {
+            input.value++;
+            updateDB(cartId, input.value);
             updateTotals();
-        });
+        };
 
-        wrapper.querySelector(".minus").addEventListener("click", () => {
+        row.querySelector(".minus").onclick = () => {
             if (input.value > 1) {
-                input.value = parseInt(input.value) - 1;
+                input.value--;
+                updateDB(cartId, input.value);
+                updateTotals();
             }
-            updateTotals();
-        });
+        };
     });
-
-    document.querySelectorAll(".qty-input, .select-item")
-        .forEach(el => el.addEventListener("change", updateTotals));
 
     updateTotals();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.getElementById("profileDropdownToggle");
+    const menu = document.getElementById("profileDropdownMenu");
+
+    toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menu.classList.toggle("active");
+    });
+
+    document.addEventListener("click", function () {
+        menu.classList.remove("active");
+    });
+});
+
 </script>
 
 </body>

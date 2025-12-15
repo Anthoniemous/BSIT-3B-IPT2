@@ -27,8 +27,8 @@
     <div class="user-option">
       @auth
         <a href="{{ route('wishlist.index') }}" class="btn small">Wishlist</a>
-        <a href="{{ route('orders.index') }}" class="btn small">Brew History Orders</a>
-        <a href="{{ route('cart.index') }}" class="btn small">Your Coffee Cart </a>
+        <a href="{{ route('orders.index') }}" class="btn small">Coffer Orders</a>
+        <a href="{{ route('cart.index') }}" class="btn small">Coffee Cart </a>
 
         <div class="profile-container">
           <img 

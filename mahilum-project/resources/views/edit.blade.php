@@ -17,7 +17,8 @@
 
     <main class="container mx-auto mt-6">
         <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-            <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
+
                 @csrf
                 @method('PUT')
 
@@ -94,7 +95,7 @@
                 </div>
 
                 <div class="flex justify-between">
-                    <a href="{{ route('products.index') }}" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
+                    <a href="{{ route('admin.products.dashboard') }}" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Update Product</button>
                 </div>
             </form>

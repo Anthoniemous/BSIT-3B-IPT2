@@ -13,25 +13,20 @@ class CartController extends Controller
     public function index()
     {
         $cartItems = Cart::with('product')
-                        ->where('user_id', Auth::id())
-                        ->get();
+            ->where('user_id', Auth::id())
+            ->get();
 
         return view('cart', compact('cartItems'));
     }
 
-    // Add product to cart (using correct product_id)
+    // Add product to cart
     public function add(Product $product)
     {
         $userId = Auth::id();
 
-        if (!$userId) {
-            return redirect()->route('login')->with('error', 'Please log in to add to cart.');
-        }
-
-        // Check if item already exists in cart
         $cartItem = Cart::where('user_id', $userId)
-                        ->where('product_id', $product->product_id)
-                        ->first();
+            ->where('product_id', $product->product_id)
+            ->first();
 
         if ($cartItem) {
             $cartItem->quantity += 1;
@@ -44,21 +39,35 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
+        return redirect()->route('cart.index')
+            ->with('success', 'Product added to cart!');
     }
 
-    // Remove item from cart
-    public function remove($cart_id)
+    // ✅ UPDATE QUANTITY (IMPORTANT)
+    public function update(Request $request, Cart $cart)
     {
-        $cartItem = Cart::find($cart_id);
-
-        if (!$cartItem) {
-            return redirect()->back()->with('error', 'Cart item not found!');
+        // security: make sure owner
+        if ($cart->user_id !== Auth::id()) {
+            abort(403);
         }
 
+        $request->validate([
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $cart->quantity = $request->quantity;
+        $cart->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    // Remove item
+    public function remove($cart_id)
+    {
+        $cartItem = Cart::findOrFail($cart_id);
         $cartItem->delete();
 
-        return redirect()->back()->with('success', 'Item removed from cart successfully!');
+        return back()->with('success', 'Item removed!');
     }
 
     // Checkout (clear cart)
