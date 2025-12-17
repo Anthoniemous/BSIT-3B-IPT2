@@ -16,8 +16,8 @@
             <option value="oldest" @selected(($sort ?? '') === 'oldest')>Oldest</option>
             <option value="total_high" @selected(($sort ?? '') === 'total_high')>Total (High → Low)</option>
             <option value="total_low" @selected(($sort ?? '') === 'total_low')>Total (Low → High)</option>
-            <option value="status_az" @selected(($sort ?? '') === 'status_az')>Status (A → Z)</option>
-            <option value="status_za" @selected(($sort ?? '') === 'status_za')>Status (Z → A)</option>
+            <option value="status_az" @selected(($sort ?? '') === 'status_az')>Status ASC</option>
+            <option value="status_za" @selected(($sort ?? '') === 'status_za')>Status DSC</option>
         </select>
     </form>
 </div>

@@ -136,12 +136,30 @@ class CheckoutController extends Controller
 
                 if (!$productId) continue;
 
+                // ✅ STOCK CHECK + CORRECT DECREMENT (subtract by $qty)
+                $product = DB::table('product')
+                    ->where('product_id', $productId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$product) {
+                    throw new \Exception("Product not found (ID: {$productId}).");
+                }
+
+                if ((int)$product->stock_quantity < (int)$qty) {
+                    throw new \Exception("Not enough stock for {$product->name}. Available: {$product->stock_quantity}");
+                }
+
                 DB::table('order_item')->insert([
                     'order_id'   => $orderId,
                     'product_id' => $productId,
                     'quantity'   => $qty,
                     'price'      => $price,
                 ]);
+
+                DB::table('product')
+                    ->where('product_id', $productId)
+                    ->decrement('stock_quantity', (int)$qty);
             }
 
             // IMPORTANT: match DB ENUM exactly: 'COD'
@@ -231,12 +249,30 @@ class CheckoutController extends Controller
 
                 if (!$productId) continue;
 
+                // ✅ STOCK CHECK + CORRECT DECREMENT (subtract by $qty)
+                $product = DB::table('product')
+                    ->where('product_id', $productId)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$product) {
+                    throw new \Exception("Product not found (ID: {$productId}).");
+                }
+
+                if ((int)$product->stock_quantity < (int)$qty) {
+                    throw new \Exception("Not enough stock for {$product->name}. Available: {$product->stock_quantity}");
+                }
+
                 DB::table('order_item')->insert([
                     'order_id'   => $orderId,
                     'product_id' => $productId,
                     'quantity'   => $qty,
                     'price'      => $price,
                 ]);
+
+                DB::table('product')
+                    ->where('product_id', $productId)
+                    ->decrement('stock_quantity', (int)$qty);
             }
 
             // IMPORTANT: match DB ENUM exactly: 'Bank Transfer'
@@ -278,73 +314,72 @@ class CheckoutController extends Controller
     }
 
     public function myPurchases()
-{
-    if (!session('customer_id')) {
-        return redirect('/login')->with('error', 'Please log in.');
+    {
+        if (!session('customer_id')) {
+            return redirect('/login')->with('error', 'Please log in.');
+        }
+
+        $customerId = session('customer_id');
+
+        // Orders + payment + total items
+        $orders = DB::table('order as o')
+            ->leftJoin('payment as p', 'p.order_id', '=', 'o.order_id')
+            ->leftJoin(DB::raw('(SELECT order_id, SUM(quantity) AS items_count FROM order_item GROUP BY order_id) oi'), 'oi.order_id', '=', 'o.order_id')
+            ->where('o.customer_id', $customerId)
+            ->orderByDesc('o.order_date')
+            ->select([
+                'o.order_id',
+                'o.order_date',
+                'o.total_amount',
+                'o.order_status',
+                'p.payment_method',
+                'p.payment_status',
+                DB::raw('COALESCE(oi.items_count, 0) AS items_count'),
+            ])
+            ->get();
+
+        return view('customer_purchases', compact('orders'));
     }
 
-    $customerId = session('customer_id');
+    public function showPurchase($orderId)
+    {
+        if (!session('customer_id')) {
+            return redirect('/login')->with('error', 'Please log in.');
+        }
 
-    // Orders + payment + total items
-    $orders = DB::table('order as o')
-        ->leftJoin('payment as p', 'p.order_id', '=', 'o.order_id')
-        ->leftJoin(DB::raw('(SELECT order_id, SUM(quantity) AS items_count FROM order_item GROUP BY order_id) oi'), 'oi.order_id', '=', 'o.order_id')
-        ->where('o.customer_id', $customerId)
-        ->orderByDesc('o.order_date')
-        ->select([
-            'o.order_id',
-            'o.order_date',
-            'o.total_amount',
-            'o.order_status',
-            'p.payment_method',
-            'p.payment_status',
-            DB::raw('COALESCE(oi.items_count, 0) AS items_count'),
-        ])
-        ->get();
+        $customerId = session('customer_id');
 
-    return view('customer_purchases', compact('orders'));
-}
+        $order = DB::table('order as o')
+            ->leftJoin('payment as p', 'p.order_id', '=', 'o.order_id')
+            ->where('o.customer_id', $customerId)
+            ->where('o.order_id', $orderId)
+            ->select([
+                'o.order_id',
+                'o.order_date',
+                'o.total_amount',
+                'o.order_status',
+                'p.payment_method',
+                'p.payment_status',
+                'p.payment_date',
+            ])
+            ->first();
 
-public function showPurchase($orderId)
-{
-    if (!session('customer_id')) {
-        return redirect('/login')->with('error', 'Please log in.');
+        if (!$order) {
+            abort(404);
+        }
+
+        $items = DB::table('order_item as oi')
+            ->join('product as pr', 'pr.product_id', '=', 'oi.product_id')
+            ->where('oi.order_id', $orderId)
+            ->select([
+                'oi.quantity',
+                'oi.price',
+                'pr.name as product_name',
+                'pr.image as product_image',
+                'pr.product_id',
+            ])
+            ->get();
+
+        return view('customer_purchase_show', compact('order', 'items'));
     }
-
-    $customerId = session('customer_id');
-
-    $order = DB::table('order as o')
-        ->leftJoin('payment as p', 'p.order_id', '=', 'o.order_id')
-        ->where('o.customer_id', $customerId)
-        ->where('o.order_id', $orderId)
-        ->select([
-            'o.order_id',
-            'o.order_date',
-            'o.total_amount',
-            'o.order_status',
-            'p.payment_method',
-            'p.payment_status',
-            'p.payment_date',
-        ])
-        ->first();
-
-    if (!$order) {
-        abort(404);
-    }
-
-    $items = DB::table('order_item as oi')
-        ->join('product as pr', 'pr.product_id', '=', 'oi.product_id')
-        ->where('oi.order_id', $orderId)
-        ->select([
-            'oi.quantity',
-            'oi.price',
-            'pr.name as product_name',
-            'pr.image as product_image',
-            'pr.product_id',
-        ])
-        ->get();
-
-    return view('customer_purchase_show', compact('order', 'items'));
-}
-
 }

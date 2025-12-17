@@ -62,37 +62,44 @@ class CustomerProductController extends Controller
         return view('cart', compact('cart', 'lastOrder', 'lastPayment'));
     }
     // Add product to cart
-    public function addToCart($id)
-    {
-        $product = Product::findOrFail($id);
-        $customerId = session('customer_id');
+public function addToCart($id)
+{
+    $product = Product::findOrFail($id);
+    $customerId = session('customer_id');
 
-        if (!$customerId) {
-            return redirect('/login')->with('error', 'Please log in.');
-        }
-
-        $cart = session()->get('cart', []);
-
-        // Add or increase quantity in session
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                'product_id' => $product->product_id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'quantity' => 1,
-                'image'      => $product->image, 
-            ];
-        }
-
-        session()->put('cart', $cart);
-
-        // Sync DB and JSON
-        $this->syncCart($customerId, $cart);
-
-        return back()->with('success', "{$product->name} added to cart!");
+    if (!$customerId) {
+        return redirect('/login')->with('error', 'Please log in.');
     }
+
+    if ((int)$product->stock_quantity <= 0) {
+        return back()->with('error', 'This product is out of stock.');
+    }
+
+    $cart = session()->get('cart', []);
+    $currentQty = isset($cart[$id]) ? (int)$cart[$id]['quantity'] : 0;
+
+    // ✅ don’t allow cart qty to exceed available stock
+    if ($currentQty >= (int)$product->stock_quantity) {
+        return back()->with('error', "Only {$product->stock_quantity} left in stock.");
+    }
+
+    if (isset($cart[$id])) {
+        $cart[$id]['quantity']++;
+    } else {
+        $cart[$id] = [
+            'product_id' => $product->product_id,
+            'name'       => $product->name,
+            'price'      => $product->price,
+            'quantity'   => 1,
+            'image'      => $product->image,
+        ];
+    }
+
+    session()->put('cart', $cart);
+    $this->syncCart($customerId, $cart);
+
+    return back()->with('success', "{$product->name} added to cart!");
+}
 
     // Remove product from cart
     public function removeFromCart($id)

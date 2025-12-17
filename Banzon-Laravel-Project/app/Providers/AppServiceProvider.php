@@ -6,6 +6,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
             : null;
 
         $view->with('navCustomer', $navCustomer);
+
+        Paginator::useBootstrapFive();
     });
     }
 }

@@ -54,75 +54,102 @@
             </div>
 
             <div class="row g-4">
-                @foreach($products as $product)
+    @foreach($products as $product)
 
-                    {{-- ✅ IMPORTANT integration fixes (NO JS changes):
-                         1) store-item class moved to the COLUMN so search hides whole card
-                         2) data-id added so "Newest" sort works --}}
-                    <div class="col-lg-4 col-md-6 wow fadeInUp store-item"
-                         data-wow-delay="0.1s"
-                         data-id="{{ $product->product_id }}"
-                         data-name="{{ $product->name }}"
-                         data-price="{{ $product->price }}"
-                         data-featured="{{ $product->featured ?? 0 }}">
+        {{-- ✅ IMPORTANT integration fixes (NO JS changes):
+             1) store-item class moved to the COLUMN so search hides whole card
+             2) data-id added so "Newest" sort works --}}
+        <div class="col-lg-4 col-md-6 wow fadeInUp store-item"
+             data-wow-delay="0.1s"
+             data-id="{{ $product->product_id }}"
+             data-name="{{ $product->name }}"
+             data-price="{{ $product->price }}"
+             data-featured="{{ $product->featured ?? 0 }}">
 
-                        <div class="position-relative text-center" style="width: 407px; height: 505px;">
-                            <img class="img-fluid" style="width: 407px; height: 271px;"
-                                 src="{{ $product->image ? asset('img/products/' . $product->image) : asset('img/store-product-1.jpg') }}"
-                                 alt="{{ $product->name }}">
+            @php
+                $stock = (int)($product->stock_quantity ?? 0);
+                // NOTE: your session cart items store 'product_id', not 'id'
+                $inCart = collect(session('cart', []))->contains('product_id', $product->product_id);
+            @endphp
 
-                            <div class="p-4">
-                                <div class="text-center mb-3">
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                </div>
-                                <h4 class="mb-3">{{ $product->name }}</h4>
-                                <p>{{ $product->description }}</p>
-                                <h4 class="text-primary">${{ number_format($product->price, 2) }}</h4>
-                            </div>
+            <div class="position-relative text-center" style="width: 407px; height: 505px;">
+                <img class="img-fluid" style="width: 407px; height: 271px;"
+                     src="{{ $product->image ? asset('img/products/' . $product->image) : asset('img/store-product-1.jpg') }}"
+                     alt="{{ $product->name }}">
 
-                            <div class="store-overlay">
-                                @php
-                                    $inCart = collect(session('cart', []))->contains('id', $product->product_id);
-                                @endphp
-
-                                @if(!$inCart)
-                                    <form action="{{ route('cart.add', $product->product_id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success rounded-pill py-2 px-4 m-2">
-                                            <i class="fa fa-cart-plus me-1"></i> Add to Cart
-                                        </button>
-                                    </form>
-
-                                    <form action="{{ route('wishlist.add', $product->product_id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-warning rounded-pill py-2 px-4 m-2">
-                                            <i class="fa fa-heart me-1"></i> Add to Wishlist
-                                        </button>
-                                    </form>
-                                @else
-                                    <form action="{{ route('cart.remove', $product->product_id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger rounded-pill py-2 px-4 m-2">
-                                            <i class="fa fa-times me-1"></i> Remove from Cart
-                                        </button>
-                                    </form>
-                                @endif
-                            </div>
-                        </div>
+                <div class="p-4">
+                    <div class="text-center mb-3">
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
                     </div>
-                @endforeach
 
-                @if($products->isEmpty())
-                    <div class="col-12 text-center">
-                        <p>No products available at the moment.</p>
+                    <h4 class="mb-3">{{ $product->name }}</h4>
+                    <p>{{ $product->description }}</p>
+                    <h4 class="text-primary">${{ number_format($product->price, 2) }}</h4>
+
+                    {{-- ✅ STOCK DISPLAY --}}
+                    <div class="mt-2">
+                        @if($stock > 0)
+                            <span class="badge bg-success">In Stock: {{ $stock }}</span>
+                        @else
+                            <span class="badge bg-danger">Out of Stock</span>
+                        @endif
                     </div>
-                @endif
+                </div>
+
+                <div class="store-overlay">
+                    @if($stock <= 0)
+                        {{-- ✅ DISABLE ADD TO CART WHEN OUT OF STOCK --}}
+                        <button type="button" class="btn btn-secondary rounded-pill py-2 px-4 m-2" disabled>
+                            <i class="fa fa-ban me-1"></i> Out of Stock
+                        </button>
+
+                        <form action="{{ route('wishlist.add', $product->product_id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-warning rounded-pill py-2 px-4 m-2">
+                                <i class="fa fa-heart me-1"></i> Add to Wishlist
+                            </button>
+                        </form>
+                    @else
+                        @if(!$inCart)
+                            <form action="{{ route('cart.add', $product->product_id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success rounded-pill py-2 px-4 m-2">
+                                    <i class="fa fa-cart-plus me-1"></i> Add to Cart
+                                </button>
+                            </form>
+
+                            <form action="{{ route('wishlist.add', $product->product_id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-warning rounded-pill py-2 px-4 m-2">
+                                    <i class="fa fa-heart me-1"></i> Add to Wishlist
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('cart.remove', $product->product_id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger rounded-pill py-2 px-4 m-2">
+                                    <i class="fa fa-times me-1"></i> Remove from Cart
+                                </button>
+                            </form>
+                        @endif
+                    @endif
+                </div>
             </div>
+        </div>
+    @endforeach
+
+    @if($products->isEmpty())
+        <div class="col-12 text-center">
+            <p>No products available at the moment.</p>
+        </div>
+    @endif
+            </div>
+
         </div>
     </div>
     <!-- Store End -->
