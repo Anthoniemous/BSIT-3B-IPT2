@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
@@ -174,3 +175,6 @@ Route::get('/test-mail', function () {
     });
     return '✅ Test email sent successfully!';
 });
+
+Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle'])->name('google.callback');

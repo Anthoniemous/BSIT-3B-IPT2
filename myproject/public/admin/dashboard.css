@@ -294,3 +294,115 @@ a:hover {
     align-items: flex-start;
   }
 }
+
+/* =========================
+   PRODUCT GRID — FIXED LAYOUT
+   ========================= */
+.product-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 280px); /* fixed card width */
+  gap: 24px;                                      /* consistent spacing */
+  justify-content: start;                         /* no big weird gaps */
+  align-items: stretch;
+  padding: 8px 4px;
+}
+
+/* center grid nicely on very wide screens (optional) */
+@media (min-width: 1400px){
+  .product-grid{ justify-content: center; }
+}
+
+/* =========================
+   PRODUCT CARD — UNIFORM SIZE
+   ========================= */
+.product-card{
+  width: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(0,0,0,.10);
+  display: flex;
+  flex-direction: column;
+  min-height: 430px; /* consistent height */
+}
+
+/* image area */
+.product-card > img{
+  width: 100%;
+  height: 170px;        /* fixed image height */
+  object-fit: cover;    /* crop nicely */
+  display: block;
+  background: #f3f4f6;
+}
+
+/* body area */
+.product-card-body{
+  padding: 14px 14px 10px;
+  flex: 1; /* push footer to bottom */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.product-card-title{
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;     /* clamp long titles */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-card-price{
+  margin: 0;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.product-card-body p{
+  margin: 0;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.35;
+}
+
+/* clamp description specifically if last paragraph is description */
+.product-card-body p:last-child{
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #666;
+}
+
+/* footer buttons */
+.product-card-footer{
+  padding: 12px 14px 14px;
+  border-top: 1px solid rgba(0,0,0,.08);
+  display: flex;
+  gap: 10px;
+  background: #1b120c; /* same vibe sa imo footer */
+}
+
+.product-card-footer .btn{
+  flex: 1;
+  border-radius: 12px;
+}
+
+/* mobile */
+@media (max-width: 640px){
+  .product-grid{
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+  .product-card{
+    width: 100%;
+    min-height: auto;
+  }
+  .product-card > img{
+    height: 200px;
+  }
+}

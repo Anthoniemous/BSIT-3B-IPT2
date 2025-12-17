@@ -57,29 +57,60 @@
     <main class="main">
 
         <!-- TOP BAR -->
-        <header class="topbar">
-            <div class="top-left">
-                <h1 class="page-title">Dashboard</h1>
-                <p class="page-sub">Welcome back, {{ Auth::user()->name }} 👋</p>
-            </div>
+<header class="topbar">
+    <div class="top-left">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub">Welcome back, {{ Auth::user()->name }} 👋</p>
+    </div>
 
-            <!-- Profile stays on the right -->
-            <div class="top-right">
-                <div class="profile-menu">
-                    <button class="profile-btn">
-                        👤 {{ Auth::user()->name }} <span class="caret">▾</span>
-                    </button>
-                    <div class="dropdown">
-                        <a href="#" id="viewProfileBtn">View Profile</a>
-                        <a href="{{ route('customer.purchases') }}">My Purchases</a>
-                        <form action="{{ route('logout') }}" method="POST" style="margin:0;">
-                            @csrf
-                            <button type="submit" class="logout-btn">Logout</button>
-                        </form>
+    <div class="top-right">
+        <div class="profile-menu">
+
+            {{-- ✅ avatar + name button --}}
+            <button type="button" class="profile-btn" id="profileBtn">
+                <img
+                    class="avatar"
+                    src="{{ Auth::user()->profile_image
+                        ? asset('storage/profile/' . Auth::user()->profile_image)
+                        : 'https://via.placeholder.com/40x40.png?text=U' }}"
+                    alt="Profile"
+                    onerror="this.onerror=null;this.src='https://via.placeholder.com/40x40.png?text=U';"
+                />
+                <span class="profile-name">{{ Auth::user()->name }}</span>
+                <span class="caret">▾</span>
+            </button>
+
+            <div class="dropdown" id="profileDropdown">
+                {{-- ✅ mini profile header inside dropdown --}}
+                <div class="dropdown-profile">
+                    <img
+                        class="dropdown-avatar"
+                        src="{{ Auth::user()->profile_image
+                            ? asset('storage/profile/' . Auth::user()->profile_image)
+                            : 'https://via.placeholder.com/48x48.png?text=U' }}"
+                        alt="Profile"
+                    />
+                    <div class="dropdown-info">
+                        <div class="dropdown-name">{{ Auth::user()->name }}</div>
+                        <div class="dropdown-email">{{ Auth::user()->email }}</div>
                     </div>
                 </div>
+
+                <div class="dropdown-divider"></div>
+
+                <a href="#" id="viewProfileBtn">View Profile</a>
+                <a href="{{ route('customer.purchases') }}">My Purchases</a>
+
+                <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                    @csrf
+                    <button type="submit" class="dropdown-logout">Logout</button>
+                </form>
             </div>
-        </header>
+
+        </div>
+    </div>
+</header>
+
 
         <div class="content">
 
@@ -115,7 +146,7 @@
                         <div class="product-card">
 
                             <div class="wishlist-heart">
-                                <button class="wishlist-btn" data-id="{{ $product->id }}">
+                                <button type="button" class="wishlist-btn" data-id="{{ $product->id }}">
                                     @if(isset($wishlistProductIds) && in_array($product->id, $wishlistProductIds))
                                         💖
                                     @else
@@ -124,8 +155,14 @@
                                 </button>
                             </div>
 
-                            <img src="{{ $product->image ? asset('storage/products/'.$product->image) : 'https://via.placeholder.com/300x200.png?text=Coffee' }}"
-                                 alt="{{ $product->name }}">
+                            <img
+                                src="{{ $product->image
+                                    ? asset('storage/products/' . $product->image)
+                                    : asset('img/placeholder.png') }}"
+                                alt="{{ $product->name }}"
+                                onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200.png?text=Coffee';"
+                                />
+
 
                             <div class="product-card-body">
                                 <h5>{{ $product->name }}</h5>
@@ -134,15 +171,15 @@
                                 <p class="product-card-description">{{ $product->description ?? '-' }}</p>
                             </div>
 
-                            <div class="product-card-footer" style="display:flex; gap:10px;">
+                            <div class="product-card-footer">
                                 <form action="{{ route('cart.add', $product->id) }}" method="POST" style="flex:1; margin:0;">
                                     @csrf
-                                    <button type="submit" class="btn-order" style="background-color:#6c757d; width:100%;">Add to Cart</button>
+                                    <button type="submit" class="btn-order btn-cart">Add to Cart</button>
                                 </form>
 
                                 <form action="{{ route('buy.now', $product->id) }}" method="POST" style="flex:1; margin:0;">
                                     @csrf
-                                    <button type="submit" class="btn-order" style="background-color:#007bff; width:100%;">Buy Now</button>
+                                    <button type="submit" class="btn-order btn-buy">Buy Now</button>
                                 </form>
                             </div>
 
@@ -156,26 +193,27 @@
     </main>
 </div>
 
-<!-- PROFILE MODAL (same as your original) -->
-<div id="profileModal" class="modal">
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal" aria-hidden="true">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <button type="button" class="close" id="closeModalBtn">&times;</button>
+
         <h2>Your Profile</h2>
 
         <form id="editProfileForm" action="{{ route('profile.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+
             <div class="profile-container">
                 <img id="previewImage"
                      src="{{ Auth::user()->profile_image
                             ? asset('storage/profile/' . Auth::user()->profile_image)
                             : 'https://via.placeholder.com/120x120.png?text=Profile' }}"
                      alt="Profile"
-                     class="profile-pic"
-                     style="width:120px; height:120px; border-radius:50%; object-fit:cover;">
+                     class="profile-pic">
 
                 <div class="field-group">
                     <label>Change Picture:</label>
-                    <input type="file" name="profile_image" id="profile_image" accept="image/*" onchange="previewFile()" disabled>
+                    <input type="file" name="profile_image" id="profile_image" accept="image/*" disabled>
                 </div>
 
                 <div class="field-group">
@@ -194,8 +232,8 @@
                 </div>
 
                 <div class="buttons">
-                    <button type="button" id="editBtn" class="save-btn" style="background-color:#6c757d;">Edit</button>
-                    <button type="submit" id="saveBtn" class="save-btn" style="display:none;">Save</button>
+                    <button type="button" id="editBtn" class="save-btn btn-gray">Edit</button>
+                    <button type="submit" id="saveBtn" class="save-btn btn-green" style="display:none;">Save</button>
                 </div>
             </div>
         </form>
@@ -203,77 +241,168 @@
 </div>
 
 <script>
-    // === IMAGE PREVIEW ===
-    function previewFile() {
-        const file = document.getElementById('profile_image').files[0];
-        const preview = document.getElementById('previewImage');
-        const reader = new FileReader();
-        reader.onloadend = () => preview.src = reader.result;
-        if (file) reader.readAsDataURL(file);
-    }
+/* =========================
+   Helpers: Modal
+   ========================= */
+function openModal(modalEl) {
+  if (!modalEl) return;
+  modalEl.style.display = 'flex';
+  modalEl.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+}
 
-    // === MODAL OPEN/CLOSE ===
-    const modal = document.getElementById('profileModal');
-    const btn = document.getElementById('viewProfileBtn');
-    const span = document.querySelector('.close');
+function closeModal(modalEl) {
+  if (!modalEl) return;
+  modalEl.style.display = 'none';
+  modalEl.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+}
 
-    if (btn) btn.onclick = () => modal.style.display = 'flex';
-    if (span) span.onclick = () => modal.style.display = 'none';
-    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+/* =========================
+   Profile Dropdown
+   ========================= */
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
 
-    // === EDIT TOGGLE ===
-    const editBtn = document.getElementById('editBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const inputs = ['name', 'address', 'profile_image'];
+if (profileBtn && profileDropdown) {
+  profileBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    profileDropdown.classList.toggle('open');
+  });
 
-    editBtn.addEventListener('click', () => {
-        inputs.forEach(id => document.getElementById(id).disabled = false);
-        editBtn.style.display = 'none';
-        saveBtn.style.display = 'inline-block';
+  // close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    profileDropdown.classList.remove('open');
+  });
+
+  // prevent closing when clicking inside dropdown
+  profileDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+}
+
+/* =========================
+   Profile Modal
+   ========================= */
+const modal = document.getElementById('profileModal');
+const viewProfileBtn = document.getElementById('viewProfileBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+if (viewProfileBtn && modal) {
+  viewProfileBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (profileDropdown) profileDropdown.classList.remove('open');
+    openModal(modal);
+  });
+}
+
+if (closeModalBtn && modal) {
+  closeModalBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeModal(modal);
+  });
+}
+
+// close modal when clicking the dark backdrop
+window.addEventListener('click', (e) => {
+  if (modal && e.target === modal) closeModal(modal);
+});
+
+// close modal on ESC
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+    closeModal(modal);
+  }
+});
+
+/* =========================
+   Edit Toggle (Enable Inputs)
+   ========================= */
+const editBtn = document.getElementById('editBtn');
+const saveBtn = document.getElementById('saveBtn');
+
+if (editBtn && saveBtn) {
+  editBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const nameInput = document.getElementById('name');
+    const addressInput = document.getElementById('address');
+    const fileInput = document.getElementById('profile_image');
+
+    if (nameInput) nameInput.disabled = false;
+    if (addressInput) addressInput.disabled = false;
+    if (fileInput) fileInput.disabled = false;
+
+    editBtn.style.display = 'none';
+    saveBtn.style.display = 'inline-block';
+  });
+}
+
+/* =========================
+   Image Preview (Profile)
+   ========================= */
+const profileImageInput = document.getElementById('profile_image');
+
+if (profileImageInput) {
+  profileImageInput.addEventListener('change', () => {
+    const file = profileImageInput.files && profileImageInput.files[0];
+    const preview = document.getElementById('previewImage');
+
+    if (!file || !preview) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      preview.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* =========================
+   Wishlist Toggle (AJAX)
+   ========================= */
+document.querySelectorAll('.wishlist-btn').forEach((btn) => {
+  btn.addEventListener('click', function () {
+    const productId = this.dataset.id;
+    if (!productId) return;
+
+    fetch(`/wishlist/toggle/${productId}`, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'Accept': 'application/json',
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === 'added') {
+        this.textContent = '💖';
+        showNotification('Product added to wishlist!');
+      } else {
+        this.textContent = '❤️';
+        showNotification('Product removed from wishlist!');
+      }
+    })
+    .catch(() => {
+      showNotification('Something went wrong. Please try again.');
     });
+  });
+});
 
-    // === Wishlist Toggle with Notification ===
-    document.querySelectorAll('.wishlist-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const productId = this.dataset.id;
-            fetch(`/wishlist/toggle/${productId}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                },
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'added') {
-                    this.textContent = '💖';
-                    showNotification('Product added to wishlist!');
-                } else {
-                    this.textContent = '❤️';
-                    showNotification('Product removed from wishlist!');
-                }
-            });
-        });
-    });
-
-    function showNotification(message) {
-        let notif = document.createElement('div');
-        notif.className = 'wishlist-notification';
-        notif.textContent = message;
-        notif.style.position = 'fixed';
-        notif.style.top = '20px';
-        notif.style.right = '20px';
-        notif.style.backgroundColor = '#28a745';
-        notif.style.color = '#fff';
-        notif.style.padding = '10px 20px';
-        notif.style.borderRadius = '5px';
-        notif.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
-        notif.style.zIndex = 9999;
-        document.body.appendChild(notif);
-
-        setTimeout(() => notif.remove(), 2000);
-    }
+/* =========================
+   Notification
+   ========================= */
+function showNotification(message) {
+  const notif = document.createElement('div');
+  notif.className = 'wishlist-notification';
+  notif.textContent = message;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.remove(), 2000);
+}
 </script>
+
 
 </body>
 </html>
