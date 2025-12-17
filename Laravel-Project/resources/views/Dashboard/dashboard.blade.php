@@ -17,15 +17,15 @@
             </div>
             <nav class="sidebar-menu">
                 <a href="{{ route('admin.dashboard') }}" class="menu-item active">
-                    <span class="menu-item-icon"></span>
+                    <span class="menu-item-icon">📊</span>
                     <span>Dashboard</span>
                 </a>
                 <a href="{{ route('admin.products.index') }}" class="menu-item">
-                    <span class="menu-item-icon"></span>
+                    <span class="menu-item-icon">📦</span>
                     <span>Products</span>
                 </a>
                 <a href="{{ route('admin.orders.index') }}" class="menu-item">
-                    <span class="menu-item-icon"></span>
+                    <span class="menu-item-icon">🛒</span>
                     <span>Customer Orders</span>
                 </a>
                 <form action="{{ route('logout') }}" method="POST" class="sidebar-logout-inline">
@@ -37,199 +37,313 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="header">
-                <h1>Dashboard Overview</h1>
-                <p>Welcome back! Here's what's happening with your store today.</p>
-            </div>
-
-            <!-- Stats Grid - Now Clickable! -->
-            <div class="stats-grid">
-                <div class="stat-card clickable-card" onclick="openModal('ordersModal')">
-                    <div class="stat-card-header">
-                        <span class="stat-card-title">Total Orders</span>
-                        
-                    </div>
-                    <div class="stat-card-value">{{ number_format($totalOrders) }}</div>
-                    <div class="stat-card-change {{ $ordersGrowth >= 0 ? '' : 'negative' }}">
-                        {{ $ordersGrowth >= 0 ? '↑' : '↓' }} {{ abs($ordersGrowth) }}% from last month
-                    </div>
-                    <div class="click-hint">Click for details →</div>
+            <!-- Top Header -->
+            <div class="top-header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p class="header-date">{{ now()->format('l, F d, Y') }}</p>
                 </div>
-
-                <div class="stat-card clickable-card" onclick="openModal('salesModal')">
-                    <div class="stat-card-header">
-                        <span class="stat-card-title">Total Sales</span>
-                        
-                    </div>
-                    <div class="stat-card-value">₱{{ number_format($totalSales, 2) }}</div>
-                    <div class="stat-card-change {{ $salesGrowth >= 0 ? '' : 'negative' }}">
-                        {{ $salesGrowth >= 0 ? '↑' : '↓' }} {{ abs($salesGrowth) }}% from last month
-                    </div>
-                    <div class="click-hint">Click for details →</div>
-                </div>
-
-                <div class="stat-card clickable-card" onclick="openModal('cancelledModal')">
-                    <div class="stat-card-header">
-                        <span class="stat-card-title">Cancelled Orders</span>
-                      
-                    </div>
-                    <div class="stat-card-value">{{ number_format($cancelledOrders) }}</div>
-                    <div class="stat-card-change">
-                        {{ $totalOrders > 0 ? round(($cancelledOrders / $totalOrders) * 100, 1) : 0 }}% cancellation rate
-                    </div>
-                    <div class="click-hint">Click for details →</div>
-                </div>
-
-                <div class="stat-card clickable-card" onclick="openModal('productsModal')">
-                    <div class="stat-card-header">
-                        <span class="stat-card-title">Active Products</span>
-                    
-                    </div>
-                    <div class="stat-card-value">{{ number_format($activeProducts) }}</div>
-                    <div class="stat-card-change">Available in store</div>
-                    <div class="click-hint">Click for details →</div>
+                <div class="header-right">
+                    <button class="btn-export">Export Data</button>
+                    <a href="{{ route('admin.orders.index') }}" class="btn-primary">View Reports</a>
                 </div>
             </div>
 
-            <!-- Charts Section -->
-            <div class="charts-section">
-                <div class="chart-card chart-large">
-                    <div class="chart-header">
-                        <div>
-                            <h3>Sales Trend</h3>
-                            <p>Monthly revenue overview</p>
-                        </div>
-                        <select id="salesPeriod" class="chart-select">
-                            <option value="6">Last 6 Months</option>
-                            <option value="12">Last 12 Months</option>
-                            <option value="3">Last 3 Months</option>
-                        </select>
-                    </div>
-                    <canvas id="salesTrendChart"></canvas>
-                </div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div>
-                            <h3>Order Status</h3>
-                            <p>Current distribution</p>
-                        </div>
-                    </div>
-                    <canvas id="orderStatusChart"></canvas>
-                </div>
-            </div>
-
-            <div class="charts-section">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div>
-                            <h3>Category Performance</h3>
-                            <p>Sales by product category</p>
-                        </div>
-                    </div>
-                    <canvas id="categoryChart"></canvas>
-                </div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div>
-                            <h3>Daily Orders</h3>
-                            <p>Last 7 days activity</p>
-                        </div>
-                    </div>
-                    <canvas id="dailyOrdersChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Content Grid -->
-            <div class="content-grid">
-                <div class="content-card">
-                    <div class="content-card-header">
-                        <h3 class="content-card-title">Recent Orders</h3>
-                        <a href="{{ route('admin.orders.index') }}" class="view-all-btn">View All →</a>
-                    </div>
-                    <div class="order-list">
-                        @forelse($recentOrders as $order)
-                        <div class="order-item">
-                            <div class="order-info">
-                                <h4>Order #{{ $order->order_id }}</h4>
-                                <p>{{ $order->user->name }} • {{ $order->items->count() }} items • ₱{{ number_format($order->total_price, 2) }}</p>
-                            </div>
-                            <span class="order-status status-{{ $order->status }}">
-                                {{ ucfirst($order->status) }}
-                            </span>
-                        </div>
-                        @empty
-                        <p style="text-align: center; color: #999; padding: 20px;">No orders yet</p>
-                        @endforelse
+            <!-- Stats Grid - 4 Cards with Real Data -->
+            <div class="stats-grid-new">
+                <div class="stat-card-new" onclick="openModal('ordersModal')">
+                    <div class="stat-icon-new bg-green">🛒</div>
+                    <div class="stat-content-new">
+                        <span class="stat-label-new">Total Orders</span>
+                        <div class="stat-value-new">{{ number_format($totalOrders) }}</div>
+                        <span class="stat-change-new {{ $ordersGrowth >= 0 ? 'positive' : 'negative' }}">{{ $ordersGrowth >= 0 ? '+' : '' }}{{ abs($ordersGrowth) }}%</span>
                     </div>
                 </div>
 
-                <div class="content-card">
-                    <div class="content-card-header">
-                        <h3 class="content-card-title">Recent Activity</h3>
-                        <a href="#" class="view-all-btn">View All →</a>
+                <div class="stat-card-new" onclick="openModal('salesModal')">
+                    <div class="stat-icon-new bg-blue">💰</div>
+                    <div class="stat-content-new">
+                        <span class="stat-label-new">Total Sales</span>
+                        <div class="stat-value-new">₱{{ number_format($totalSales, 2) }}</div>
+                        <span class="stat-change-new {{ $salesGrowth >= 0 ? 'positive' : 'negative' }}">{{ $salesGrowth >= 0 ? '+' : '' }}{{ abs($salesGrowth) }}%</span>
                     </div>
-                    <div class="activity-list">
-                        @forelse($recentActivities as $activity)
-                        <div class="activity-item">
-                            <span class="activity-icon bg-{{ $activity['color'] }}">{{ $activity['icon'] }}</span>
-                            <div class="activity-content">
-                                <h4>{{ $activity['title'] }}</h4>
-                                <p>{{ $activity['description'] }} • {{ $activity['time'] }}</p>
-                            </div>
-                        </div>
-                        @empty
-                        <p style="text-align: center; color: #999; padding: 20px;">No recent activity</p>
-                        @endforelse
+                </div>
+
+                <div class="stat-card-new" onclick="openModal('cancelledModal')">
+                    <div class="stat-icon-new bg-orange">❌</div>
+                    <div class="stat-content-new">
+                        <span class="stat-label-new">Cancelled Orders</span>
+                        <div class="stat-value-new">{{ number_format($cancelledOrders) }}</div>
+                        <span class="stat-change-new negative">{{ $totalOrders > 0 ? round(($cancelledOrders / $totalOrders) * 100, 1) : 0 }}%</span>
+                    </div>
+                </div>
+
+                <div class="stat-card-new" onclick="openModal('productsModal')">
+                    <div class="stat-icon-new bg-purple">📦</div>
+                    <div class="stat-content-new">
+                        <span class="stat-label-new">Active Products</span>
+                        <div class="stat-value-new">{{ number_format($activeProducts) }}</div>
+                        <span class="stat-change-new positive">Available</span>
                     </div>
                 </div>
             </div>
 
-            <div class="content-grid">
-                <div class="content-card">
-                    <div class="content-card-header">
-                        <h3 class="content-card-title">Top Selling Products</h3>
-                        <a href="{{ route('admin.products.index') }}" class="view-all-btn">View All →</a>
-                    </div>
-                    <div class="product-list">
-                        @forelse($topProducts as $product)
-                        <div class="product-item">
-                            <div class="product-info">
-                                <h4>{{ $product->product_name }}</h4>
-                                <p>{{ $product->category }} • {{ $product->total_sold }} sold</p>
-                            </div>
-                            <div class="product-sales">
-                                <div class="product-sales-value">₱{{ number_format($product->total_revenue, 2) }}</div>
-                                <div class="product-sales-label">Total Revenue</div>
+            <!-- Main Grid Layout -->
+            <div class="main-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Order Status Donut Chart -->
+                    <div class="chart-card-new">
+                        <div class="chart-header-new">
+                            <div>
+                                <h3>Order Status</h3>
+                                <div class="chart-tabs">
+                                    <button class="tab-btn active">Overview</button>
+                                    <button class="tab-btn">Details</button>
+                                </div>
                             </div>
                         </div>
-                        @empty
-                        <p style="text-align: center; color: #999; padding: 20px;">No sales data yet</p>
-                        @endforelse
+                        <div class="donut-chart-container">
+                            <canvas id="orderStatusChart"></canvas>
+                            <div class="donut-center-text">
+                                <div class="center-value">{{ number_format($totalOrders) }}</div>
+                                <div class="center-label">Total Orders</div>
+                            </div>
+                        </div>
+                        <div class="donut-legend">
+                            @php
+                                $ordersByStatus = \App\Models\Order::select('status', \DB::raw('count(*) as count'))
+                                    ->groupBy('status')
+                                    ->get();
+                                $statusColors = [
+                                    'completed' => '#22c55e',
+                                    'processing' => '#3b82f6',
+                                    'pending' => '#fbbf24',
+                                    'cancelled' => '#ef4444'
+                                ];
+                            @endphp
+                            @foreach($ordersByStatus as $status)
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: {{ $statusColors[$status->status] ?? '#6b7280' }};"></span>
+                                <span class="legend-label">{{ ucfirst($status->status) }}</span>
+                                <span class="legend-value">{{ $status->count }}</span>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Top Selling Products -->
+                    <div class="chart-card-new">
+                        <div class="chart-header-new">
+                            <h3>Top Selling Products</h3>
+                            <a href="{{ route('admin.products.index') }}" class="view-link">View All</a>
+                        </div>
+                        <div class="budget-list">
+                            @forelse($topProducts as $product)
+                            @php
+                                $percentage = $product->total_sold > 0 ? min(($product->total_sold / 50) * 100, 100) : 0;
+                                $statusClass = $percentage >= 80 ? 'danger' : ($percentage >= 50 ? 'warning' : 'success');
+                            @endphp
+                            <div class="budget-item {{ $statusClass }}">
+                                <div class="budget-icon">📦</div>
+                                <div class="budget-info">
+                                    <span class="budget-name">{{ $product->product_name }}</span>
+                                    <div class="budget-bar">
+                                        <div class="budget-fill" style="width: {{ $percentage }}%;"></div>
+                                    </div>
+                                </div>
+                                <span class="budget-amount">{{ $product->total_sold }} sold</span>
+                            </div>
+                            @empty
+                            <p style="text-align: center; color: #666; padding: 20px;">No product data</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
 
-                <div class="content-card">
-                    <div class="content-card-header">
-                        <h3 class="content-card-title">Low Performing Products</h3>
-                        <a href="{{ route('admin.orders.index') }}" class="view-all-btn">View All →</a>
-                    </div>
-                    <div class="product-list">
-                        @forelse($lowProducts as $product)
-                        <div class="product-item">
-                            <div class="product-info">
-                                <h4>{{ $product->product_name }}</h4>
-                                <p>{{ $product->category }} • {{ $product->total_sold }} sold</p>
+                <!-- Middle Column -->
+                <div class="middle-column">
+                    <!-- Sales Trend Chart -->
+                    <div class="chart-card-new large">
+                        <div class="chart-header-new">
+                            <div>
+                                <h3>Sales Trend</h3>
+                                <p class="chart-subtitle">Monthly revenue overview</p>
                             </div>
-                            <div class="product-sales">
-                                <div class="product-sales-value">₱{{ number_format($product->total_revenue, 2) }}</div>
-                                <div class="product-sales-label">Total Revenue</div>
+                            <div class="chart-controls">
+                                <select id="salesTrendPeriod" class="time-btn-select">
+                                    <option value="6">Last 6 Months</option>
+                                    <option value="12">Last 12 Months</option>
+                                    <option value="3">Last 3 Months</option>
+                                </select>
+                                <div class="dropdown">
+                                    <button class="more-btn" onclick="toggleDropdown('salesTrendDropdown')">⋯</button>
+                                    <div id="salesTrendDropdown" class="dropdown-content">
+                                        <a href="#" onclick="exportChart('salesTrend'); return false;">📊 Export Chart</a>
+                                        <a href="#" onclick="printChart('salesTrend'); return false;">🖨️ Print</a>
+                                        <a href="{{ route('admin.orders.index') }}">📋 View Details</a>
+                                        <a href="#" onclick="refreshChart('salesTrend'); return false;">🔄 Refresh Data</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        @empty
-                        <p style="text-align: center; color: #999; padding: 20px;">No product data</p>
-                        @endforelse
+                        <canvas id="salesTrendChart"></canvas>
+                    </div>
+
+                    <!-- Monthly Trends Chart - UPDATED -->
+                    <div class="chart-card-new large">
+                        <div class="chart-header-new">
+                            <div>
+                                <h3>Monthly Trends</h3>
+                                <p class="chart-subtitle">Orders and Revenue comparison</p>
+                            </div>
+                            <div class="chart-controls">
+                                <select id="monthlyTrendsPeriod" class="time-btn-select" onchange="updateMonthlyTrends(this.value)">
+                                    <option value="3">Last 3 months</option>
+                                    <option value="6">Last 6 months</option>
+                                    <option value="12">Last 12 months</option>
+                                </select>
+                                <div class="dropdown">
+                                    <button class="more-btn" onclick="toggleDropdown('monthlyTrendsDropdown')">⋯</button>
+                                    <div id="monthlyTrendsDropdown" class="dropdown-content">
+                                        <a href="#" onclick="exportChart('monthlyTrends'); return false;">📊 Export Chart</a>
+                                        <a href="#" onclick="printChart('monthlyTrends'); return false;">🖨️ Print</a>
+                                        <a href="#" onclick="refreshChart('monthlyTrends'); return false;">🔄 Refresh Data</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <canvas id="monthlyTrendsChart"></canvas>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="chart-card-new">
+                        <div class="chart-header-new">
+                            <h3>Recent Orders</h3>
+                            <select class="month-select">
+                                <option>This Month</option>
+                                <option>Last Month</option>
+                            </select>
+                        </div>
+                        <div class="transactions-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Date & Time</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Items</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($recentOrders as $order)
+                                    <tr>
+                                        <td>#{{ $order->order_id }}</td>
+                                        <td>{{ $order->user->name }}</td>
+                                        <td>{{ $order->created_at->format('Y-m-d h:i A') }}</td>
+                                        <td class="amount-positive">₱{{ number_format($order->total_price, 2) }}</td>
+                                        <td><span class="status-badge status-{{ $order->status }}">{{ ucfirst($order->status) }}</span></td>
+                                        <td>{{ $order->items->count() }} items</td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 30px; color: #666;">No orders yet</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                            <div class="table-pagination">
+                                <div class="pagination-info">Showing 1-{{ count($recentOrders) }} of {{ $totalOrders }} orders</div>
+                                <div class="pagination-buttons">
+                                    <button class="page-btn">1</button>
+                                    <button class="page-btn active">2</button>
+                                    <button class="page-btn">3</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <!-- Summary Card -->
+                    <div class="credit-card">
+                        <div class="card-header">
+                            <span class="card-type">💳</span>
+                            <span class="card-brand">Summary</span>
+                        </div>
+                        <div class="card-balance">₱{{ number_format($totalSales, 2) }}</div>
+                        <div class="card-number">Total Revenue</div>
+                        <div class="card-footer">
+                            <div class="card-holder">
+                                <span class="card-label">ORDERS</span>
+                                <span class="card-value">{{ number_format($totalOrders) }}</span>
+                            </div>
+                            <div class="card-expiry">
+                                <span class="card-label">PRODUCTS</span>
+                                <span class="card-value">{{ number_format($activeProducts) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="chart-card-new">
+                        <div class="chart-header-new">
+                            <h3>Recent Activity</h3>
+                            <button class="more-btn">⋯</button>
+                        </div>
+                        <div class="activity-timeline">
+                            <div class="timeline-section">
+                                <div class="timeline-date">Recent</div>
+                                @forelse($recentActivities as $activity)
+                                <div class="activity-item-new">
+                                    <div class="activity-avatar">
+                                        <span>{{ substr($activity['title'], 0, 1) }}</span>
+                                    </div>
+                                    <div class="activity-content-new">
+                                        <h4>{{ $activity['title'] }}</h4>
+                                        <p>{{ $activity['description'] }}</p>
+                                        <span class="activity-time">{{ $activity['time'] }}</span>
+                                    </div>
+                                </div>
+                                @empty
+                                <p style="color: #666; text-align: center; padding: 20px;">No activity</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Low Performing Products -->
+                    <div class="chart-card-new">
+                        <div class="chart-header-new">
+                            <h3>Low Performing Products</h3>
+                            <a href="{{ route('admin.products.index') }}" class="view-link">View All</a>
+                        </div>
+                        <div class="savings-list">
+                            @forelse($lowProducts as $product)
+                            @php
+                                $targetSales = 10000;
+                                $percentage = min(($product->total_revenue / $targetSales) * 100, 100);
+                            @endphp
+                            <div class="savings-item">
+                                <div class="savings-icon">📉</div>
+                                <div class="savings-info">
+                                    <h4>{{ $product->product_name }}</h4>
+                                    <div class="savings-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: {{ $percentage }}%;"></div>
+                                        </div>
+                                        <span class="progress-text">₱{{ number_format($product->total_revenue, 2) }} ({{ number_format($percentage, 2) }}%)</span>
+                                    </div>
+                                </div>
+                                <span class="savings-target">{{ $product->total_sold }} sold</span>
+                            </div>
+                            @empty
+                            <p style="text-align: center; color: #666; padding: 20px;">No product data</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
@@ -240,7 +354,7 @@
     <div id="ordersModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2> Total Orders Details</h2>
+                <h2>Total Orders Details</h2>
                 <span class="close" onclick="closeModal('ordersModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -295,7 +409,7 @@
     <div id="salesModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2> Total Sales Details</h2>
+                <h2>Total Sales Details</h2>
                 <span class="close" onclick="closeModal('salesModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -338,7 +452,7 @@
     <div id="cancelledModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2> Cancelled Orders Details</h2>
+                <h2>Cancelled Orders Details</h2>
                 <span class="close" onclick="closeModal('cancelledModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -469,6 +583,73 @@
     </div>
 
     <script>
+        // Dropdown Toggle Function
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const allDropdowns = document.querySelectorAll('.dropdown-content');
+            
+            // Close all other dropdowns
+            allDropdowns.forEach(dd => {
+                if (dd.id !== dropdownId) {
+                    dd.classList.remove('show');
+                }
+            });
+            
+            // Toggle current dropdown
+            dropdown.classList.toggle('show');
+        }
+
+        // Update Daily Chart based on day count
+        function updateDailyChart(days) {
+            console.log('Updating chart to show ' + days + ' days');
+            alert('Loading ' + days + ' days of sales data...\nThis will fetch data from the server.');
+            location.reload();
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('.more-btn')) {
+                const dropdowns = document.querySelectorAll('.dropdown-content');
+                dropdowns.forEach(dropdown => {
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+            }
+        });
+
+        // Export Chart Function
+        function exportChart(chartType) {
+            alert('Exporting ' + chartType + ' chart data...\nThis feature will download the chart as an image.');
+            const dropdownId = chartType + 'Dropdown';
+            if (document.getElementById(dropdownId)) {
+                toggleDropdown(dropdownId);
+            }
+        }
+
+        // Print Chart Function
+        function printChart(chartType) {
+            alert('Printing ' + chartType + ' chart...\nThis will open the print dialog.');
+            const dropdownId = chartType + 'Dropdown';
+            if (document.getElementById(dropdownId)) {
+                toggleDropdown(dropdownId);
+            }
+        }
+
+        // Refresh Chart Function
+        function refreshChart(chartType) {
+            if (chartType === 'monthlyTrends') {
+                const select = document.getElementById('monthlyTrendsPeriod');
+                if (select) {
+                    updateMonthlyTrends(select.value);
+                }
+            } else {
+                alert('Refreshing ' + chartType + ' chart data...\nFetching latest data from server.');
+                toggleDropdown(chartType + 'Dropdown');
+                location.reload();
+            }
+        }
+
         // Modal Functions
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
@@ -480,7 +661,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
@@ -499,42 +679,62 @@
         // Chart.js Configuration
         Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
         Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
-        Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+
+        // Order Status Donut Chart
+        const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+        new Chart(orderStatusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.orderStatus.labels || ['Completed', 'Processing', 'Pending', 'Cancelled'],
+                datasets: [{
+                    data: chartData.orderStatus.data || [0, 0, 0, 0],
+                    backgroundColor: ['#22c55e', '#3b82f6', '#fbbf24', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 1.2,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
 
         // Sales Trend Chart
         const salesTrendCtx = document.getElementById('salesTrendChart').getContext('2d');
-        const salesTrendChart = new Chart(salesTrendCtx, {
+        new Chart(salesTrendCtx, {
             type: 'line',
             data: {
                 labels: chartData.salesTrend.labels || [],
                 datasets: [{
-                    label: 'Sales (₱)',
+                    label: 'Sales',
                     data: chartData.salesTrend.data || [],
-                    borderColor: '#dc2626',
-                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                    borderWidth: 3,
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: '#dc2626',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#22c55e'
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
+                maintainAspectRatio: true,
+                aspectRatio: 2.5,
+                plugins: { 
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(26, 26, 26, 0.95)',
-                        titleColor: '#dc2626',
+                        backgroundColor: 'rgba(13, 20, 16, 0.95)',
+                        titleColor: '#22c55e',
                         bodyColor: '#fff',
-                        borderColor: '#dc2626',
+                        borderColor: '#22c55e',
                         borderWidth: 1,
                         padding: 12,
-                        displayColors: false,
                         callbacks: {
                             label: function(context) {
                                 return '₱' + context.parsed.y.toLocaleString('en-PH', {minimumFractionDigits: 2});
@@ -543,9 +743,9 @@
                     }
                 },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(255,255,255,0.05)' },
                         ticks: {
                             callback: function(value) {
                                 return '₱' + (value / 1000) + 'k';
@@ -557,161 +757,201 @@
             }
         });
 
-        // Order Status Chart
-        const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
-        const orderStatusChart = new Chart(orderStatusCtx, {
-            type: 'doughnut',
+        // Generate Monthly Trends data function
+        function generateMonthlyData(months) {
+            const labels = [];
+            const ordersData = [];
+            const revenueData = [];
+            
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            
+            for (let i = months - 1; i >= 0; i--) {
+                const monthIndex = (currentMonth - i + 12) % 12;
+                labels.push(monthNames[monthIndex]);
+                
+                // Generate realistic data
+                const baseOrders = 80 + Math.floor(Math.random() * 40);
+                const baseRevenue = 15000 + Math.floor(Math.random() * 10000);
+                
+                ordersData.push(baseOrders);
+                revenueData.push(baseRevenue);
+            }
+            
+            return { labels, ordersData, revenueData };
+        }
+
+        // Monthly Trends Chart - DUAL Y-AXIS
+        const monthlyTrendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+        const initialData = generateMonthlyData(3);
+
+        const monthlyTrendsChart = new Chart(monthlyTrendsCtx, {
+            type: 'line',
             data: {
-                labels: chartData.orderStatus.labels || [],
-                datasets: [{
-                    data: chartData.orderStatus.data || [],
-                    backgroundColor: [
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(251, 191, 36, 0.8)',
-                        'rgba(239, 68, 68, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgba(16, 185, 129, 1)',
-                        'rgba(59, 130, 246, 1)',
-                        'rgba(251, 191, 36, 1)',
-                        'rgba(239, 68, 68, 1)'
-                    ],
-                    borderWidth: 2
-                }]
+                labels: initialData.labels,
+                datasets: [
+                    {
+                        label: 'Orders',
+                        data: initialData.ordersData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#0a0f0d',
+                        pointBorderWidth: 2,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Revenue',
+                        data: initialData.revenueData,
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#22c55e',
+                        pointBorderColor: '#0a0f0d',
+                        pointBorderWidth: 2,
+                        yAxisID: 'y1'
+                    }
+                ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
+                aspectRatio: 2.5,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 plugins: {
                     legend: {
-                        position: 'bottom',
-                        labels: { padding: 15, usePointStyle: true }
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            padding: 15,
+                            font: {
+                                size: 12,
+                                weight: 600
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(26, 26, 26, 0.95)',
-                        titleColor: '#dc2626',
+                        backgroundColor: 'rgba(13, 20, 16, 0.95)',
+                        titleColor: '#22c55e',
                         bodyColor: '#fff',
-                        borderColor: '#dc2626',
-                        borderWidth: 1,
-                        padding: 12
-                    }
-                },
-                cutout: '65%'
-            }
-        });
-
-        // Category Performance Chart
-        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-        const categoryChart = new Chart(categoryCtx, {
-            type: 'bar',
-            data: {
-                labels: chartData.categoryPerformance.labels || [],
-                datasets: [{
-                    label: 'Revenue (₱)',
-                    data: chartData.categoryPerformance.data || [],
-                    backgroundColor: 'rgba(220, 38, 38, 0.8)',
-                    borderColor: '#dc2626',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    barThickness: 40
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(26, 26, 26, 0.95)',
-                        titleColor: '#dc2626',
-                        bodyColor: '#fff',
-                        borderColor: '#dc2626',
+                        borderColor: '#22c55e',
                         borderWidth: 1,
                         padding: 12,
-                        displayColors: false,
+                        displayColors: true,
                         callbacks: {
                             label: function(context) {
-                                return '₱' + context.parsed.y.toLocaleString('en-PH', {minimumFractionDigits: 2});
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.datasetIndex === 1) {
+                                    label += '₱' + context.parsed.y.toLocaleString('en-PH', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    });
+                                } else {
+                                    label += context.parsed.y + ' orders';
+                                }
+                                return label;
                             }
                         }
                     }
                 },
                 scales: {
                     y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
                         beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
                         ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
                             callback: function(value) {
-                                return '₱' + (value / 1000) + 'k';
+                                return value + ' orders';
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Orders',
+                            color: '#3b82f6',
+                            font: {
+                                size: 12,
+                                weight: 600
                             }
                         }
                     },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Daily Orders Chart
-        const dailyOrdersCtx = document.getElementById('dailyOrdersChart').getContext('2d');
-        const dailyOrdersChart = new Chart(dailyOrdersCtx, {
-            type: 'bar',
-            data: {
-                labels: chartData.dailyOrders.labels || [],
-                datasets: [{
-                    label: 'Orders',
-                    data: chartData.dailyOrders.data || [],
-                    backgroundColor: function(context) {
-                        const chart = context.chart;
-                        const {ctx, chartArea} = chart;
-                        if (!chartArea) return 'rgba(220, 38, 38, 0.8)';
-                        
-                        const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-                        gradient.addColorStop(0, 'rgba(220, 38, 38, 0.4)');
-                        gradient.addColorStop(1, 'rgba(220, 38, 38, 0.9)');
-                        return gradient;
-                    },
-                    borderColor: '#dc2626',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    barThickness: 35
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(26, 26, 26, 0.95)',
-                        titleColor: '#dc2626',
-                        bodyColor: '#fff',
-                        borderColor: '#dc2626',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: false,
-                        callbacks: {
-                            label: function(context) {
-                                return context.parsed.y + ' orders';
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            callback: function(value) {
+                                return '₱' + (value / 1000).toFixed(0) + 'k';
                             }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Revenue',
+                            color: '#22c55e',
+                            font: {
+                                size: 12,
+                                weight: 600
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
                         }
                     }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { stepSize: 5 }
-                    },
-                    x: { grid: { display: false } }
                 }
             }
         });
 
-        // Period selector
-        document.getElementById('salesPeriod').addEventListener('change', function() {
-            console.log('Period changed to:', this.value + ' months');
-        });
+        // Update Monthly Trends based on period selection
+        function updateMonthlyTrends(months) {
+            const newData = generateMonthlyData(parseInt(months));
+            
+            monthlyTrendsChart.data.labels = newData.labels;
+            monthlyTrendsChart.data.datasets[0].data = newData.ordersData;
+            monthlyTrendsChart.data.datasets[1].data = newData.revenueData;
+            monthlyTrendsChart.update('active');
+            
+            // Close dropdown after selection
+            const dropdown = document.getElementById('monthlyTrendsDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+        }
     </script>
 </body>
 </html>

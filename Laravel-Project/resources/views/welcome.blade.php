@@ -69,6 +69,8 @@
 
   <section class="products-section container">
 
+   
+
   
     <h2 class="section-title">
     Available Products

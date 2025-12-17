@@ -1,5 +1,5 @@
 /* ========================================
-   🎨 ADMIN ORDERS - DARK RED THEME
+   🎨 ADMIN ORDERS - DARK GREEN THEME
    ======================================== */
 
 /* 🌐 GLOBAL STYLES */
@@ -10,8 +10,8 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0a0a0a;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0a0f0d;
     color: #e5e5e5;
     display: flex;
     min-height: 100vh;
@@ -22,24 +22,24 @@ body {
    ======================================== */
 .sidebar {
     width: 220px;
-    background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+    background: linear-gradient(180deg, #0d1410 0%, #080b09 100%);
     position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
     padding: 20px 0;
-    box-shadow: 2px 0 10px rgba(220, 38, 38, 0.15);
+    box-shadow: 2px 0 10px rgba(34, 197, 94, 0.15);
     z-index: 1000;
-    border-right: 1px solid rgba(220, 38, 38, 0.2);
+    border-right: 1px solid rgba(34, 197, 94, 0.2);
 }
 
 .sidebar-header {
     padding: 0 20px 30px;
-    border-bottom: 1px solid rgba(220, 38, 38, 0.3);
+    border-bottom: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .sidebar-header h2 {
-    color: #dc2626;
+    color: #22c55e;
     font-size: 22px;
     margin-bottom: 5px;
 }
@@ -67,16 +67,16 @@ body {
 }
 
 .nav-item:hover {
-    background-color: rgba(220, 38, 38, 0.1);
+    background-color: rgba(34, 197, 94, 0.1);
     color: #fff;
-    border-left: 3px solid #dc2626;
+    border-left: 3px solid #22c55e;
     padding-left: 17px;
 }
 
 .nav-item.active {
-    background-color: rgba(220, 38, 38, 0.15);
+    background-color: rgba(34, 197, 94, 0.15);
     color: #fff;
-    border-left: 3px solid #dc2626;
+    border-left: 3px solid #22c55e;
     padding-left: 17px;
 }
 
@@ -93,8 +93,8 @@ body {
 .btn-logout {
     width: 100%;
     padding: 12px;
-    background-color: #dc2626;
-    color: #fff;
+    background-color: #22c55e;
+    color: #0a0f0d;
     border: none;
     border-radius: 8px;
     font-weight: 600;
@@ -104,8 +104,8 @@ body {
 }
 
 .btn-logout:hover {
-    background-color: #b91c1c;
-    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    background-color: #16a34a;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
 
 /* ========================================
@@ -115,18 +115,18 @@ body {
     margin-left: 220px;
     flex: 1;
     padding: 30px;
-    background-color: #0a0a0a;
+    background-color: #0a0f0d;
 }
 
 /* 📌 Content Header */
 .content-header {
     margin-bottom: 30px;
     padding-bottom: 20px;
-    border-bottom: 2px solid rgba(220, 38, 38, 0.2);
+    border-bottom: 2px solid rgba(34, 197, 94, 0.2);
 }
 
 .content-header h1 {
-    color: #dc2626;
+    color: #22c55e;
     font-size: 32px;
     margin-bottom: 5px;
 }
@@ -149,8 +149,8 @@ body {
 .search-input {
     flex: 1;
     padding: 12px 18px;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    background-color: #0d1410;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     color: #e5e5e5;
     font-size: 14px;
@@ -159,18 +159,18 @@ body {
 
 .search-input:focus {
     outline: none;
-    border-color: #dc2626;
-    box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+    border-color: #22c55e;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
 }
 
 .search-input::placeholder {
-    color: #777;
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .filter-select {
     padding: 12px 18px;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    background-color: #0d1410;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     color: #e5e5e5;
     font-size: 14px;
@@ -180,11 +180,11 @@ body {
 
 .filter-select:focus {
     outline: none;
-    border-color: #dc2626;
+    border-color: #22c55e;
 }
 
 .filter-select:hover {
-    background-color: #2d2d2d;
+    background-color: rgba(34, 197, 94, 0.05);
 }
 
 /* ========================================
@@ -198,21 +198,21 @@ body {
 }
 
 .alert-success {
-    background-color: rgba(16, 185, 129, 0.15);
-    border: 1px solid #10b981;
-    color: #10b981;
+    background-color: rgba(34, 197, 94, 0.15);
+    border: 1px solid #22c55e;
+    color: #22c55e;
 }
 
 /* ========================================
    📊 TABLE CONTAINER
    ======================================== */
 .table-container {
-    background-color: #1a1a1a;
+    background-color: #0d1410;
     border-radius: 12px;
     padding: 0;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
 /* 📋 Orders Table */
@@ -222,7 +222,7 @@ body {
 }
 
 .orders-table thead {
-    background: linear-gradient(90deg, #dc2626, #b91c1c);
+    background: linear-gradient(90deg, #22c55e, #16a34a);
 }
 
 .orders-table th {
@@ -230,19 +230,19 @@ body {
     text-align: left;
     font-weight: 600;
     font-size: 14px;
-    color: #fff;
+    color: #0a0f0d;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .orders-table tbody tr {
-    background-color: #1a1a1a;
-    border-bottom: 1px solid #2a2a2a;
+    background-color: #0d1410;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     transition: background-color 0.2s ease;
 }
 
 .orders-table tbody tr:hover {
-    background-color: #222222;
+    background-color: rgba(34, 197, 94, 0.08);
 }
 
 .orders-table td {
@@ -288,9 +288,9 @@ body {
 }
 
 .badge-completed {
-    background-color: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .badge-cancelled {
@@ -307,8 +307,8 @@ body {
 .status-select {
     width: 100%;
     padding: 8px 12px;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    background-color: #0d1410;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     color: #e5e5e5;
     font-size: 13px;
@@ -318,18 +318,18 @@ body {
 
 .status-select:focus {
     outline: none;
-    border-color: #dc2626;
-    box-shadow: 0 0 8px rgba(220, 38, 38, 0.3);
+    border-color: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
 }
 
 .status-select:hover {
-    background-color: #222;
+    background-color: rgba(34, 197, 94, 0.05);
 }
 
 /* 🗑️ Delete Button */
 .btn-delete {
     padding: 8px 16px;
-    background-color: #dc2626;
+    background-color: #ef4444;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -340,15 +340,15 @@ body {
 }
 
 .btn-delete:hover {
-    background-color: #b91c1c;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    background-color: #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
 /* ❌ No Data Message */
 .no-data {
     text-align: center;
     padding: 40px !important;
-    color: #777;
+    color: rgba(255, 255, 255, 0.5);
     font-size: 15px;
 }
 
@@ -373,9 +373,9 @@ body {
 .pagination-container a,
 .pagination-container span {
     padding: 8px 14px;
-    background-color: #1a1a1a;
+    background-color: #0d1410;
     color: #e5e5e5;
-    border: 1px solid #333;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     text-decoration: none;
     font-size: 14px;
@@ -383,13 +383,15 @@ body {
 }
 
 .pagination-container a:hover {
-    background-color: #dc2626;
-    border-color: #dc2626;
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: #0a0f0d;
 }
 
 .pagination-container .active span {
-    background-color: #dc2626;
-    border-color: #dc2626;
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: #0a0f0d;
     font-weight: 600;
 }
 
@@ -400,11 +402,12 @@ body {
 
 /* Pagination Text */
 .pagination-info {
-    color: #999;
+    color: rgba(255, 255, 255, 0.5);
     font-size: 14px;
     margin-top: 10px;
     text-align: center;
 }
+
 /* ========================================
    📱 RESPONSIVE DESIGN
    ======================================== */
@@ -459,17 +462,18 @@ body {
         margin-top: 20px;
     }
 }
+
 .header-box {
-    background: #111; /* dark background */
-    border: 1px solid rgba(220, 38, 38, 0.3); /* red border */
+    background: linear-gradient(135deg, #0d1410 0%, #0a0f0d 100%);
+    border: 1px solid rgba(34, 197, 94, 0.3);
     padding: 25px 30px;
     border-radius: 12px;
     margin-bottom: 30px;
-    box-shadow: 0 0 15px rgba(220, 38, 38, 0.1);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
 }
 
 .header-box h1 {
-    color: #dc2626;
+    color: #22c55e;
     font-size: 28px;
     margin-bottom: 8px;
 }
@@ -478,6 +482,7 @@ body {
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
 }
+
 /* ========================================
    📄 PAGINATION - FIXED & STYLED
    ======================================== */
@@ -505,9 +510,9 @@ body {
 
 .pagination .page-link {
     padding: 10px 16px;
-    background-color: #1a1a1a;
+    background-color: #0d1410;
     color: #e5e5e5;
-    border: 1px solid #333;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
     text-decoration: none;
     font-size: 14px;
@@ -519,32 +524,32 @@ body {
 }
 
 .pagination .page-link:hover {
-    background-color: #dc2626;
-    border-color: #dc2626;
-    color: #fff;
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: #0a0f0d;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #dc2626;
-    border-color: #dc2626;
-    color: #fff;
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: #0a0f0d;
     font-weight: 600;
-    box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
 }
 
 .pagination .page-item.disabled .page-link {
-    background-color: #0d0d0d;
-    border-color: #222;
-    color: #555;
+    background-color: #080b09;
+    border-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.3);
     opacity: 0.6;
     cursor: not-allowed;
 }
 
 .pagination .page-item.disabled .page-link:hover {
-    background-color: #0d0d0d;
-    border-color: #222;
+    background-color: #080b09;
+    border-color: rgba(255, 255, 255, 0.05);
     transform: none;
     box-shadow: none;
 }
@@ -558,7 +563,7 @@ body {
 
 /* Pagination Info Text */
 .pagination-info {
-    color: #999;
+    color: rgba(255, 255, 255, 0.5);
     font-size: 14px;
     margin-top: 15px;
     text-align: center;

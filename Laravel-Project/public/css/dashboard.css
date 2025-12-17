@@ -1177,3 +1177,25 @@ h3{
     width: 100%;
   }
 }
+.store-info {
+  margin-bottom: 50px;
+  color: #fff; /* All text white */
+}
+
+.store-info .section-title,
+.store-info .store-description,
+.store-info .store-details h3,
+.store-info .store-details li,
+.store-info .contact-us h3,
+.store-info .contact-us p {
+  color: #fff; /* Ensure headings and paragraphs are white */
+}
+
+.store-info .contact-us a {
+  color: #fff; /* Links white */
+  text-decoration: underline;
+}
+
+.store-info .contact-us a:hover {
+  color: #007bff; /* Hover effect for links */
+}

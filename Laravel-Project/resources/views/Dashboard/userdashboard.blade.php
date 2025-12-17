@@ -25,10 +25,11 @@
           <li><a href="{{ route('wishlist.index') }}">Wishlist</a></li>
         </ul>
         <div class="nav-actions">
-          <a href="{{ route('wishlist.index') }}" class="icon-btn">
-            <i class="fas fa-heart"></i>
+              <a href="{{ route('wishlist.index') }}" class="icon-btn">
+            <i class="fas fa-bookmark"></i>
             <span class="badge">{{ Auth::user()->wishlist->count() ?? 0 }}</span>
-          </a>
+        </a>
+
           <a href="{{ route('cart.index') }}" class="icon-btn">
             <i class="fas fa-shopping-cart"></i>
             <span class="badge">{{ Auth::user()->cart->count() ?? 0 }}</span>
