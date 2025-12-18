@@ -71,10 +71,37 @@
             <label>Phone Number</label>
             <input type="text" name="phone" placeholder="09xxxxxxxxx" required>
         </div>
-        <div class="form-group" style="color: black;">
-            <label>Address</label>
-            <textarea name="address" rows="2" required>{{ Auth::user()->address }}</textarea>
+        <div class="form-group" style="color:black;">
+          <label>Street / House No. / Purok (optional)</label>
+          <input type="text" id="street" name="street" placeholder="House #, Street, Purok">
         </div>
+
+        <div class="form-group" style="color:black;">
+          <label>Region</label>
+          <select id="region" name="region_code" required></select>
+        </div>
+
+        <div class="form-group" style="color:black;">
+          <label>Province</label>
+        <select id="province" name="province_code" required disabled></select>
+        </div>
+
+        <div class="form-group" style="color:black;">
+          <label>City / Municipality</label>
+        <select id="city" name="city_code" required disabled></select>
+        </div>
+
+
+</div>
+
+<!-- mao ni imong isend sa backend (existing name="address") -->
+<div class="form-group" style="color:black;">
+  <label>Full Address (auto)</label>
+  <textarea name="address" id="fullAddress" rows="2" required readonly></textarea>
+</div>
+
+  </div>
+
       </div>
 
       <div class="section-box">
@@ -147,4 +174,101 @@
   </form>
 
 </body>
+
+<script>
+const regionSel = document.getElementById('region');
+const provSel   = document.getElementById('province');
+const citySel   = document.getElementById('city');
+
+const streetEl  = document.getElementById('street');
+const fullAddr  = document.getElementById('fullAddress');
+
+function selectedText(sel){
+  return sel.value ? sel.options[sel.selectedIndex].text : '';
+}
+
+function buildFullAddress(){
+  const street = (streetEl?.value || '').trim();
+  
+  const city   = selectedText(citySel);
+  const prov   = selectedText(provSel);
+  const region = selectedText(regionSel);
+  fullAddr.value = [street, city, prov, region].filter(Boolean).join(', ');
+}
+
+async function fetchJson(url){
+  try{
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+    if (!res.ok) return [];
+    return await res.json().catch(() => []);
+  }catch(e){
+    return [];
+  }
+}
+
+function setOptions(sel, items, placeholder){
+  if (!Array.isArray(items)) items = items?.data ?? [];
+  sel.innerHTML =
+    `<option value="">-- ${placeholder} --</option>` +
+    items.map(x => `<option value="${x.code}">${x.name}</option>`).join('');
+}
+
+function resetProvince(){
+  setOptions(provSel, [], 'Select Province');
+  provSel.disabled = true;
+  resetCity();
+}
+function resetCity(){
+  setOptions(citySel, [], 'Select City/Municipality');
+  citySel.disabled = true;
+
+}
+
+
+async function loadRegions(){
+  setOptions(regionSel, [], 'Select Region');
+  resetProvince();
+  const data = await fetchJson('/addr/regions?nocache=1');
+  setOptions(regionSel, data, 'Select Region');
+}
+
+regionSel.addEventListener('change', async () => {
+  buildFullAddress();
+  resetProvince();
+  if (!regionSel.value) return;
+
+  const data = await fetchJson(`/addr/provinces?region_code=${encodeURIComponent(regionSel.value)}&nocache=1`);
+  provSel.disabled = false;
+  setOptions(provSel, data, 'Select Province');
+});
+
+provSel.addEventListener('change', async () => {
+  buildFullAddress();
+  resetCity();
+  if (!provSel.value) return;
+
+  const data = await fetchJson(`/addr/cities?province_code=${encodeURIComponent(provSel.value)}&nocache=1`);
+  citySel.disabled = false;
+  setOptions(citySel, data, 'Select City/Municipality');
+});
+
+citySel.addEventListener('change', async () => {
+  buildFullAddress();
+
+  if (!citySel.value) return;
+
+  const data = await fetchJson(`/addr/barangays?city_code=${encodeURIComponent(citySel.value)}&nocache=1`);
+  brgySel.disabled = false;
+
+});
+
+
+streetEl.addEventListener('input', buildFullAddress);
+
+loadRegions();
+</script>
+
+
+
+
 </html>

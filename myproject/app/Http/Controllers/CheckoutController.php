@@ -44,12 +44,18 @@ class CheckoutController extends Controller
     public function placeOrder(Request $request)
     {
         // 1. Validation
-        $request->validate([
-            'full_name' => 'required|string',
-            'address' => 'required|string',
-            'phone' => 'required|string',
-            'payment_method' => 'required|in:COD,Online Banking,E-Wallet',
-        ]);
+$request->validate([
+  'full_name' => 'required|string',
+  'address' => 'required|string',
+  'phone' => 'required|string',
+  'payment_method' => 'required|in:COD,Online Banking,E-Wallet',
+
+  'region_code' => 'required|string',
+  'province_code' => 'required|string',
+  'city_code' => 'required|string',
+]);
+
+
 
         $user = Auth::user();
         $cartItems = Cart::where('user_id', $user->id)->with('product')->get();

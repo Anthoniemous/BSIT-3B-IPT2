@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AddressLookupController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
@@ -178,3 +179,9 @@ Route::get('/test-mail', function () {
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle'])->name('google.callback');
+Route::prefix('addr')->group(function () {
+    Route::get('/regions',    [AddressLookupController::class, 'regions']);
+    Route::get('/provinces',  [AddressLookupController::class, 'provinces']);
+    Route::get('/cities',     [AddressLookupController::class, 'cities']);
+  
+});
