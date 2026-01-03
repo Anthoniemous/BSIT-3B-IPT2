@@ -1,0 +1,185 @@
+/* ===============================
+   COLOR VARIABLES
+================================ */
+:root {
+    --dark-green: #022B21;
+    --medium-green: #0A2F1F;
+    --accent-green: #1B4D32;
+    --gold: #D4AF37;
+    --white: #FFFFFF;
+}
+
+/* ===============================
+   GLOBAL
+================================ */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--dark-green);
+    color: var(--white);
+    margin: 0;
+    padding: 0;
+}
+
+/* ===============================
+   SHOP LAYOUT
+================================ */
+.shop-container {
+    background: var(--dark-green);
+    min-height: 100vh;
+    padding: 6rem 5%;
+}
+
+.page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+}
+
+/* ===============================
+   PRODUCT GRID
+================================ */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 3rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===============================
+   PRODUCT CARD
+================================ */
+.product-card {
+    background: var(--medium-green);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+    border-color: var(--gold);
+}
+
+/* ===============================
+   PRODUCT IMAGE
+================================ */
+.product-image {
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(135deg, #0A2F1F, #1B4D32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.1);
+}
+
+/* ===============================
+   PRODUCT INFO
+================================ */
+.product-info {
+    padding: 2rem;
+}
+
+.product-category {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.product-description {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.product-price {
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+.btn-view-details {
+    background: var(--gold);
+    color: var(--dark-green);
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border: none;
+    transition: all 0.4s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-view-details:hover {
+    background: #F0C859;
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+    transform: translateY(-2px);
+}
+
+/* ===============================
+   EMPTY STATE
+================================ */
+.no-products {
+    text-align: center;
+    padding: 4rem 2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .shop-container {
+        padding: 4rem 5%;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}

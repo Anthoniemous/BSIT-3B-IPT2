@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class AdminController extends Controller
+{
+    public function dashboard()
+    {
+        // Total Products
+        $totalProducts = Product::count();
+
+        // Total Customers (assuming users with role 'customer' or all users except admins)
+        $totalCustomers = User::where('role', '!=', 'admin')->count();
+        // OR if you don't have role field:
+        // $totalCustomers = User::count();
+
+        // Total Orders
+        $totalOrders = Order::count();
+
+        // Pending Shipments (orders with status 'pending' or 'processing')
+        $pendingShipments = Order::whereIn('status', ['pending', 'processing'])->count();
+
+        // Total Sales This Month
+        $totalSalesMonth = Order::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->where('status', '!=', 'cancelled')
+            ->sum('total_amount');
+
+        // Cancelled Orders
+        $cancelledOrders = Order::where('status', 'cancelled')->count();
+
+        // Top Selling Products
+        $topSellingProducts = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
+            ->with('product') // Load product relationship
+            ->groupBy('product_id')
+            ->orderBy('total_sold', 'DESC')
+            ->limit(5)
+            ->get();
+
+        // Low Stock Products (stock quantity <= 10)
+        $lowStockProducts = Product::where('stock_quantity', '<=', 10)
+            ->orderBy('stock_quantity', 'ASC')
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalProducts',
+            'totalCustomers',
+            'totalOrders',
+            'pendingShipments',
+            'totalSalesMonth',
+            'cancelledOrders',
+            'topSellingProducts',
+            'lowStockProducts'
+        ));
+    }
+}

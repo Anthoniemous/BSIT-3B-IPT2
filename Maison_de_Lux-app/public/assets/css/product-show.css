@@ -1,0 +1,149 @@
+:root {
+            --dark-green: #022B21;
+            --medium-green: #0A2F1F;
+            --accent-green: #1B4D32;
+            --gold: #D4AF37;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .luxury-bg {
+            background: var(--dark-green);
+        }
+
+        .product-detail-card {
+            background: var(--medium-green);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .product-image-detail {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #0A2F1F, #1B4D32);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-image-detail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-detail-info {
+            padding: 3rem;
+        }
+
+        .product-name-detail {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .product-category-detail {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        .product-description-detail {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .product-price-detail {
+            font-size: 1.8rem;
+            color: var(--white);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .product-stock {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+        }
+
+        .btn-luxury {
+            background: var(--gold);
+            color: var(--dark-green);
+            font-weight: 600;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 0.5rem;
+            transition: all 0.4s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-luxury:hover {
+            background: #F0C859;
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--gold);
+            font-weight: 600;
+            padding: 1rem 3rem;
+            border-radius: 0.5rem;
+            transition: all 0.4s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gold);
+            color: var(--dark-green);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #F0C859;
+        }
+
+        @media (max-width: 768px) {
+            .product-detail-info {
+                padding: 2rem;
+            }
+
+            .product-name-detail {
+                font-size: 2rem;
+            }
+
+            .product-price-detail {
+                font-size: 1.5rem;
+            }
+        }

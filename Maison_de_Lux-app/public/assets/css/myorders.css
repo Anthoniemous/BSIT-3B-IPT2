@@ -1,0 +1,173 @@
+:root {
+            --dark-green: #022B21;
+            --medium-green: #0A2F1F;
+            --accent-green: #1B4D32;
+            --gold: #D4AF37;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--dark-green);
+            color: var(--white);
+        }
+
+        .orders-container {
+            background: var(--dark-green);
+            min-height: 100vh;
+            padding: 6rem 5%;
+        }
+
+        .orders-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+
+        .order-card {
+            background: var(--medium-green);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .order-id {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .order-status {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        .status-pending {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .status-processing {
+            background: #17a2b8;
+            color: #fff;
+        }
+
+        .status-shipped {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .status-delivered {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .status-cancelled {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .order-details {
+            margin-bottom: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .order-total {
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding-top: 1rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 4rem 2rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .back-link {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #F0C859;
+        }
+
+        .btn-update {
+            background: var(--accent-green);
+            color: var(--white);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            transition: all 0.4s;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-update:hover {
+            background: var(--gold);
+            color: var(--dark-green);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #c82333;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .orders-title {
+                font-size: 2rem;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
